@@ -3,7 +3,7 @@ project(pv264_project)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(SOURCE_FILES main.cpp)
+set(SOURCE_FILES main.cpp PhysicEngine.cpp PhysicEngine.h RigidBody.cpp RigidBody.h Vector2.cpp Vector2.h GameConstants.cpp GameConstants.h Timer.cpp Timer.h Shape.cpp Shape.h Collision.cpp Collision.h Circle.h Rectangle.h)
 
 set(BOOST_ROOT /opt/boost)
 set(Boost_USE_STATIC_LIBS ON)
