@@ -18,16 +18,6 @@
 namespace hana = boost::hana;
 using namespace hana::literals;
 
-/*template <typename Iterable, typename T>
-constexpr auto index_of(Iterable const& iterable, T const& element) {
-    auto size = decltype(hana::size(iterable)){};
-    auto dropped = decltype(hana::size(
-            hana::drop_while(iterable, hana::not_equal.to(element))
-    )){};
-    return size - dropped;
-}*/
-
-
 
 template <typename TSettings, typename SystemSettings>
 class GameEngine {
@@ -37,13 +27,15 @@ private:
     ComponentManager<TSettings> m_componentManager;
     using UnpackedTuple = typename decltype(hana::unpack(SystemSettings::systemList, hana::template_<hana::tuple >))::type;
     UnpackedTuple m_systems;
+    // basically network id of this client
+    size_t networkId;
 
 
 public:
     GameEngine() {
 
         hana::for_each(m_systems, [this](auto& system){
-            system.setManager(& this->m_componentManager);
+            system.setManager(&m_componentManager);
         });
     }
 
@@ -97,7 +89,9 @@ public:
 */
     }
 
-
+    const ComponentManager<TSettings> *getComponentManager() const {
+        return &m_componentManager;
+    }
 };
 
 

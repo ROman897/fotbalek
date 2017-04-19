@@ -5,7 +5,7 @@
 #ifndef PV264_PROJECT_SPRITE_H
 #define PV264_PROJECT_SPRITE_H
 
-#include "../../Core/EngineStructures.hpp"
+#include "../../Core/EngineStructures.h"
 
 struct Sprite{
     int m_Width;

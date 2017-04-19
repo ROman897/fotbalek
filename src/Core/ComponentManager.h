@@ -11,9 +11,16 @@
 #include "SignatureManager.h"
 #include "ComponentStorage.h"
 #include "GameObject.h"
+#include <iostream>
+
+
+
+
 
 template <typename TSettings>
 struct ComponentManager{
+    template <typename ... Args >
+    using PtrTuple = hana::tuple<Args* ...>;
     SignatureManager<TSettings> signatureManager;
     ComponentStorage<TSettings> componentStorage;
     std::vector<GameObject<TSettings>> m_gameObjects;
@@ -63,32 +70,19 @@ struct ComponentManager{
                     });
     }
 
-
     template<typename T, typename TF>
     void signatureCallFunction(Id id, TF&& mFunction){
 
-        //using UnpacketTuple = typename decltype(hana::unpack(componentSettings::ComponentList, hana::template_<TupleOfVectors >))::type;
+        using Unpacked = typename decltype(hana::unpack(hana::template type_c<T>, hana::template_<PtrTuple>))::type;
+        Unpacked components;
 
-
-        //_signatureCallFunction<T, TF, hana::unpack(hana::template type_c<T>)>(mFunction);
-
-        /*
-        using unpacked = typename decltype(hana::unpack(hana::template type_c<T>, hana::template_<hana::tuple>)>(mFunction))::type;
-        _signatureCallFunction<T, TF, unpacked> ;
-         */
-    }
-
-    template <typename T,typename TF, typename ... Comps>
-    void _signatureCallFunction(Id id, TF&& mFunction){
-        /*hana::tuple<Comps...> components;
-        hana::for_each_t(hana::type_c<T>, [id, this](auto t){
-            hana::at<t>(components) = componentStorage.template getComponentVector<T>()[id];
+        int i = 0;
+        hana::for_each_t(hana::type_c<T>, [this, &i, id, &components ](auto t) {
+            hana::at_c<i>(components) = &this->componentStorage.template getComponentVector<typename decltype(t)::type>()[id];
         });
-        mFunction(hana::unpack(components));
 
-*/
+        hana::unpack(components, mFunction);
     }
-
 
 
     void changeSize(size_t newCapacity){

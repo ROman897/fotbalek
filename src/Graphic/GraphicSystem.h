@@ -12,7 +12,7 @@
 #include "../Components/Transform.h"
 #include "../Components/Graphic/Shapes/RectangleShape.h"
 #include "../Components/Graphic/Sprite.h"
-#include "../Core/EngineStructures.hpp"
+#include "../Core/EngineStructures.h"
 #include "../Components/Graphic/Label.h"
 #include <SDL.h>
 #include <SDL_image.h>

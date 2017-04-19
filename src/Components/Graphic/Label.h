@@ -5,7 +5,7 @@
 #ifndef PV264_PROJECT_LABEL_H
 #define PV264_PROJECT_LABEL_H
 
-#include "../../Core/EngineStructures.hpp"
+#include "../../Core/EngineStructures.h"
 #include "../../Utils/Vector2.h"
 
 struct Label{

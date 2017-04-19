@@ -1,0 +1,14 @@
+pv264_project
+
+https://gitlab.fi.muni.cz/xnavrat8/pv264_project
+
+rozhodli sme sa projekt rozdelit na casti, jedna cast (master branch) obsahuje samotnu funkcionalitu hry a dalsia obsahuje networking.
+
+Master branch: Implementovana herna logika, vyuziva entity-component design, kde objekt v hre predstavuje entitu(gameobject), a obsahuje iba data o entite samotnej ale nie jej komponenty.  O komponenty sa stara componentManager, ktory ma v tuple ulozene vektory obsahujuce vsetky komponenty pre vsetky objekty. Dalej je tam trieda GameEngine, co je zakladna trieda obsahujuca vsetky podsystemy(ako napr. grafika, fyzika atd.). GameEngine obsahuje templaty s komponentami ktore ma ukladat, signaturami a systemami, cize vsetko z tohto je zname uz za kompilacie. Signatura je zoznam komponentov ktore gameobject musi mat aby nanho reagoval dany system. Dalej je tam trieda SignatureManager ktora ma ulozene signatury pre vsetky systemy pomocou bitsetu, kde kazdy bit je  predstavuje komponent s danym id. Kedze su signatury zname za compile time tak aj tieto bitsety su consexpr. Na toto je pouzita kniznica boost.hana, kde sa tieto struktury predavaju ako tuple obsahujuce typy. ComponentManager obsahuje vsetko logiku pre komponenty, vratane pridavania a odoberania, ako aj metody forEntitiesMatching a forEntitiesMatchingPairs, ktore pre kazdy gameObject(resp. ) ktory splna signaturu aplikuje zadanu funkciu. V priecinku components su uz definovane nejake komponenty, a su takmer hotove systemy pre grafiku a pre fyziku. Samotne vypocty fyziky su momentalne prevzate s malymi upravami zo stranky ktora sa zaobera hernym vyvojom, ale budu sa dost pravdepodobne menit kedze tato cast nie je este vobec otestovana.
+
+Planovane prace: componentManager nema este dokoncene volanie funkcii pre dvojice gameObjectov a takisto este treba implementovat Handle, co je struktura ktora priamo ukazuje na jeden komponent, dalej este treba vyriesit threading, a to tak ze niektore systemy, ako napr. vypocet fyziky alebo posielanie dat po sieti budu mat vlastny thread a teda componentManager bude musiet synchronizovat zapisy a citania komponentov. Dalej treba dorobit grafiku a hernu kameru, a ovladanie hraca. Treba este poriadne otestovat fyziku ked to bude hratelne.
+
+Druha vetva obsahuje zakladnu implementaciu klienta a serveru so zakladnou schopnostou komunikovat.
+
+A nakoniec treba spojit projekty tak ze budeme mat server a klienta. To dosiahneme jednoducho vdaka flexibilite component systemu ze klient bude obsahovat system na prijimanie pozicii hracov od servera a posielanie inputu z klavesnice a grafiku, pripadne este dalsie. Podobne server bude obsahovat systemy na posielanie pozicii hracov a prijimanie inputu a ratanie fyziky, pripadne aj dalsie ako napriklad pripajanie novych hracov atd.
+

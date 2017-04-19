@@ -9,15 +9,15 @@
 
 //#include <boost/hana>
 #include <boost/hana.hpp>
-#include <boost/hana/ext/boost/mpl/list.hpp>
 #include <vector>
 #include <boost/hana/tuple.hpp>
 #include <boost/hana/type.hpp>
-//#include <boost/hana/basic_tuple.hpp>
+#include <boost/hana/equal.hpp>
+#include <boost/hana/optional.hpp>
 #include <iostream>
 #include "../Utils/declarations.h"
-#include <boost/hana/type.hpp>
 #include <type_traits>
+#include <boost/hana/transform.hpp>
 
 namespace hana = boost::hana;
 using namespace hana::literals;
@@ -31,26 +31,18 @@ template<typename TSettings>
 
         template<typename... Ts>
         using TupleOfVectors = hana::tuple<std::vector<Ts>...>;
-        using UnpacketTuple = typename decltype(hana::unpack(componentSettings::componentList, hana::template_<TupleOfVectors >))::type;
-        UnpacketTuple m_components;
+        using UnpackedTuple = typename decltype(hana::unpack(componentSettings::componentList, hana::template_<TupleOfVectors >))::type;
+        UnpackedTuple m_components;
 
 
-        //auto t = hana::make_tuple(5);
     public:
         void grow(std::size_t mNewCapacity) {
-            /*
-            hana::for_each(components, [this, mNewCapacity](auto& v)
+
+            hana::for_each(m_components, [mNewCapacity](auto& v)
             {
                 v.resize(mNewCapacity);
-            });*/
-
-
-            //error code, needs fix: no matching function for call to object of type 'const make_t<boost::hana::tuple_tag>'
-            /*hana::transform(components, [this, mNewCapacity](auto &v) {
-                v.resize(mNewCapacity);
-            });*/
-
-
+            });
+            //std::cout << m_components;
         }
 
         template <typename T>
@@ -60,10 +52,8 @@ template<typename TSettings>
             return hana::at<getComponentId<T>()>(m_components);
         }
 
-        //template<typename T>
         auto& getComponentVector(DataIndex mI) noexcept
         {
-            //return components[mI];
             return hana::at_c<mI>(m_components);
         }
 
