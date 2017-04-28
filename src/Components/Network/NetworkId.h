@@ -6,10 +6,11 @@
 #define PV264_PROJECT_NETWORKID_H
 
 #include <cstddef>
+#include "../../Utils/declarations.h"
 
 struct NetworkId{
     // id to identify gameObjects over the network
-    size_t id;
+    Id id;
 };
 
 #endif //PV264_PROJECT_NETWORKID_H

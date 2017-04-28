@@ -127,7 +127,7 @@ public:
         m_componentManager->template forEntitiesMatching<SystemSignature_Rectangle>([this](const RectangleShape& shape, const Transform& transform){
             SDL_SetRenderDrawColor(this->getRenderer(), shape.m_color.r, shape.m_color.g, shape.m_color.b, shape.m_color.a);
             // draw rect with position and size of one block
-            SDL_Rect fillRect = { transform.m_position.m_x + shape.x, transform.m_position.m_y + shape.y, shape.mWidth,
+            SDL_Rect fillRect = {static_cast<int>(std::round(transform.m_position.m_x + shape.x)), static_cast<int>(std::round(transform.m_position.m_y + shape.y)), shape.mWidth,
                                   shape.mHeight };
             SDL_RenderFillRect(this->getRenderer(), &fillRect);
 
@@ -147,20 +147,22 @@ public:
                 sprite.m_Width = surface->w;
                 sprite.m_Height = surface->h;
             }
-            SDL_Rect renderQuad = { sprite.m_positionOffset.m_x + transform.m_position.m_x, sprite.m_positionOffset.m_y + transform.m_position.m_y,sprite.m_Width, sprite.m_Height };
+            SDL_Rect renderQuad = { static_cast<int>(std::round(sprite.m_positionOffset.m_x + transform.m_position.m_x)),
+                                    static_cast<int>(std::round(sprite.m_positionOffset.m_y + transform.m_position.m_y)),
+                                    sprite.m_Width, sprite.m_Height };
             SDL_RenderCopy(this->getRenderer(), sprite.m_Texture.get(), nullptr, &renderQuad);
 
         });
     }
 
-    GraphicSystem() : m_componentManager(nullptr), windowHolder("MainWindow", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_SHOWN),
-                                                                       rendererHolder(windowHolder.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC){
+    GraphicSystem() : m_componentManager(nullptr), m_WindowHolder("MainWindow", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_ScreenWidth, m_ScreenHeight, SDL_WINDOW_SHOWN),
+                                                                       m_RendererHolder(m_WindowHolder.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC){
 
         // set hint render scale quality
         if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
             std::cout << "Cannot enable Linear texture filtering" << std::endl;
         }
-        SDL_SetRenderDrawColor(rendererHolder.renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+        SDL_SetRenderDrawColor(m_RendererHolder.renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     }
 
     void setManager(ComponentManager<TSettings>* componentManager){
@@ -171,8 +173,8 @@ public:
     SDL_Surface* getSurface(std::string path)
     {
         // first look in map of surfaces if it already contains the surface
-        auto result = surfaceHolder.surfaces.find(path);
-        if (result == surfaceHolder.surfaces.end()) {
+        auto result = m_SurfaceHolder.surfaces.find(path);
+        if (result == m_SurfaceHolder.surfaces.end()) {
             // this means that surface is not present in the map of surfaces
             // so we load the surface
             SDL_Surface* loadedSurface = IMG_Load(path.c_str());
@@ -183,7 +185,7 @@ public:
             }
             // is save is on, it means we have to cache the surface for future use, so we create
             // a new smart pointer to surface and emplacfe it into the map for surfaces
-            surfaceHolder.surfaces.emplace(path, SurfaceSmartPtr(loadedSurface));
+            m_SurfaceHolder.surfaces.emplace(path, SurfaceSmartPtr(loadedSurface));
             // return loaded surface
             return loadedSurface;
         }
@@ -193,10 +195,10 @@ public:
 
     TTF_Font* getFont(std::string path, int size)
     {
-        auto result1 = fontHolder.fonts.find(path);
+        auto result1 = m_FontHolder.fonts.find(path);
 
         // this means same font of any size hasnt been loaded
-        if (result1 == fontHolder.fonts.end()) {
+        if (result1 == m_FontHolder.fonts.end()) {
             TTF_Font* font = TTF_OpenFont(path.c_str(), size);
             // if loading was unsuccessful the just return nullptr and print error
             if (font == nullptr) {
@@ -206,7 +208,7 @@ public:
             FontSizeMap map;
             map.emplace(size, FontSmartPtr(font));
             //create a new map with the newly created surface and the emplace the map into fonts
-            fontHolder.fonts.emplace(path, std::move(map));
+            m_FontHolder.fonts.emplace(path, std::move(map));
             return font;
         }
 
@@ -226,17 +228,17 @@ public:
     }
 
     SDL_Renderer *getRenderer() {
-        return rendererHolder.renderer;
+        return m_RendererHolder.renderer;
     }
 
 private:
-    SDLInitializer sdlInitializer;
-    IMGInitializer imgInitializer;
-    TTFInitializer ttfInitializer;
-    SurfaceHolder surfaceHolder;
-    FontHolder fontHolder;
-    WindowHolder windowHolder;
-    RendererHolder rendererHolder;
+    SDLInitializer m_SdlInitializer;
+    IMGInitializer m_ImgInitializer;
+    TTFInitializer m_TtfInitializer;
+    SurfaceHolder m_SurfaceHolder;
+    FontHolder m_FontHolder;
+    WindowHolder m_WindowHolder;
+    RendererHolder m_RendererHolder;
 
     ComponentManager<TSettings>* m_componentManager;
 
@@ -244,8 +246,8 @@ private:
     using SystemSignature_Rectangle = Signature <RectangleShape, Transform>;
     using SystemSignature_Sprite = Signature <Sprite, Transform>;
     using SystemSignature_Label = Signature <Label, Transform>;
-    int screenWidth;
-    int screenHeight;
+    int m_ScreenWidth;
+    int m_ScreenHeight;
 };
 
 

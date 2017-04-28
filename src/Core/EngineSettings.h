@@ -58,11 +58,13 @@ struct EngineSettings{
     //using systemSettings = TSystemSettings;
     using Bitset = std::bitset<hana::length(componentSettings::componentList)>;
 
+    static constexpr componentSettings m_componentSettings = componentSettings();
+
 
     template<typename T>
     static constexpr auto isComponent() noexcept
     {
-        return hana::contains_t(componentSettings::componentList, hana::type_c<T>);
+        return hana::contains(componentSettings::componentList, hana::type_c<T>);
     }
 
     template<typename T>
@@ -76,13 +78,13 @@ struct EngineSettings{
         return hana::length(componentSettings::componentList);
     }
 
-    static constexpr std::size_t signatureCount() noexcept
+    static constexpr auto signatureCount() noexcept
     {
         return hana::length(signatureSettings::signatureList);
     }
 
     template<typename T>
-    static constexpr std::size_t componentID() noexcept
+    static constexpr auto componentID() noexcept
     {
         return index_of(componentSettings::componentList, hana::type_c<T>);
     }

@@ -40,14 +40,14 @@ public:
     }
 
 
-    Id SpawnGameObject(){
+    Id spawnGameObject(){
         return m_componentManager.addEmptyGameObject();
     }
 
     template <typename System, typename ... Args>
     void initSystem(Args&&... args){
         auto index = index_of(m_systems, hana::type_c<System>);
-        m_systems[index].initialize(std::forward(args...));
+        m_systems[index].initialize(std::forward<Args>(args)...);
     }
 
     template <typename System>
@@ -64,7 +64,7 @@ public:
 
     template<typename T, typename... TArgs>
     auto& addComponent(Id id, TArgs&&... args) noexcept{
-        return m_componentManager.addComponent(id, std::forward<TArgs ...>(args ...));
+        return m_componentManager.template addComponent<T>(id, std::forward<TArgs>(args) ...);
     }
 
     template<typename T>

@@ -6,12 +6,15 @@
 #define PV264_PROJECT_GAMECONSTANTS_H
 
 
+#include <SDL_quit.h>
+
 struct GameConstants {
 
     // how often is physic update run
-    constexpr static const double kFps = 100;
-    constexpr static const double kDeltaTime = 1 / kFps;
-    constexpr static const double kAccumulatorLimit = 0.2;
+    constexpr static double kFps = 100;
+    constexpr static double kDeltaTime = 1 / kFps;
+    constexpr static Uint32 kAccumulatorLimit = 20U;
+    constexpr static Uint32 kInputCooldown = 10U;
 
 };
 

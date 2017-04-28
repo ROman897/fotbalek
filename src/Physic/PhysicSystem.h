@@ -20,23 +20,23 @@
 
 
 inline void resolveCollision(const Collision &collision) {
-    Vector_Int vDiff = collision.second.m_velocity - collision.first.m_velocity;
+    Vector_Float vDiff = collision.second.m_velocity - collision.first.m_velocity;
 
-    double velNormal = DotProduct( vDiff, collision.normal);
+    float velNormal = DotProduct( vDiff, collision.normal);
 
     if(velNormal > 0)
         return;
 
     // Calculate restitution, choose lower of the two restitutions
-    double r = std::min( collision.first.m_restitution, collision.second.m_restitution);
+    float r = std::min( collision.first.m_restitution, collision.second.m_restitution);
 
     // Calculate impulse scalar
-    double TotalForce = -(1 + r) * velNormal;
+    float TotalForce = -(1 + r) * velNormal;
     // now multiply total force by masses
     TotalForce /= collision.first.m_inverseMass + collision.second.m_inverseMass;
 
     // Apply impulse
-    Vector_Int impulse = collision.normal * TotalForce;
+    Vector_Float impulse = collision.normal * TotalForce;
 
     // apply impulse, so add to velocities force relative to mass of the rigid body
     collision.first.m_velocity -= impulse * collision.first.m_inverseMass;
@@ -44,7 +44,7 @@ inline void resolveCollision(const Collision &collision) {
 
 }
 
-double Clamp(double min, double max, double val) {
+float Clamp(float min, float max, float val) {
     return std::abs(min - val) < std::abs(max - val) ? min : max;
 }
 
@@ -56,9 +56,9 @@ inline void checkForCollisionCircle_Circle(const CircleCollider& shape1, RigidBo
 
 
     // Vector from A to B
-    Vector_Int n = transform2.m_position - transform1.m_position;
+    Vector_Float n = transform2.m_position - transform1.m_position;
 
-    double r = shape1.m_radius + shape2.m_radius;
+    float r = shape1.m_radius + shape2.m_radius;
     r *= r;
 
     if(n.lengthSquared() > r)
@@ -66,7 +66,7 @@ inline void checkForCollisionCircle_Circle(const CircleCollider& shape1, RigidBo
 
     Collision collision(body1, body2);
 
-    double d = n.length();
+    float d = n.length();
 
     // If distance between circles is not zero
     if(d != 0)
@@ -75,7 +75,7 @@ inline void checkForCollisionCircle_Circle(const CircleCollider& shape1, RigidBo
         collision.penetration = r - d;
 
         // now we have to calculate vector perpendicular to vector n and normalize it
-        Vector_Int normal = n.getNormal();
+        Vector_Float normal = n.getNormal();
         collision.normal = normal / d;
 
     }
@@ -85,7 +85,7 @@ inline void checkForCollisionCircle_Circle(const CircleCollider& shape1, RigidBo
     {
         // this should not be really happening, but just in case when distance is 0 so we dont divide by 0
         collision.penetration = shape1.m_radius;
-        collision.normal = Vector_Int( 1, 0 );
+        collision.normal = Vector_Float( 1, 0 );
     }
     resolveCollision(collision);
 }
@@ -95,25 +95,25 @@ inline void checkForCollisionRectangle_Rectangle(const RectangleCollider& shape1
                                           RigidBody& body2, const Transform& transform2){
 
 
-    Vector_Int n = transform2.m_position - transform1.m_position;
+    Vector_Float n = transform2.m_position - transform1.m_position;
 
-    double collider1_X = (shape1.m_topLeft.m_x
+    float collider1_X = (shape1.m_topLeft.m_x
                           - shape1.m_bottomRight.m_x
                          ) / 2;
-    double collider2X = (shape2.m_topLeft.m_x
+    float collider2X = (shape2.m_topLeft.m_x
                          - shape2.m_bottomRight.m_x
                         ) / 2;
-    double x_overlap = collider1_X + collider2X - std::abs( n.m_x
+    float x_overlap = collider1_X + collider2X - std::abs( n.m_x
     );
 
 
-    double collider1_Y = (shape1.m_topLeft.m_y
+    float collider1_Y = (shape1.m_topLeft.m_y
                           - shape1.m_bottomRight.m_y
                          ) / 2;
-    double collider2_Y = (shape2.m_topLeft.m_y
+    float collider2_Y = (shape2.m_topLeft.m_y
                           - shape2.m_bottomRight.m_y
                          ) / 2;
-    double y_overlap = collider1_Y + collider2_Y - std::abs( n.m_y
+    float y_overlap = collider1_Y + collider2_Y - std::abs( n.m_y
     );
 
     // this means that no collision occured
@@ -127,18 +127,18 @@ inline void checkForCollisionRectangle_Rectangle(const RectangleCollider& shape1
     {
         if(n.m_x
            < 0)
-            collision.normal = Vector_Int(-1, 0);
+            collision.normal = Vector_Float(-1, 0);
         else
-            collision.normal = Vector_Int( 1, 0 );
+            collision.normal = Vector_Float( 1, 0 );
         collision.penetration = x_overlap;
     }
     else
     {
         if(n.m_y
            < 0)
-            collision.normal = Vector_Int( 0, -1 );
+            collision.normal = Vector_Float( 0, -1 );
         else
-            collision.normal = Vector_Int( 0, 1 );
+            collision.normal = Vector_Float( 0, 1 );
         collision.penetration = y_overlap;
     }
 
@@ -149,12 +149,12 @@ inline void checkForCollisionRectangle_Rectangle(const RectangleCollider& shape1
 inline void checkForCollisionRectangle_Circle(const RectangleCollider& shape1, RigidBody& body1, const Transform& transform1, const CircleCollider& shape2,
                                        RigidBody& body2, const Transform& transform2){
 
-    Vector_Int n = transform2.m_position - transform1.m_position;
-    Vector_Int closest = n;
-    double x_extent = (shape1.m_topLeft.m_x
+    Vector_Float n = transform2.m_position - transform1.m_position;
+    Vector_Float closest = n;
+    float x_extent = (shape1.m_topLeft.m_x
                        - shape1.m_bottomRight.m_x
                       ) / 2;
-    double y_extent = (shape1.m_topLeft.m_y
+    float y_extent = (shape1.m_topLeft.m_y
                        - shape1.m_bottomRight.m_y
                       ) / 2;
 
@@ -197,9 +197,9 @@ inline void checkForCollisionRectangle_Circle(const RectangleCollider& shape1, R
         }
     }
 
-    Vector_Int normal = n - closest;
-    double d = normal.lengthSquared();
-    double r = shape2.m_radius;
+    Vector_Float normal = n - closest;
+    float d = normal.lengthSquared();
+    float r = shape2.m_radius;
 
     if(d > r * r && !inside)
         return;
@@ -255,7 +255,7 @@ public:
     //using SystemSignature_Rectangle_Immovable = Signature <RectangleCollider, Transform>;
 
 private:
-    //void runPhysicUpdate(double dt);
+    //void runPhysicUpdate(float dt);
 
 
 
@@ -272,7 +272,7 @@ private:
     transform.position += rigidBody.m_velocity * dt;
 }*/
 
-    void runPhysicUpdate(double dt) {
+    void runPhysicUpdate(float dt) {
 
         componentManager.template forEntitiesMatching<SystemSignature_Movable>([dt](RigidBody& rigidBody, Transform& transform){
             transform.m_position += rigidBody.m_velocity * dt;
@@ -286,7 +286,7 @@ private:
 
     void start() {
 
-        double accumulator = 0;
+        Uint32 accumulator = 0;
         Timer timer;
 
 

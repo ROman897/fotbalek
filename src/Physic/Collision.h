@@ -17,9 +17,9 @@ struct Collision {
 
     Collision(RigidBody &first, RigidBody &second);
 
-    Collision(RigidBody &first, RigidBody &second, double penetration, const Vector_Int &normal);
+    Collision(RigidBody &first, RigidBody &second, double penetration, const Vector_Float &normal);
 
-    Vector_Int normal;
+    Vector_Float normal;
 };
 
 

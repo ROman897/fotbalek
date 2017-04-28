@@ -1,5 +1,5 @@
 #include <iostream>
-#include "asio.hpp"
+//#include "asio.hpp"
 #include "Core/GameEngine.h"
 #include "Core/EngineSettings.h"
 #include "Components/Transform.h"
@@ -16,11 +16,15 @@ int main() {
 
     // first we need to specify which components will the engine keep track of
     using compSettings = ComponentSettings <Transform, RectangleShape>;
+    compSettings comps;
     // define a sample signature
     using rectangleSignature = Signature <Transform, RectangleShape>;
+    rectangleSignature rec;
     // define which signatures will the engine use
     using sigSettings = SignatureSettings <rectangleSignature >;
+    sigSettings sig;
     using settings = EngineSettings<compSettings , sigSettings>;
+    settings set;
 
     // define which systems will the engine use
     using sysSettings = SystemSettings <GraphicSystem<settings >>;
@@ -28,5 +32,8 @@ int main() {
 
 
     GameEngine<settings, sysSettings > gameEngine;
+    Id id = gameEngine.spawnGameObject();
+    Vector_Float pos = {1,2};
+    gameEngine.addComponent<Transform>(id, pos);
 
 }

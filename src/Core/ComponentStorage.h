@@ -45,11 +45,14 @@ template<typename TSettings>
             //std::cout << m_components;
         }
 
+        // should return reference !!!
         template <typename T>
-        auto& getComponentVector()
+        constexpr auto& getComponentVector()
         {
-            //return components[mI];
-            return hana::at<getComponentId<T>()>(m_components);
+            // TODO need to find a way to fix this to find vector from tuple by templated type
+            // TODO this might work, needs further testing
+            return hana::at_c<TSettings::template componentID<T>()>(m_components);
+            //return hana::at(m_components, hana::size_c<0>);
         }
 
         auto& getComponentVector(DataIndex mI) noexcept
@@ -58,7 +61,8 @@ template<typename TSettings>
         }
 
         template <typename T>
-        auto getComponentId(){
+        constexpr auto getComponentId(){
+            std::cout << index_of(m_components, hana::type_c<T>);
             return index_of(m_components, hana::type_c<T>);
         }
 

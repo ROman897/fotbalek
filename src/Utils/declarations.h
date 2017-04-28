@@ -30,6 +30,7 @@ template<typename... Ts> using Signature = hana::tuple<hana::type <Ts>...>;
 //template<typename... Ts> using ComponentList = hana::tuple<hana::type <Ts>...>;
 //template<typename... Ts> using SystemList = hana::tuple<hana::type <Ts>...>;
 
+using Vector_Float = Vector2<float>;
 using Vector_Int = Vector2<int>;
 
 //BOOST_STRONG_TYPEDEF(std::string, )

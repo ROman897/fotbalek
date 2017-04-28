@@ -8,7 +8,7 @@
 #include "../../../Utils/declarations.h"
 
 struct CircleCollider{
-    Vector_Int m_center;
+    Vector_Float m_center;
     double m_radius;
     bool m_isTrigger;
 

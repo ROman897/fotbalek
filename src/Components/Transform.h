@@ -8,7 +8,10 @@
 #include "../Utils/Vector2.h"
 
 struct Transform{
-Vector_Int m_position;
+Vector_Float m_position;
+
+    Transform(const Vector_Float &m_position) : m_position(m_position) {}
+    Transform() = default;
 
 };
 #endif //PV264_PROJECT_TRANSFORM_H

@@ -18,7 +18,7 @@
 
 
 template <typename TSettings>
-struct ComponentManager{
+class ComponentManager{
     template <typename ... Args >
     using PtrTuple = hana::tuple<Args* ...>;
     SignatureManager<TSettings> signatureManager;
@@ -26,6 +26,8 @@ struct ComponentManager{
     std::vector<GameObject<TSettings>> m_gameObjects;
     size_t m_size, m_capacity, m_newSize;
     const size_t m_startingSize = 50U;
+
+public:
 
     template<typename T>
     auto matchesSignature(Id id) const noexcept
@@ -44,6 +46,16 @@ struct ComponentManager{
     {
         for(Id i{0}; i < m_size; ++i)
             mFunction(i);
+    }
+
+    template<typename TF>
+    void forEntityPairs(TF&& mFunction)
+    {
+        for(Id i{0}; i < m_size; ++i) {
+            for (Id i2{i + 1}; i2 < m_size; ++i2)
+            mFunction(i, i2);
+
+        }
     }
 
     template<typename T, typename TF>
@@ -68,7 +80,21 @@ struct ComponentManager{
                         //if(matchesSignature<T>(i))
                          //SignatureCall::signatureCallFunction<>()
                     });
+
+        forEntityPairs([this, &mFunction](auto i, auto i2){
+            // we have to look for signatures in order given and also reordered, as caller has information
+            // about layout of components
+
+           if (matchesSignature<T>(i) && matchesSignature<U>(i2)){
+                signatureCallPairFunction<T, U, TF>(i, i2, mFunction);
+           } else
+           if (matchesSignature<U>(i) && matchesSignature<T>(i2)){
+               signatureCallPairFunction<U, T, TF>(i2, i, mFunction);
+           }
+        });
     }
+
+
 
     template<typename T, typename TF>
     void signatureCallFunction(Id id, TF&& mFunction){
@@ -79,6 +105,30 @@ struct ComponentManager{
         int i = 0;
         hana::for_each_t(hana::type_c<T>, [this, &i, id, &components ](auto t) {
             hana::at_c<i>(components) = &this->componentStorage.template getComponentVector<typename decltype(t)::type>()[id];
+            ++i;
+        });
+
+        hana::unpack(components, mFunction);
+    }
+
+    template<typename T, typename U, typename TF>
+    void signatureCallPairFunction(Id id, Id id2, TF&& mFunction){
+
+        using Unpacked = typename decltype(hana::unpack(hana::template type_c<T>, hana::template_<PtrTuple>))::type;
+        using Unpacked2 = typename decltype(hana::unpack(hana::template type_c<U>, hana::template_<PtrTuple>))::type;
+        Unpacked components;
+        Unpacked2 components2;
+
+        int i = 0;
+        hana::for_each_t(hana::type_c<T>, [this, &i, id, &components ](auto t) {
+            hana::at_c<i>(components) = &this->componentStorage.template getComponentVector<typename decltype(t)::type>()[id];
+            ++i;
+        });
+
+        i = 0;
+        hana::for_each_t(hana::type_c<U>, [this, &i, id2, &components2 ](auto t) {
+            hana::at_c<i>(components2) = &this->componentStorage.template getComponentVector<typename decltype(t)::type>()[id2];
+            ++i;
         });
 
         hana::unpack(components, mFunction);
@@ -132,9 +182,9 @@ struct ComponentManager{
         static_assert(TSettings::template isComponent<T>(), "");
 
         GameObject<TSettings>& gameObject = getGameObject(id);
-        gameObject.m_bitset[TSettings::template componentBit<T>()] = true;
+        gameObject.m_bitset[TSettings::template componentID<T>()] = true;
         auto& c = componentStorage.template getComponentVector<T>()[id];
-        new (&c) T(std::forward<TArgs...>(mXs)...);
+        new (&c) T(std::forward<TArgs>(mXs)...);
 
         return c;
     }
@@ -161,8 +211,8 @@ struct ComponentManager{
         tryChangeSize();
         Id thisId = m_newSize++;
         auto& g(m_gameObjects[thisId]);
-        g.alive = true;
-        g.bitset.reset();
+        g.m_alive = true;
+        g.m_bitset.reset();
         return thisId;
     }
 

@@ -10,7 +10,7 @@
 struct Sprite{
     int m_Width;
     int m_Height;
-    Vector_Int m_positionOffset;
+    Vector_Float m_positionOffset;
     std::string m_texturePath;
     TextureSmartPtr m_Texture;
 };

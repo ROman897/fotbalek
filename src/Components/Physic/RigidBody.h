@@ -26,10 +26,10 @@ struct RigidBody {
     double m_restitution;
 
     // this vector represents actual direction and speed of rigid body
-    Vector_Int m_velocity;
+    Vector_Float m_velocity;
 
     // this vector represents forces to be applied to this rigid body in this frame
-    Vector_Int m_activeForce;
+    Vector_Float m_activeForce;
 
     // every frame speed of an object will be decreased by some amount
     double m_speedDecrement;
