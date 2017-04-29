@@ -15,6 +15,9 @@ struct GameConstants {
     constexpr static double kDeltaTime = 1 / kFps;
     constexpr static Uint32 kAccumulatorLimit = 20U;
     constexpr static Uint32 kInputCooldown = 10U;
+    constexpr static float kInputMovementCoefficient = 10.0f;
+    constexpr static int kWindowHeight = 800;
+    constexpr static int kWindowWidth = 1200;
 
 };
 

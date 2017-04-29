@@ -18,33 +18,88 @@ class InputSystem{
     using SystemSignature_Input = Signature<MovementInputHolder>;
     void handleInputs() {
         SDL_Event event;
+        bool moveLeft = false;
+        bool moveRight = false;
+        bool moveUp = false;
+        bool moveDown = false;
+        bool shoot = false;
+        bool escape = false;
+        int menuMoveUp = 0;
+        int menuMoveDown = 0;
+
+
         while (SDL_PollEvent(&event) != 0) {
 
-            if (event.type == SDL_KEYDOWN && inputTimer.getTime() >= GameConstants::kInputCooldown) {
-                // key was pressed down and it can react to input
-                inputTimer.resetTime();
-                //Adjust the velocity
-                // do action based on key pressed
-                switch (event.key.keysym.sym) {
-                    case SDLK_a:
+
+                if (event.type == SDL_KEYDOWN && !escape) {
+
+                    switch (event.key.keysym.sym) {
+                        case SDLK_a:
+                        case SDLK_LEFT:
+                            moveLeft = true;
+                            break;
+                        case SDLK_d:
+                        case SDLK_RIGHT:
+                            moveRight = true;
+                            break;
+                        case SDLK_w:
+                        case SDLK_UP:
+                            moveUp = true;
+                            break;
+                        case SDLK_s:
+                        case SDLK_DOWN:
+                            moveDown = true;
+                            break;
+                        default:
+                            break;
+                    }
                 }
+
+
+
+            if (event.type == SDL_KEYUP) {
+                switch (event.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                        escape = true;
+                    case SDLK_w:
+                    case SDLK_UP:
+                        moveUp = true;
+                        break;
+                    case SDLK_s:
+                    case SDLK_DOWN:
+                        moveDown = true;
+                        break;
+
+                    default:
+                        break;
+                }
+
             }
+
+            bool moveVertical = (moveUp && !moveDown) || (moveDown && !moveUp);
+            bool moveHorizontal = (moveRight && !moveLeft) || (moveLeft && !moveRight);
+
+            if (moveHorizontal || moveVertical || shoot) {
+                manager->forEntityMatching(movementInputId,
+                                           [moveHorizontal, moveVertical, moveUp, moveDown, shoot](auto &inputHolder) {
+                                               inputHolder.moveUp = moveUp;
+                                               inputHolder.moveRight = moveRight;
+                                               inputHolder.moveVertical = moveVertical;
+                                               inputHolder.moveHorizontal = moveHorizontal;
+                                               inputHolder.shoot = shoot;
+                                               inputHolder.valid = true;
+                                           });
+            }
+
+
         }
-
-        // implementation right now only forwards input to one component, after that PollEvent is empty
-        manager->forEntitiesMatching<SystemSignature_Input>([](MovementInputHolder& holder){
-            SDL_Event event;
-
-                // if event was SDL_QUIT we quit the main loop
-                if (event == SDL_Event)
-            }
-        });
-
-
     }
 
 private:
 Timer inputTimer;
+// id of gameobject with movementinputholder component
+Id movementInputId;
+Id menuInputId;
 
 };
 

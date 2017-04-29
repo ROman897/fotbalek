@@ -4,10 +4,10 @@
 
 #include "Collision.h"
 
-Collision::Collision(RigidBody &first, RigidBody &second, double penetration, const Vector_Float &normal) : first(first),
+/*Collision::Collision(RigidBody &first, RigidBody &second, double penetration, const Vector_Float &normal) : first(first),
                                                                                                        second(second),
                                                                                                        penetration(
                                                                                                                penetration),
                                                                                                        normal(normal) {}
 
-Collision::Collision(RigidBody &first, RigidBody &second) : first(first), second(second) {}
+Collision::Collision(RigidBody &first, RigidBody &second) : first(first), second(second) {}*/

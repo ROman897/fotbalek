@@ -31,11 +31,12 @@ using namespace hana::literals;
 template <typename ... Components>
 struct ComponentSettings{
     static constexpr auto componentList = hana::tuple_t<Components ...>;
+    //static constexpr typename decltype(hana::tuple_t<Components ...>)::type componentList;
 };
 
 template <typename ... Signatures>
 struct SignatureSettings{
-    static constexpr auto signatureList = hana::tuple_c<Signatures ...>;
+    static constexpr auto signatureList = hana::tuple_t<Signatures ...>;
     static constexpr int a = 4;
 };
 
@@ -86,7 +87,18 @@ struct EngineSettings{
     template<typename T>
     static constexpr auto componentID() noexcept
     {
-        return index_of(componentSettings::componentList, hana::type_c<T>);
+        //using t = typename std::decay<decltype(componentSettings::componentList)>::type;
+        //t x;
+       // int a = x;
+        //int x =  componentSettings::componentList;
+        auto size = decltype(hana::size(componentSettings::componentList)){};
+        auto dropped = decltype(hana::size(
+                hana::drop_while(componentSettings::componentList, hana::not_equal.to(hana::type_c<T>))
+        )){};
+        return size - dropped;
+
+
+        //return index_of(componentSettings::componentList, hana::type_c<T>);
     }
     template<typename T>
     static constexpr auto signatureID() noexcept

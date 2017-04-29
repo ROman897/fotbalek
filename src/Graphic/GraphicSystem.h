@@ -14,6 +14,8 @@
 #include "../Components/Graphic/Sprite.h"
 #include "../Core/EngineStructures.h"
 #include "../Components/Graphic/Label.h"
+#include "../Components/Graphic/Camera.h"
+#include "../Utils/GameConstants.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -119,11 +121,22 @@ class GraphicSystem {
 
 public:
 
+    void initialize(){
+        std::cout << "initialized" << std::endl;
+    }
 
     void draw() {
+        /*Transform cameraTransform;
+        m_componentManager->template forEntityMatching<SystemSignature_Camera >(cameraId,[&cameraTransform](const Transform& transform, const Camera& camera){
+            cameraTransform = transform;
+        });
+
+
         m_componentManager->template forEntitiesMatching<SystemSignature_Circle>([this](const CircleShape& shape, const Transform& transform){
             // not yet implemented
         });
+
+*/
         m_componentManager->template forEntitiesMatching<SystemSignature_Rectangle>([this](const RectangleShape& shape, const Transform& transform){
             SDL_SetRenderDrawColor(this->getRenderer(), shape.m_color.r, shape.m_color.g, shape.m_color.b, shape.m_color.a);
             // draw rect with position and size of one block
@@ -133,7 +146,7 @@ public:
 
         });
 
-
+/*
         m_componentManager->template forEntitiesMatching<SystemSignature_Sprite>([this](Sprite& sprite, const Transform& transform){
             if (! sprite.m_Texture){
                 auto surface = this->getSurface(sprite.m_texturePath);
@@ -153,9 +166,11 @@ public:
             SDL_RenderCopy(this->getRenderer(), sprite.m_Texture.get(), nullptr, &renderQuad);
 
         });
+        */
     }
 
-    GraphicSystem() : m_componentManager(nullptr), m_WindowHolder("MainWindow", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_ScreenWidth, m_ScreenHeight, SDL_WINDOW_SHOWN),
+    GraphicSystem() : m_componentManager(nullptr), m_ScreenHeight(GameConstants::kWindowHeight), m_ScreenWidth(GameConstants::kWindowWidth),
+                      m_WindowHolder("MainWindow", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_ScreenWidth, m_ScreenHeight, SDL_WINDOW_SHOWN),
                                                                        m_RendererHolder(m_WindowHolder.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC){
 
         // set hint render scale quality
@@ -172,6 +187,7 @@ public:
 
     SDL_Surface* getSurface(std::string path)
     {
+        std::cout << "getting surface" << std::endl;
         // first look in map of surfaces if it already contains the surface
         auto result = m_SurfaceHolder.surfaces.find(path);
         if (result == m_SurfaceHolder.surfaces.end()) {
@@ -232,22 +248,25 @@ public:
     }
 
 private:
+    int m_ScreenWidth;
+    int m_ScreenHeight;
     SDLInitializer m_SdlInitializer;
     IMGInitializer m_ImgInitializer;
     TTFInitializer m_TtfInitializer;
-    SurfaceHolder m_SurfaceHolder;
-    FontHolder m_FontHolder;
     WindowHolder m_WindowHolder;
     RendererHolder m_RendererHolder;
+    SurfaceHolder m_SurfaceHolder;
+    FontHolder m_FontHolder;
 
     ComponentManager<TSettings>* m_componentManager;
+    Id cameraId;
 
     using SystemSignature_Circle = Signature<CircleShape, Transform>;
     using SystemSignature_Rectangle = Signature <RectangleShape, Transform>;
     using SystemSignature_Sprite = Signature <Sprite, Transform>;
     using SystemSignature_Label = Signature <Label, Transform>;
-    int m_ScreenWidth;
-    int m_ScreenHeight;
+    using SystemSignature_Camera = Signature<Transform, Camera>;
+
 };
 
 

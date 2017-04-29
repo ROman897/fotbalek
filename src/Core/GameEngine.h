@@ -46,14 +46,20 @@ public:
 
     template <typename System, typename ... Args>
     void initSystem(Args&&... args){
-        auto index = index_of(m_systems, hana::type_c<System>);
-        m_systems[index].initialize(std::forward<Args>(args)...);
+        auto& system = getSystem<System>();
+        system.initialize(std::forward<Args>(args)...);
     }
 
     template <typename System>
     System& getSystem(){
-        auto index = index_of(m_systems, hana::type_c<System>);
-        return m_systems[index];
+        //auto index = index_of(m_systems, hana::type_c<System>);
+        //return m_systems[index];
+
+        auto size = decltype(hana::size(SystemSettings::systemList)){};
+        auto dropped = decltype(hana::size(
+                hana::drop_while(SystemSettings::systemList, hana::not_equal.to(hana::type_c<System>))
+        )){};
+        return m_systems[size - dropped];
     }
 
     void start(){
@@ -74,7 +80,7 @@ public:
 
     template<typename T>
     auto hasComponent(Id id) const noexcept{
-        return m_componentManager.hasComponent(id);
+        return m_componentManager.template hasComponent<T>(id);
     }
 
     void eraseDeadGameObjects() {
@@ -92,6 +98,9 @@ public:
     const ComponentManager<TSettings> *getComponentManager() const {
         return &m_componentManager;
     }
+
+private:
+
 };
 
 

@@ -7,7 +7,7 @@
 
 #include "../Components/Physic/RigidBody.h"
 
-class RigidBody;
+//class RigidBody;
 
 struct Collision {
 
@@ -15,9 +15,13 @@ struct Collision {
     RigidBody& second;
     double penetration;
 
-    Collision(RigidBody &first, RigidBody &second);
+    Collision(RigidBody &first, RigidBody &second) : first(first), second(second) {};
 
-    Collision(RigidBody &first, RigidBody &second, double penetration, const Vector_Float &normal);
+    Collision(RigidBody &first, RigidBody &second, double penetration, const Vector_Float &normal) : first(first),
+    second(second),
+    penetration(
+            penetration),
+    normal(normal) {};
 
     Vector_Float normal;
 };

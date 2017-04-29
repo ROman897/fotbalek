@@ -1,6 +1,6 @@
-ComponentManager: 1. finish signatureCallPairFunction() to concatenate two tuples
+ComponentManager: -- DONE 1. finish signatureCallPairFunction() to concatenate two tuples
 		     and call function.
-		  2. implement find by signature method that returns id and then
+		  2. --DONE implement find by signature method that returns id and then
 		     implement forEntity(Id) that does specified function only
 		     for entity with id thus having constant complexity. Used for singleton components(input)
 		  3. decide how players will be drawn and finish graphics
@@ -8,4 +8,5 @@ ComponentManager: 1. finish signatureCallPairFunction() to concatenate two tuple
 		  5. Merge server and client from other branch with existing network clases
 		  6. implement game logic on server, such as starting a game and handling goal situations etc.
 		   
-			FIX LINKER ERROR: undefined reference to `ComponentSettings<Transform, RectangleShape>::componentList'
+			--DONE FIX LINKER ERROR: undefined reference to `ComponentSettings<Transform, RectangleShape>::componentList'
+				FIX compilation error

@@ -49,8 +49,6 @@ template<typename TSettings>
         template <typename T>
         constexpr auto& getComponentVector()
         {
-            // TODO need to find a way to fix this to find vector from tuple by templated type
-            // TODO this might work, needs further testing
             return hana::at_c<TSettings::template componentID<T>()>(m_components);
             //return hana::at(m_components, hana::size_c<0>);
         }

@@ -15,7 +15,7 @@ class PlayerNetworkReceiverSystem{
 private:
     ComponentManager<TSettings>* m_componentManager;
 
-    void updatePosition(std::vector<NetworkId>& ids, std::vector<Transform>& transforms){
+    void updatePositions(std::vector<NetworkId>& ids, std::vector<Transform>& transforms){
         m_componentManager->forEntitiesMatching<SystemSignature_Network>([&ids, &transforms](auto& id, auto& transform){
             for (int i =0; i < ids.size(); ++i){
                 if (ids[i] == id)

@@ -62,9 +62,20 @@ public:
         // that was not defined as such, it doesnt have address
         hana::for_each(tuple,[](auto t)
                                         {
-                                            initializeBitset <typename decltype(t)::type>();
+                                            //initializeBitset <typename decltype(t)::type>();
+                                            //int i = t;
+                                            using a = typename decltype(t)::type;
+                                            static constexpr a typ;
+                                            //a b;
+                                            //int x = b;
+                                            //initializeBitset <typename decltype(t)::type>();
+
+                                            hana::for_each(typ, [](auto t) {
+                                            //  b[TSettings::template componentID<t>()] = true;
+                                            //});)
                                         });
 
+    });
     }
 
     template<typename T>
@@ -72,10 +83,10 @@ public:
     {
         auto& b(getSignatureBitset<T>());
 
-        std::cout << hana::type_c<T>;
-        hana::for_each(hana::type_c<T>, [&b](auto t) {
-            b[TSettings::template componentID<t>()] = true;
-        });
+        //std::cout << hana::type_c<T>;
+        //hana::for_each(typename decltype (hana::type_c<T>)::value, [&b](auto t) {
+          //  b[TSettings::template componentID<t>()] = true;
+        //});
     }
 
 public:

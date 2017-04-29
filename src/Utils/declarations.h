@@ -36,16 +36,28 @@ using Vector_Int = Vector2<int>;
 //BOOST_STRONG_TYPEDEF(std::string, )
 
 template <typename Iterable, typename T>
-constexpr auto index_of(Iterable const& iterable, T const& element) {
+// TODO for now i have changed Iterable parameter to be taken by value, because taking by reference causes it to be odr-defined
+// TODO but it should only be defined in header file
+// TODO still causes undefined reference
+
+constexpr auto index_of(Iterable iterable, T element) {
+    //int x = iterable;
     auto size = decltype(hana::size(iterable)){};
     auto dropped = decltype(hana::size(
             hana::drop_while(iterable, hana::not_equal.to(element))
     )){};
     return size - dropped;
 }
-//auto animal_types = hana::make_tuple(hana::type_c<int *>, hana::type_c<float&>, hana::type_c<double>);
-//template<typename... Ts> using SignatureList = boost::mpl::list<Ts...>;
-//template<typename... Ts> using ComponentList = boost::mpl::list<Ts...>;
-//template<typename... Ts> using TagList = boost::mpl::list<Ts...>;
+
+// note this is far from ideal solution, probable need to ask at lecture about better solution
+// because this takes iterable by value each time
+/*template <typename Iterable, typename T>
+constexpr auto index_of(typename std::decay<Iterable>::type iterable, const T& element) {
+    auto size = decltype(hana::size(iterable)){};
+    auto dropped = decltype(hana::size(
+            hana::drop_while(iterable, hana::not_equal.to(element))
+    )){};
+    return size - dropped;
+}*/
 
 #endif //PV264_PROJECT_DECLARATIONS_H

@@ -34,7 +34,7 @@ public:
     {
         static_assert(TSettings::template isSignature<T>(), "");
 
-        const auto& entityBitset(getGameObject(id).bitset);
+        const auto& entityBitset(getGameObject(id).m_bitset);
         const auto& signatureBitset(signatureManager.
                 template getSignatureBitset<T>());
 
@@ -60,13 +60,16 @@ public:
 
     template<typename T, typename TF>
     void forEntitiesMatching(TF&& mFunction)
+
     {
-        static_assert(TSettings::template isSignature<T>(), "");
+        //T t;
+        //int x = t;
+        static_assert(TSettings::template isSignature<T>(), "requested signature is not in the list of signatures");
 
         forEntities([this, &mFunction](auto i)
                     {
                         if(matchesSignature<T>(i))
-                            signatureCallFunction<T, TF>(i, mFunction);
+                            signatureCallFunction<T, TF>(i, std::forward<TF>(mFunction));
                     });
     }
 
@@ -74,12 +77,6 @@ public:
     void forEntitiesMatchingPairs(TF&& mFunction)
     {
         static_assert(TSettings::template isSignature<T>(), "");
-
-        forEntities([this, &mFunction](auto i)
-                    {
-                        //if(matchesSignature<T>(i))
-                         //SignatureCall::signatureCallFunction<>()
-                    });
 
         forEntityPairs([this, &mFunction](auto i, auto i2){
             // we have to look for signatures in order given and also reordered, as caller has information
@@ -92,6 +89,24 @@ public:
                signatureCallPairFunction<U, T, TF>(i2, i, mFunction);
            }
         });
+    }
+
+    template<typename T, typename TF>
+    void forEntityMatching(Id id, TF&& mFunction){
+        if (matchesSignature<T>(id)){
+            signatureCallFunction<T, TF>(id, mFunction);
+        }
+    };
+
+    template<typename T>
+    Id findEntityMatching(){
+        Id id = 0;
+        forEntities([this, &id](auto i)
+                    {
+                        if(matchesSignature<T>(i))
+                            id = i;
+                    });
+        return id;
     }
 
 
@@ -131,7 +146,9 @@ public:
             ++i;
         });
 
-        hana::unpack(components, mFunction);
+        auto combinedComps = hana::concat(components, components2);
+
+        hana::unpack(combinedComps, mFunction);
     }
 
 
@@ -172,8 +189,8 @@ public:
     auto hasComponent(Id id) const noexcept
     {
         static_assert(TSettings::template isComponent<T>(), "");
-        return getGameObject(id).bitset
-        [TSettings::template componentBit<T>()];
+        return getGameObject(id).m_bitset
+        [TSettings::template componentID<T>()];
     }
 
     template<typename T, typename... TArgs>
@@ -183,6 +200,7 @@ public:
 
         GameObject<TSettings>& gameObject = getGameObject(id);
         gameObject.m_bitset[TSettings::template componentID<T>()] = true;
+        std::cout << TSettings::template componentID<T>();
         auto& c = componentStorage.template getComponentVector<T>()[id];
         new (&c) T(std::forward<TArgs>(mXs)...);
 

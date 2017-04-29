@@ -10,9 +10,9 @@
 
 struct MovementInputHolder{
     bool moveUp;
-    bool moveDown;
+    bool moveVertical;
     bool moveRight;
-    bool moveLeft;
+    bool moveHorizontal;
     bool shoot;
     bool valid;
 };

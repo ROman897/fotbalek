@@ -11,12 +11,20 @@
 
 template <typename TSettings>
 class PlaynerNetworkSenderSystem{
-    using SystemSignature_Network_Sender = Signature<NetworkId, MovementInputHolder>;
+    using SystemSignature_Network_Input = Signature<NetworkId, MovementInputHolder>;
 
 private:
     ComponentManager<TSettings>* m_componentManager;
+    // id of a gameobject that has NetworkId and MovementInputHolder components
+    Id id;
 
-
+    void prepareData(NetworkId& networkId, MovementInputHolder& inputHolder){
+        m_componentManager->forEntityMatching<SystemSignature_Network_Input>(id, [&networkId, &inputHolder](const auto& _networkId, auto& _inputHolder){
+            networkId = _networkId;
+            inputHolder = _inputHolder;
+            _inputHolder.valid = false;
+        });
+    }
 };
 
 #endif //PV264_PROJECT_PLAYERNETWORKSENDERSYSTEM_H
