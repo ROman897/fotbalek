@@ -17,6 +17,7 @@ struct Label{
     std::string m_fontPath;
     SDL_Color m_fontColor;
     int m_size;
+    bool enabled;
 
 };
 #endif //PV264_PROJECT_LABEL_H

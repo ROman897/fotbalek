@@ -7,6 +7,7 @@
 
 
 #include <SDL_quit.h>
+#include "declarations.h"
 
 struct GameConstants {
 
@@ -18,6 +19,9 @@ struct GameConstants {
     constexpr static float kInputMovementCoefficient = 10.0f;
     constexpr static int kWindowHeight = 800;
     constexpr static int kWindowWidth = 1200;
+    const static Vector_Float kButtonOffset;
+
+    static const std::string kPitchSpritePath;
 
 };
 

@@ -30,11 +30,11 @@ public:
     }
 
     friend Vector2 operator/ (Vector2 lhs, float rhs){
-        return lhs.substract(rhs);
+        return lhs.divide(rhs);
     }
 
     friend Vector2 operator/= (Vector2& lhs, float rhs){
-        return lhs.substract(rhs);
+        return lhs.divide(rhs);
     }
 
     friend Vector2 operator* (Vector2 lhs, float rhs){
@@ -79,14 +79,14 @@ private:
         m_y -=vec.m_y;
         return *this;
     }
-    Vector2& substract(T divider) {
+    Vector2& divide(T divider) {
         m_x /= divider;
         m_y /= divider;
         return *this;
     }
     Vector2 &multiply(T multiplier) {
-        m_x += multiplier;
-        m_y += multiplier;
+        m_x *= multiplier;
+        m_y *= multiplier;
         return *this;
     }
 };

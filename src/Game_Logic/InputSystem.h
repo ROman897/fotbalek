@@ -11,11 +11,20 @@
 #include "../Core/ComponentManager.h"
 #include "../Utils/GameConstants.h"
 #include "../Utils/Timer.h"
+#include "../Components/UI/Button.h"
+#include "../Components/Graphic/Sprite.h"
+#include "../Components/Graphic/Label.h"
+#include "../Components/Transform.h"
+#include "../SettingsDefines.h"
 
-template <template typename TSettings>
+template <typename TSettings>
 class InputSystem{
-    ComponentManager<TSettings>* manager;
-    using SystemSignature_Input = Signature<MovementInputHolder>;
+    ComponentManager<TSettings>* m_manager;
+
+
+    bool escape;
+
+public:
     void handleInputs() {
         SDL_Event event;
         bool moveLeft = false;
@@ -23,7 +32,6 @@ class InputSystem{
         bool moveUp = false;
         bool moveDown = false;
         bool shoot = false;
-        bool escape = false;
         int menuMoveUp = 0;
         int menuMoveDown = 0;
 
@@ -31,36 +39,17 @@ class InputSystem{
         while (SDL_PollEvent(&event) != 0) {
 
 
-                if (event.type == SDL_KEYDOWN && !escape) {
+            if (event.type == SDL_KEYDOWN && !escape) {
 
-                    switch (event.key.keysym.sym) {
-                        case SDLK_a:
-                        case SDLK_LEFT:
-                            moveLeft = true;
-                            break;
-                        case SDLK_d:
-                        case SDLK_RIGHT:
-                            moveRight = true;
-                            break;
-                        case SDLK_w:
-                        case SDLK_UP:
-                            moveUp = true;
-                            break;
-                        case SDLK_s:
-                        case SDLK_DOWN:
-                            moveDown = true;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-
-
-            if (event.type == SDL_KEYUP) {
                 switch (event.key.keysym.sym) {
-                    case SDLK_ESCAPE:
-                        escape = true;
+                    case SDLK_a:
+                    case SDLK_LEFT:
+                        moveLeft = true;
+                        break;
+                    case SDLK_d:
+                    case SDLK_RIGHT:
+                        moveRight = true;
+                        break;
                     case SDLK_w:
                     case SDLK_UP:
                         moveUp = true;
@@ -69,19 +58,85 @@ class InputSystem{
                     case SDLK_DOWN:
                         moveDown = true;
                         break;
-
                     default:
                         break;
                 }
-
             }
+
+
+            if (event.type == SDL_KEYUP) {
+                if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    escPressed();
+                    continue;
+                }
+
+                if (escape) {
+
+                    switch (event.key.keysym.sym) {
+                        case SDLK_w:
+                        case SDLK_UP:
+                            m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
+                                                                               [this](Button &button, Sprite &sprite,
+                                                                                      Label &label,
+                                                                                      const Transform &transform) {
+                                                                                   button.isSelected = false;
+                                                                                   this->activeButtonId = m_manager->findGameObjectByTag(
+                                                                                           button.moveUpButtonTag);
+                                                                                   m_manager->template forEntityMatching<SystemSignature_Sprite>(
+                                                                                           activeButtonArrowId,
+                                                                                           [&transform](Sprite &sprite,
+                                                                                                        Transform &transform1) {
+                                                                                               transform1.m_position =
+                                                                                                       transform.m_position +
+                                                                                                       GameConstants::kButtonOffset;
+                                                                                           });
+                                                                               });
+                            break;
+                        case SDLK_s:
+                        case SDLK_DOWN:
+                            m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
+                                                                               [this](Button &button, Sprite &sprite,
+                                                                                      Label &label,
+                                                                                      const Transform &transform) {
+                                                                                   button.isSelected = false;
+                                                                                   this->activeButtonId = m_manager->findGameObjectByTag(
+                                                                                           button.moveDownButtonTag);
+                                                                                   m_manager->template forEntityMatching<SystemSignature_Sprite>(
+                                                                                           activeButtonArrowId,
+                                                                                           [&transform](Sprite &sprite,
+                                                                                                        Transform &transform1) {
+                                                                                               transform1.m_position =
+                                                                                                       transform.m_position +
+                                                                                                       GameConstants::kButtonOffset;
+                                                                                           });
+                                                                               });
+                            break;
+
+                        case SDLK_KP_ENTER:
+                            m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
+                                                                               [this](Button &button, Sprite &sprite,
+                                                                                      Label &label) {
+                                                                                   button.isSelected = false;
+                                                                                   for (auto &func : button.callBacks) {
+                                                                                       func();
+                                                                                   }
+                                                                               });
+                            escPressed();
+                            break;
+                        default:
+                            break;
+                    }
+
+                }
+            }
+        }
 
             bool moveVertical = (moveUp && !moveDown) || (moveDown && !moveUp);
             bool moveHorizontal = (moveRight && !moveLeft) || (moveLeft && !moveRight);
 
             if (moveHorizontal || moveVertical || shoot) {
-                manager->forEntityMatching(movementInputId,
-                                           [moveHorizontal, moveVertical, moveUp, moveDown, shoot](auto &inputHolder) {
+                m_manager->template forEntityMatching<SystemSignature_Input >(movementInputId,
+                                           [moveHorizontal, moveVertical, moveUp, moveRight, shoot](MovementInputHolder &inputHolder) {
                                                inputHolder.moveUp = moveUp;
                                                inputHolder.moveRight = moveRight;
                                                inputHolder.moveVertical = moveVertical;
@@ -92,14 +147,41 @@ class InputSystem{
             }
 
 
-        }
+
+    }
+
+    void initialize(){
+        activeButtonArrowId = m_manager->findGameObjectByTag("button_arrow");
+        movementInputId = m_manager->template findEntityMatching<SystemSignature_Input>();
+        escape = false;
+        // now we need to decide how the button that is selected at the start is marked
+    }
+
+    void setManager(ComponentManager<settings >* manager){
+        m_manager = manager;
     }
 
 private:
-Timer inputTimer;
+    Timer inputTimer;
 // id of gameobject with movementinputholder component
-Id movementInputId;
-Id menuInputId;
+    Id movementInputId;
+    Id menuInputId;
+    Id activeButtonId;
+    Id activeButtonArrowId;
+
+    void escPressed(){
+        escape = !escape;
+        m_manager->template forEntitiesMatching<SystemSignature_Button>(
+                [this](const Button &button, Sprite &sprite, Label &label) {
+                    sprite.enabled = escape;
+                    label.enabled = escape;
+                });
+        m_manager->template forEntityMatching<SystemSignature_Sprite>(activeButtonArrowId, [this](Sprite &sprite,
+                                                                                         const Transform &transform) {
+            sprite.enabled = escape;
+        });
+    }
+
 
 };
 

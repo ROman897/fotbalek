@@ -39,14 +39,20 @@ using namespace hana::literals;
  */
 template < typename TSettings>
 class SignatureManager{
+public:
     //using ComponentList = typename TSettings::ComponentList;
     using signatureSettings = typename TSettings::signatureSettings;
     using Bitset = typename TSettings::Bitset;
 
     static constexpr Bitset b = Bitset();
-    static constexpr auto m_signatures = hana::replicate<hana::tuple_tag>(b, hana::length(signatureSettings::signatureList));
+    static constexpr decltype(hana::replicate<hana::tuple_tag>(b, hana::length(signatureSettings::signatureList))) m_signatures = hana::replicate<hana::tuple_tag>(b, hana::length(signatureSettings::signatureList));
+    //static constexpr int x = m_signatures;
 
-public:
+    //static decltype(hana::replicate<hana::tuple_tag>(b, hana::length(signatureSettings::signatureList))) m_signatures = hana::replicate<hana::tuple_tag>(b, hana::length(signatureSettings::signatureList));
+    //static constexpr auto m_signatures = hana::transform(signaturesTuple, [this](auto bitset){
+
+    //})
+
 
     template<typename T>
     static constexpr auto& getSignatureBitset() noexcept
@@ -55,24 +61,39 @@ public:
         return hana::at(m_signatures, TSettings::template signatureID<T>());
     }
 
+
+
     static constexpr void initializeBitsets(){
-        auto tuple = signatureSettings::signatureList;
-        // here I had to make copy of signatureSettings::signatureList, because for_each takes first argument as an rvalue
-        // and it resulted in undefined behaviour because it tried to take it from constexpr variable
-        // that was not defined as such, it doesnt have address
-        hana::for_each(tuple,[](auto t)
+
+        //constexpr auto range = hana::make_range(hana::int_c<0>, hana::int_c<hana::length(signatureSettings::signatureList)>);
+        //hana::for_each(range, [](auto num){
+
+        //})
+        constexpr auto tup = hana::make_tuple();
+        hana::concat(tup, hana::make_tuple("ab", 12));
+        //auto x = hana::at_c<0>(tup);
+
+
+
+
+        hana::for_each(signatureSettings::signatureList,[](auto t)
                                         {
                                             //initializeBitset <typename decltype(t)::type>();
                                             //int i = t;
+                                            static constexpr auto size = hana::size_c<0>;
                                             using a = typename decltype(t)::type;
-                                            static constexpr a typ;
+                                            static constexpr a signature;
                                             //a b;
                                             //int x = b;
                                             //initializeBitset <typename decltype(t)::type>();
-
-                                            hana::for_each(typ, [](auto t) {
-                                            //  b[TSettings::template componentID<t>()] = true;
+                                            //size ++;
+                                            hana::for_each(signature, [](auto t) {
+                                              //b[TSettings::template componentID<t>()] = true;
+                                                //hana::at_c<>()
                                             //});)
+
+
+
                                         });
 
     });

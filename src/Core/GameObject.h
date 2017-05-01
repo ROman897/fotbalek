@@ -19,9 +19,16 @@ public:
     bool m_alive;
     using Bitset = typename TSettings::Bitset;
 
+    // identifies gameobject by something easily grasped by user
+    // good idea to make tag unique, so it identifies certain entity
+    std::string m_tag;
     Id m_id;
     Bitset m_bitset;
 
+
+    GameObject() : m_bitset(){
+        std::cout << "bitset: " << m_bitset << std::endl;
+    }
 };
 
 

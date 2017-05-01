@@ -30,14 +30,25 @@ using namespace hana::literals;
 
 template <typename ... Components>
 struct ComponentSettings{
-    static constexpr auto componentList = hana::tuple_t<Components ...>;
+    //static constexpr auto componentList = hana::tuple_t<Components ...>;
+    static constexpr auto componentList = hana::make_tuple(hana::type_c<Components > ...);
     //static constexpr typename decltype(hana::tuple_t<Components ...>)::type componentList;
+    //static constexpr int x = componentList;
 };
 
 template <typename ... Signatures>
 struct SignatureSettings{
-    static constexpr auto signatureList = hana::tuple_t<Signatures ...>;
-    static constexpr int a = 4;
+    //static constexpr auto signatureList = hana::tuple_t<Signatures ...>;
+
+    //static constexpr hana::tuple<Signatures ...> signatureList = hana::tuple_t<Signatures ...>;
+    //static constexpr auto signatureList = hana::make_tuple(hana::type_c<Signatures>...);
+
+
+    // Really weird behaviour of compiler, it throws error saying that I tried to redefine signature list with different type, however it should be the same as
+    // I used decltype and auto,
+    // when I use decltype in both cases it compiles
+    static constexpr decltype(hana::make_tuple(hana::type_c<Signatures>...)) signatureList = hana::make_tuple(hana::type_c<Signatures>...);
+    //static constexpr int a = signatureList;
 };
 
 template <typename ... Systems>
@@ -91,6 +102,7 @@ struct EngineSettings{
         //t x;
        // int a = x;
         //int x =  componentSettings::componentList;
+        //std::cout << componentSettings::componentList;
         auto size = decltype(hana::size(componentSettings::componentList)){};
         auto dropped = decltype(hana::size(
                 hana::drop_while(componentSettings::componentList, hana::not_equal.to(hana::type_c<T>))
@@ -103,7 +115,13 @@ struct EngineSettings{
     template<typename T>
     static constexpr auto signatureID() noexcept
     {
-        return index_of(signatureSettings::signatureList, hana::type_c<T>);
+        //return index_of(signatureSettings::signatureList, hana::type_c<T>);
+
+        auto size = decltype(hana::size(signatureSettings::signatureList)){};
+        auto dropped = decltype(hana::size(
+                hana::drop_while(signatureSettings::signatureList, hana::not_equal.to(hana::type_c<T>))
+        )){};
+        return size - dropped;
     }
 
 };

@@ -13,6 +13,11 @@ struct Sprite{
     Vector_Float m_positionOffset;
     std::string m_texturePath;
     TextureSmartPtr m_Texture;
+    bool enabled;
+
+    Sprite(const Vector_Float &m_positionOffset, const std::string &m_texturePath, bool enabled) : m_positionOffset(
+            m_positionOffset), m_texturePath(m_texturePath), enabled(enabled) {}
+    Sprite() = default;
 };
 
 #endif //PV264_PROJECT_SPRITE_H

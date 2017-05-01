@@ -11,7 +11,9 @@
 #include "SignatureManager.h"
 #include "ComponentStorage.h"
 #include "GameObject.h"
+#include "../Components/Transform.h"
 #include <iostream>
+#include <utility>
 
 
 
@@ -28,17 +30,23 @@ class ComponentManager{
     const size_t m_startingSize = 50U;
 
 public:
-
     template<typename T>
     auto matchesSignature(Id id) const noexcept
     {
         static_assert(TSettings::template isSignature<T>(), "");
-
         const auto& entityBitset(getGameObject(id).m_bitset);
-        const auto& signatureBitset(signatureManager.
-                template getSignatureBitset<T>());
+        //const auto& signatureBitset(signatureManager.
+                //template getSignatureBitset<T>());
+        T t;
+        bool matches = true;
+        auto len = hana::length(t);
+        hana::for_each(t, [&matches, this, id, entityBitset](auto comp){
+            if (! entityBitset[TSettings::template componentID<typename decltype(comp)::type>()])
+                matches = false;
+        });
+        return matches;
 
-        return (signatureBitset & entityBitset) == signatureBitset;
+        //return (signatureBitset & entityBitset) == signatureBitset;
     }
 
     template<typename TF>
@@ -62,6 +70,7 @@ public:
     void forEntitiesMatching(TF&& mFunction)
 
     {
+        //std::cout << "for entities matching" << std::endl;
         //T t;
         //int x = t;
         static_assert(TSettings::template isSignature<T>(), "requested signature is not in the list of signatures");
@@ -83,10 +92,10 @@ public:
             // about layout of components
 
            if (matchesSignature<T>(i) && matchesSignature<U>(i2)){
-                signatureCallPairFunction<T, U, TF>(i, i2, mFunction);
+                signatureCallPairFunction<T, U, TF>(i, i2, std::forward<TF>(mFunction));
            } else
            if (matchesSignature<U>(i) && matchesSignature<T>(i2)){
-               signatureCallPairFunction<U, T, TF>(i2, i, mFunction);
+               signatureCallPairFunction<T, U, TF>(i2, i, std::forward<TF>(mFunction));
            }
         });
     }
@@ -114,25 +123,69 @@ public:
     template<typename T, typename TF>
     void signatureCallFunction(Id id, TF&& mFunction){
 
-        using Unpacked = typename decltype(hana::unpack(hana::template type_c<T>, hana::template_<PtrTuple>))::type;
+        constexpr static T signature;
+        using Unpacked = typename decltype(hana::unpack(signature, hana::template_<PtrTuple>))::type;
         Unpacked components;
 
-        int i = 0;
-        hana::for_each_t(hana::type_c<T>, [this, &i, id, &components ](auto t) {
-            hana::at_c<i>(components) = &this->componentStorage.template getComponentVector<typename decltype(t)::type>()[id];
-            ++i;
+        auto range = hana::make_range(hana::int_c<0>, hana::int_c<hana::length(components)>);
+        hana::for_each(range, [&components, this, id](auto i){
+            hana::at_c<i>(components) = &this->componentStorage.template getComponentVector<typename decltype(+hana::at_c<i>(signature))::type>()[id];
         });
+
+        /*hana::for_each(components, [this, id](auto& comp){
+            int x;
+            Transform t;
+            //using type = typename decltype(t);
+
+            //auto ts = hana::make_tuple(hana::type_c<int>, hana::type_c<char>);
+            using F = decltype(*(comp));
+            Transform trans;
+            F f = trans;
+            //std::cout << f;
+            //comp = &this->componentStorage.template getComponentVector<F>()[id];
+        });*/
+
+        /*auto i = hana::size_c<0>;
+        hana::for_each(signature, [this, &i, id, &components ](auto t) {
+            hana::at(components, hana::size_c<i>) = &this->componentStorage.template getComponentVector<typename decltype(t)::type>()[id];
+        });*/
+
+        /*long i = 0;
+        hana::for_each(components,){
+            item = &this->componentStorage.template getComponentVector<typename decltype(hana::at_c<0>(signature))::type>()[id];
+        }*/
+
+        /*long i = 0;
+        hana::for_each(components, [this, &i, id, &components ](auto& t) {
+            t = &this->componentStorage.template getComponentVector<hana::type_c<(hana::at_c<0>(signature))>::type>()[id];
+        });*/
+
+
 
         hana::unpack(components, mFunction);
     }
 
     template<typename T, typename U, typename TF>
-    void signatureCallPairFunction(Id id, Id id2, TF&& mFunction){
+    void signatureCallPairFunction(Id id1, Id id2, TF&& mFunction){
 
-        using Unpacked = typename decltype(hana::unpack(hana::template type_c<T>, hana::template_<PtrTuple>))::type;
-        using Unpacked2 = typename decltype(hana::unpack(hana::template type_c<U>, hana::template_<PtrTuple>))::type;
-        Unpacked components;
+        constexpr static T signature1;
+        constexpr static U signature2;
+        using Unpacked = typename decltype(hana::unpack(signature1, hana::template_<PtrTuple>))::type;
+        using Unpacked2 = typename decltype(hana::unpack(signature2, hana::template_<PtrTuple>))::type;
+        Unpacked components1;
         Unpacked2 components2;
+
+        auto range1 = hana::make_range(hana::int_c<0>, hana::int_c<hana::length(components1)>);
+        hana::for_each(range1, [&components1, this, id1](auto i){
+            hana::at_c<i>(components1) = &this->componentStorage.template getComponentVector<typename decltype(+hana::at_c<i>(signature1))::type>()[id1];
+        });
+
+        auto range2 = hana::make_range(hana::int_c<0>, hana::int_c<hana::length(components2)>);
+        hana::for_each(range2, [&components2, this, id2](auto i){
+            hana::at_c<i>(components2) = &this->componentStorage.template getComponentVector<typename decltype(+hana::at_c<i>(signature2))::type>()[id2];
+        });
+
+        /*using CombinedTuple = hana::c
 
         int i = 0;
         hana::for_each_t(hana::type_c<T>, [this, &i, id, &components ](auto t) {
@@ -144,9 +197,9 @@ public:
         hana::for_each_t(hana::type_c<U>, [this, &i, id2, &components2 ](auto t) {
             hana::at_c<i>(components2) = &this->componentStorage.template getComponentVector<typename decltype(t)::type>()[id2];
             ++i;
-        });
+        });*/
 
-        auto combinedComps = hana::concat(components, components2);
+        auto combinedComps = hana::concat(components1, components2);
 
         hana::unpack(combinedComps, mFunction);
     }
@@ -231,7 +284,25 @@ public:
         auto& g(m_gameObjects[thisId]);
         g.m_alive = true;
         g.m_bitset.reset();
+        ++m_size;
         return thisId;
+    }
+
+    Id addEmptyGameObject(const std::string& tag){
+        Id id = addEmptyGameObject();
+        m_gameObjects[id].m_tag = tag;
+        return id;
+    }
+
+    Id findGameObjectByTag(const std::string tag){
+        Id id;
+        forEntities([&id, &tag, this](Id goId){
+            auto go = getGameObject(goId);
+            if (go.m_tag == tag){
+                id = goId;
+            }
+        });
+        return id;
     }
 
 

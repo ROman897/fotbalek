@@ -10,6 +10,11 @@
 struct RectangleShape{
     int x,y, mWidth, mHeight;
     SDL_Color m_color;
+
+    RectangleShape() = default;
+    RectangleShape(int x, int y, int mWidth, int mHeight, const SDL_Color &m_color) : x(x), y(y), mWidth(mWidth),
+                                                                                      mHeight(mHeight),
+                                                                                      m_color(m_color) {}
 };
 
 

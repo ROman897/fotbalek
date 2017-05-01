@@ -44,6 +44,10 @@ public:
         return m_componentManager.addEmptyGameObject();
     }
 
+    Id spawnGameObject(const std::string& tag){
+        return m_componentManager.addEmptyGameObject(tag);
+    }
+
     template <typename System, typename ... Args>
     void initSystem(Args&&... args){
         auto& system = getSystem<System>();

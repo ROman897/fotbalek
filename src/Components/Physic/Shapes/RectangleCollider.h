@@ -9,9 +9,14 @@
 #include "../../../Utils/declarations.h"
 
 struct RectangleCollider  {
+    RectangleCollider(const Vector_Float &m_topLeft, const Vector_Float &m_bottomRight) : m_topLeft(m_topLeft),
+                                                                                          m_bottomRight(
+                                                                                                  m_bottomRight) {}
+    RectangleCollider() = default;
+
     Vector_Float m_topLeft;
     Vector_Float m_bottomRight;
-    bool m_isTrigger;
+    //bool m_isTrigger;
 
 };
 

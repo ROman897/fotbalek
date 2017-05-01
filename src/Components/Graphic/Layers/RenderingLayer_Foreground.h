@@ -1,0 +1,11 @@
+//
+// Created by roman on 1.5.2017.
+//
+
+#ifndef PV264_PROJECT_RENDERINGLAYER_FOREGROUND_H
+#define PV264_PROJECT_RENDERINGLAYER_FOREGROUND_H
+
+struct RenderingLayer_Foreground{
+
+};
+#endif //PV264_PROJECT_RENDERINGLAYER_FOREGROUND_H
