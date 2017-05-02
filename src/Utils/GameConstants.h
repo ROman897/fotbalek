@@ -7,6 +7,7 @@
 
 
 #include <SDL_quit.h>
+#include <SDL_pixels.h>
 #include "declarations.h"
 
 struct GameConstants {
@@ -22,6 +23,13 @@ struct GameConstants {
     const static Vector_Float kButtonOffset;
 
     static const std::string kPitchSpritePath;
+    static constexpr float kKeyCooldown = 0.02f;
+    static const std::string kButtonSpritePath;
+    static const Vector_Float kButtonSpriteOffset;
+    static const Vector_Float kButtonLabelOffset;
+    static const std::string kButtonFontPath;
+    static const SDL_Color kButtonFontColor;
+    static const int kButtonFontSize;
 
 };
 

@@ -17,6 +17,7 @@
 #include "Components/Graphic/Layers/RenderingLayer_UI.h"
 #include "Components/UI/Button.h"
 #include "Components/MovementInputHolder.h"
+#include "Components/Graphic/Label.h"
 
 
 using compSettings = ComponentSettings <Transform, RectangleShape, RigidBody, CircleCollider, RectangleCollider, Sprite, RenderingLayer_Foreground,
@@ -38,7 +39,8 @@ using SystemSignature_Button = Signature<Button, Sprite, Label, Transform>;
 using sigSettings = SignatureSettings <SystemSignature_Rectangle_Background, SystemSignature_Rectangle_Foreground,
         SystemSignature_Sprite_Background, SystemSignature_Sprite_Foreground,
         SystemSignature_Movable, SystemSignature_Circle_Collider, SystemSignature_Rectangle_Collider,
-        SystemSignature_Input, SystemSignature_Button
+        SystemSignature_Input, SystemSignature_Button, SystemSignature_Sprite,
+        SystemSignature_Sprite_UI
 >;
 
 using settings = EngineSettings<compSettings , sigSettings>;

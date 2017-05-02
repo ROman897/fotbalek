@@ -14,13 +14,14 @@
 #include "../Components/Transform.h"
 #include <iostream>
 #include <utility>
-
-
-
+#include <thread>
+#include <mutex>
+#include <atomic>
 
 
 template <typename TSettings>
 class ComponentManager{
+    using componentSettings = typename TSettings::componentSettings;
     template <typename ... Args >
     using PtrTuple = hana::tuple<Args* ...>;
     SignatureManager<TSettings> signatureManager;
@@ -28,6 +29,9 @@ class ComponentManager{
     std::vector<GameObject<TSettings>> m_gameObjects;
     size_t m_size, m_capacity, m_newSize;
     const size_t m_startingSize = 50U;
+    std::atomic_bool quit;
+
+
 
 public:
     template<typename T>
@@ -70,9 +74,12 @@ public:
     void forEntitiesMatching(TF&& mFunction)
 
     {
+        //std::cout << "thread id entities single : " << std::this_thread::get_id() << std::endl;
         //std::cout << "for entities matching" << std::endl;
         //T t;
         //int x = t;
+
+
         static_assert(TSettings::template isSignature<T>(), "requested signature is not in the list of signatures");
 
         forEntities([this, &mFunction](auto i)
@@ -85,6 +92,7 @@ public:
     template<typename T, typename U, typename TF>
     void forEntitiesMatchingPairs(TF&& mFunction)
     {
+        //std::cout << "thread id entities pairs : " << std::this_thread::get_id() << std::endl;
         static_assert(TSettings::template isSignature<T>(), "");
 
         forEntityPairs([this, &mFunction](auto i, auto i2){
@@ -103,7 +111,7 @@ public:
     template<typename T, typename TF>
     void forEntityMatching(Id id, TF&& mFunction){
         if (matchesSignature<T>(id)){
-            signatureCallFunction<T, TF>(id, mFunction);
+            signatureCallFunction<T, TF>(id, std::forward<TF>(mFunction));
         }
     };
 
@@ -234,7 +242,7 @@ public:
         return m_gameObjects[id];
     }
 
-    ComponentManager() : m_size(0U), m_capacity(0U), m_newSize(0U){
+    ComponentManager() : m_size(0U), m_capacity(0U), m_newSize(0U), quit(false){
         changeSize(m_startingSize);
     }
 
@@ -253,7 +261,7 @@ public:
 
         GameObject<TSettings>& gameObject = getGameObject(id);
         gameObject.m_bitset[TSettings::template componentID<T>()] = true;
-        std::cout << TSettings::template componentID<T>();
+        //std::cout << TSettings::template componentID<T>();
         auto& c = componentStorage.template getComponentVector<T>()[id];
         new (&c) T(std::forward<TArgs>(mXs)...);
 
@@ -303,6 +311,15 @@ public:
             }
         });
         return id;
+    }
+
+    bool shouldQuit(){
+        return quit.load();
+    }
+
+    void setQuit(bool q){
+        std::cout << "set quit" << std::endl;
+        quit.store(q);
     }
 
 

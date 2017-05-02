@@ -1,28 +1,8 @@
-#include <iostream>
-//#include "asio.hpp"
-#include "Core/GameEngine.h"
-#include "Core/EngineSettings.h"
-#include "Components/Transform.h"
-#include "Utils/declarations.h"
-#include "Components/Graphic/Shapes/RectangleShape.h"
-#include "Graphic/GraphicSystem.h"
-#include "Components/Physic/RigidBody.h"
-#include "Physic/PhysicSystem.h"
-#include "Components/Graphic/Layers/RenderingLayer_Foreground.h"
-#include "Components/Graphic/Layers/RenderingLayer_Background.h"
-#include "Components/Graphic/Layers/RenderingLayer_UI.h"
-#include "SettingsDefines.h"
-#include "Game_Logic/InputSystem.h"
+
+#include "ClientObjectsSpawner.h"
 
 
-template<typename... Sigs> constexpr decltype(hana::make_tuple(hana::type_c<Sigs>...)) SignatureSettings<Sigs...>::signatureList;
 
-template<typename Settings> constexpr decltype(hana::replicate<hana::tuple_tag>(SignatureManager<Settings>::b,
-                           hana::length(Settings::signatureSettings::signatureList))) SignatureManager<Settings>::m_signatures;
-
-
-//auto SignatureSettings <rectangleSignature, TransformSignature >::template <>signatureList;
-//constexpr auto ComponentSettings <Transform, RectangleShape>:: componentList;
 int main() {
     namespace hana = boost::hana;
     using namespace hana::literals;
@@ -32,13 +12,13 @@ int main() {
     //settings set;
 
     // define which systems will the engine use
-    using sysSettings = SystemSettings <GraphicSystem<settings >, PhysicSystem<settings >, InputSystem<settings>>;
+
     // define full settings of the engine
 
 
 
 
-    GameEngine<settings, sysSettings > gameEngine;
+    EngineType gameEngine;
     Id id = gameEngine.spawnGameObject();
     Id id2 = gameEngine.spawnGameObject();
     Vector_Float pos = {23.47f ,200};
@@ -49,7 +29,7 @@ int main() {
     gameEngine.addComponent<RectangleShape>(id, -100, -100, 200, 200, color );
     gameEngine.addComponent<Transform>(id2, pos2);
     gameEngine.addComponent<RectangleShape>(id2, -50, -50, 100, 100, color2);
-    Vector_Float vel = {5.0f, 0.0f};
+    Vector_Float vel = {50.0f, 0.0f};
     Vector_Float force = {0.0f, 0.0f};
 
     gameEngine.addComponent<RigidBody>(id, 1.0f, 10.0f, vel, force, 1.001f);
@@ -80,16 +60,20 @@ int main() {
     gameEngine.addComponent<Transform>(arrowId, arrowPos);
     gameEngine.addComponent<Sprite>(arrowId);
 
-    auto& graphicSystem =  gameEngine.getSystem<GraphicSystem<settings >>();
-    auto& physicSystem = gameEngine.getSystem<PhysicSystem<settings >>();
-    graphicSystem.initialize();
+    Vector_Float continuePos = {400, 300 };
+    spawnButton(gameEngine, true, false,  "continue", "", "", continuePos, "continue");
+
+    //auto& graphicSystem =  gameEngine.getSystem<GraphicSystem<settings >>();
+    //auto& physicSystem = gameEngine.getSystem<PhysicSystem<settings >>();
+    //graphicSystem.initialize();
 
 
-    while (true) {
+    /*while (true) {
         graphicSystem.draw();
         physicSystem.runPhysicUpdate(0.1f);
 
-    }
+    }*/
+    gameEngine.start();
 
 
 }

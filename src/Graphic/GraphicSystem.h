@@ -128,6 +128,14 @@ public:
         std::cout << "initialized" << std::endl;
     }
 
+    void run(float dt){
+        draw();
+    }
+
+    void start(){
+
+    }
+
     void draw() {
         SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0xFF, 0xFF);
         SDL_RenderClear(getRenderer());
@@ -193,6 +201,29 @@ public:
                 sprite->m_Width = surface->w;
                 sprite->m_Height = surface->h;
             }
+            SDL_Rect renderQuad = { static_cast<int>(std::round(sprite->m_positionOffset.m_x + transform->m_position.m_x)),
+                                    static_cast<int>(std::round(sprite->m_positionOffset.m_y + transform->m_position.m_y)),
+                                    sprite->m_Width, sprite->m_Height };
+            SDL_RenderCopy(this->getRenderer(), sprite->m_Texture.get(), nullptr, &renderQuad);
+
+        });
+
+
+        m_componentManager->template forEntitiesMatching<SystemSignature_Sprite_UI >([this](Sprite* sprite, const Transform* transform, const RenderingLayer_UI* x){
+            if (! sprite->m_Texture){
+                auto surface = this->getSurface(sprite->m_texturePath);
+                sprite->m_Texture = TextureSmartPtr(SDL_CreateTextureFromSurface(this->getRenderer(), surface));
+                if (! sprite->m_Texture) {
+                    std::cout << "Unable to create texture, error: " << SDL_GetError() << std::endl;
+                    // here and exception should be thrown
+                    return;
+                }
+
+                sprite->m_Width = surface->w;
+                sprite->m_Height = surface->h;
+            }
+            if (!sprite->enabled)
+                return;
             SDL_Rect renderQuad = { static_cast<int>(std::round(sprite->m_positionOffset.m_x + transform->m_position.m_x)),
                                     static_cast<int>(std::round(sprite->m_positionOffset.m_y + transform->m_position.m_y)),
                                     sprite->m_Width, sprite->m_Height };

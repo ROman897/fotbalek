@@ -23,9 +23,14 @@ class InputSystem{
 
 
     bool escape;
+    float time = 0;
 
 public:
-    void handleInputs() {
+    void run(float dt) {
+        time += dt;
+        if (time < GameConstants::kKeyCooldown)
+            return;
+        time -= GameConstants::kKeyCooldown;
         SDL_Event event;
         bool moveLeft = false;
         bool moveRight = false;
@@ -37,6 +42,9 @@ public:
 
 
         while (SDL_PollEvent(&event) != 0) {
+            if (event.type == SDL_QUIT){
+                m_manager->setQuit(true);
+            }
 
 
             if (event.type == SDL_KEYDOWN && !escape) {
@@ -53,6 +61,7 @@ public:
                     case SDLK_w:
                     case SDLK_UP:
                         moveUp = true;
+                    std::cout << "key up pressed " << std::endl;
                         break;
                     case SDLK_s:
                     case SDLK_DOWN:
@@ -76,18 +85,18 @@ public:
                         case SDLK_w:
                         case SDLK_UP:
                             m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
-                                                                               [this](Button &button, Sprite &sprite,
-                                                                                      Label &label,
-                                                                                      const Transform &transform) {
-                                                                                   button.isSelected = false;
+                                                                               [this](Button *button, Sprite *sprite,
+                                                                                      Label *label,
+                                                                                      const Transform *transform) {
+                                                                                   button->isSelected = false;
                                                                                    this->activeButtonId = m_manager->findGameObjectByTag(
-                                                                                           button.moveUpButtonTag);
+                                                                                           button->m_moveUpButtonTag);
                                                                                    m_manager->template forEntityMatching<SystemSignature_Sprite>(
                                                                                            activeButtonArrowId,
-                                                                                           [&transform](Sprite &sprite,
-                                                                                                        Transform &transform1) {
-                                                                                               transform1.m_position =
-                                                                                                       transform.m_position +
+                                                                                           [&transform](Sprite *sprite,
+                                                                                                        Transform *transform1) {
+                                                                                               transform1->m_position =
+                                                                                                       transform->m_position +
                                                                                                        GameConstants::kButtonOffset;
                                                                                            });
                                                                                });
@@ -95,18 +104,18 @@ public:
                         case SDLK_s:
                         case SDLK_DOWN:
                             m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
-                                                                               [this](Button &button, Sprite &sprite,
-                                                                                      Label &label,
-                                                                                      const Transform &transform) {
-                                                                                   button.isSelected = false;
+                                                                               [this](Button *button, Sprite *sprite,
+                                                                                      Label *label,
+                                                                                      const Transform *transform) {
+                                                                                   button->isSelected = false;
                                                                                    this->activeButtonId = m_manager->findGameObjectByTag(
-                                                                                           button.moveDownButtonTag);
+                                                                                           button->m_moveDownButtonTag);
                                                                                    m_manager->template forEntityMatching<SystemSignature_Sprite>(
                                                                                            activeButtonArrowId,
-                                                                                           [&transform](Sprite &sprite,
-                                                                                                        Transform &transform1) {
-                                                                                               transform1.m_position =
-                                                                                                       transform.m_position +
+                                                                                           [&transform](Sprite *sprite,
+                                                                                                        Transform *transform1) {
+                                                                                               transform1->m_position =
+                                                                                                       transform->m_position +
                                                                                                        GameConstants::kButtonOffset;
                                                                                            });
                                                                                });
@@ -114,10 +123,10 @@ public:
 
                         case SDLK_KP_ENTER:
                             m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
-                                                                               [this](Button &button, Sprite &sprite,
-                                                                                      Label &label) {
-                                                                                   button.isSelected = false;
-                                                                                   for (auto &func : button.callBacks) {
+                                                                               [this](Button *button, Sprite *sprite,
+                                                                                      Label *label, Transform* transform) {
+                                                                                   button->isSelected = false;
+                                                                                   for (auto &func : button->m_callbacks) {
                                                                                        func();
                                                                                    }
                                                                                });
@@ -136,13 +145,13 @@ public:
 
             if (moveHorizontal || moveVertical || shoot) {
                 m_manager->template forEntityMatching<SystemSignature_Input >(movementInputId,
-                                           [moveHorizontal, moveVertical, moveUp, moveRight, shoot](MovementInputHolder &inputHolder) {
-                                               inputHolder.moveUp = moveUp;
-                                               inputHolder.moveRight = moveRight;
-                                               inputHolder.moveVertical = moveVertical;
-                                               inputHolder.moveHorizontal = moveHorizontal;
-                                               inputHolder.shoot = shoot;
-                                               inputHolder.valid = true;
+                                           [moveHorizontal, moveVertical, moveUp, moveRight, shoot](MovementInputHolder *inputHolder) {
+                                               inputHolder->moveUp = moveUp;
+                                               inputHolder->moveRight = moveRight;
+                                               inputHolder->moveVertical = moveVertical;
+                                               inputHolder->moveHorizontal = moveHorizontal;
+                                               inputHolder->shoot = shoot;
+                                               inputHolder->valid = true;
                                            });
             }
 
@@ -161,6 +170,10 @@ public:
         m_manager = manager;
     }
 
+    void start(){
+
+    }
+
 private:
     Timer inputTimer;
 // id of gameobject with movementinputholder component
@@ -170,16 +183,17 @@ private:
     Id activeButtonArrowId;
 
     void escPressed(){
+        std::cout << "esc: " << escape << std::endl;
         escape = !escape;
         m_manager->template forEntitiesMatching<SystemSignature_Button>(
-                [this](const Button &button, Sprite &sprite, Label &label) {
-                    sprite.enabled = escape;
-                    label.enabled = escape;
+                [this](const Button *button, Sprite *sprite, Label *label, Transform* transform) {
+                    sprite->enabled = escape;
+                    label->enabled = escape;
                 });
-        m_manager->template forEntityMatching<SystemSignature_Sprite>(activeButtonArrowId, [this](Sprite &sprite,
-                                                                                         const Transform &transform) {
-            sprite.enabled = escape;
-        });
+        /*m_manager->template forEntityMatching<SystemSignature_Sprite>(activeButtonArrowId, [this](Sprite *sprite,
+                                                                                         const Transform *transform) {
+            sprite->enabled = escape;
+        });*/
     }
 
 

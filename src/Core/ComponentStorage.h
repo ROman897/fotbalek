@@ -18,6 +18,7 @@
 #include "../Utils/declarations.h"
 #include <type_traits>
 #include <boost/hana/transform.hpp>
+#include <mutex>
 
 namespace hana = boost::hana;
 using namespace hana::literals;
@@ -33,6 +34,8 @@ template<typename TSettings>
         using TupleOfVectors = hana::tuple<std::vector<Ts>...>;
         using UnpackedTuple = typename decltype(hana::unpack(componentSettings::componentList, hana::template_<TupleOfVectors >))::type;
         UnpackedTuple m_components;
+
+        std::mutex componentMutexes[hana::length(componentSettings::componentList)];
 
 
     public:

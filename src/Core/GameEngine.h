@@ -9,17 +9,20 @@
 #include "GameObject.h"
 #include "ComponentManager.h"
 #include "SignatureManager.h"
+#include "../Utils/Timer.h"
+#include "../Physic/PhysicSystem.h"
 #include <boost/hana.hpp>
 #include <boost/hana/ext/boost/mpl/list.hpp>
 #include <vector>
 #include <boost/hana/tuple.hpp>
+#include <thread>
 
 
 namespace hana = boost::hana;
 using namespace hana::literals;
 
 
-template <typename TSettings, typename SystemSettings>
+template <typename TSettings, typename SystemSettings, typename ExternalSystemSettings>
 class GameEngine {
 public:
     using componentSettings = typename TSettings::componentSettings;
@@ -27,6 +30,11 @@ private:
     ComponentManager<TSettings> m_componentManager;
     using UnpackedTuple = typename decltype(hana::unpack(SystemSettings::systemList, hana::template_<hana::tuple >))::type;
     UnpackedTuple m_systems;
+
+    using unpackedExternalSystems = typename decltype(hana::unpack(ExternalSystemSettings::systemList, hana::template_<hana::tuple >))::type;
+    unpackedExternalSystems m_externalSystems;
+    std::vector<std::thread> m_externalThreads;
+     //std::thread threads[hana::length(ExternalSystemSettings::systemList)];
     // basically network id of this client
     size_t networkId;
 
@@ -37,6 +45,14 @@ public:
         hana::for_each(m_systems, [this](auto& system){
             system.setManager(&m_componentManager);
         });
+
+        hana::for_each(m_externalSystems, [this](auto& system){
+            system.setManager(&m_componentManager);
+        });
+    }
+
+    virtual ~GameEngine() {
+        quitExternalSystems();
     }
 
 
@@ -48,11 +64,11 @@ public:
         return m_componentManager.addEmptyGameObject(tag);
     }
 
-    template <typename System, typename ... Args>
+    /*template <typename System, typename ... Args>
     void initSystem(Args&&... args){
         auto& system = getSystem<System>();
         system.initialize(std::forward<Args>(args)...);
-    }
+    }*/
 
     template <typename System>
     System& getSystem(){
@@ -66,11 +82,19 @@ public:
         return m_systems[size - dropped];
     }
 
-    void start(){
-        hana::for_each(m_systems, [](auto& t ){
-            t.start();
-        });
+    template <typename System>
+    System& getExternalSystem(){
+        //auto index = index_of(m_systems, hana::type_c<System>);
+        //return m_systems[index];
+
+        auto size = decltype(hana::size(ExternalSystemSettings::systemList)){};
+        auto dropped = decltype(hana::size(
+                hana::drop_while(ExternalSystemSettings::systemList, hana::not_equal.to(hana::type_c<System>))
+        )){};
+        return m_externalSystems[size - dropped];
     }
+
+
 
     template<typename T, typename... TArgs>
     auto& addComponent(Id id, TArgs&&... args) noexcept{
@@ -103,7 +127,52 @@ public:
         return &m_componentManager;
     }
 
+
+
+    void start(){
+        //PhysicSystem<TSettings> p;
+        //std::thread t([this](){
+          //  this->run();
+        //});
+        hana::for_each(m_externalSystems, [this](auto& system){
+            m_externalThreads.emplace_back([&system](){
+                system.start();
+            });
+        });
+
+        hana::for_each(m_systems, [](auto& t ){
+            t.start();
+        });
+        run();
+    }
+
 private:
+    Timer timer;
+
+    void run(){
+        //std::cout << "run started" << std::endl;
+        timer.start();
+        while (true){
+            //std::cout << "run" << std::endl;
+            float dt = static_cast<float >(timer.getTime()) / 1000.0f;
+            hana::for_each(m_systems, [dt, this](auto& system){
+                system.run(dt);
+            });
+            if (m_componentManager.shouldQuit()){
+                std::cout << "gameengine should quit" << std::endl;
+                break;
+            }
+        }
+        std::cout << "out of main loop" << std::endl;
+    }
+
+
+
+    void quitExternalSystems(){
+        for (auto& sysThread: m_externalThreads){
+            sysThread.join();
+        }
+    }
 
 };
 

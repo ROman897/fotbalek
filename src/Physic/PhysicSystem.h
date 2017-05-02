@@ -18,10 +18,11 @@
 #include "../Core/ComponentManager.h"
 #include "../Utils/Timer.h"
 #include "../SettingsDefines.h"
+#include "../Components/Physic/ColliderTrigger.h"
 
 
 inline void resolveCollision(const Collision &collision) {
-    std::cout << "resolve collision" << std::endl;
+    //std::cout << "resolve collision" << std::endl;
     Vector_Float vDiff = collision.second.m_velocity - collision.first.m_velocity;
 
     float velNormal = DotProduct( vDiff, collision.normal);
@@ -46,7 +47,7 @@ inline void resolveCollision(const Collision &collision) {
 
 }
 
-float Clamp(float min, float max, float val) {
+inline float Clamp(float min, float max, float val) {
     return std::abs(min - val) < std::abs(max - val) ? min : max;
 }
 
@@ -54,7 +55,9 @@ float Clamp(float min, float max, float val) {
 
 
 
-inline void checkForCollisionCircle_Circle(const CircleCollider* shape1, RigidBody* body1, const Transform* transform1, const CircleCollider* shape2, RigidBody* body2, const Transform* transform2){
+inline bool checkForCollisionCircle_Circle(const CircleCollider* shape1, const Transform* transform1,
+                                           const CircleCollider* shape2, const Transform* transform2,
+                                            Collision& collision){
 
 
     // Vector from A to B
@@ -64,9 +67,7 @@ inline void checkForCollisionCircle_Circle(const CircleCollider* shape1, RigidBo
     r *= r;
 
     if(n.lengthSquared() > r)
-        return;
-
-    Collision collision(*body1, *body2);
+        return false;
 
     float d = n.length();
 
@@ -89,12 +90,12 @@ inline void checkForCollisionCircle_Circle(const CircleCollider* shape1, RigidBo
         collision.penetration = shape1->m_radius;
         collision.normal = Vector_Float( 1, 0 );
     }
-    resolveCollision(collision);
+    return true;
 }
 
 
-inline void checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1, RigidBody* body1, const Transform* transform1, const RectangleCollider* shape2,
-                                          RigidBody* body2, const Transform* transform2){
+inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1, const Transform* transform1, const RectangleCollider* shape2,
+                                          const Transform* transform2, Collision& collision){
 
     //std::cout << "pos1 x: " << transform1->m_position.m_x << " y : " << transform1->m_position.m_y << std::endl;
     //std::cout << "pos2 x: " << transform2->m_position.m_x << " y : " << transform2->m_position.m_y << std::endl;
@@ -112,8 +113,8 @@ inline void checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
                         ) / 2;
     float x_overlap = collider1_X + collider2X - std::abs( n.m_x
     );
-    std::cout << "collider1 x: " << collider1_X << std::endl;
-    std::cout << "x overlap: " << x_overlap << std::endl;
+    //std::cout << "collider1 x: " << collider1_X << std::endl;
+    //std::cout << "x overlap: " << x_overlap << std::endl;
 
 
     float collider1_Y = (shape1->m_topLeft.m_y
@@ -127,10 +128,9 @@ inline void checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
 
     // this means that no collision occured
     if (x_overlap <=0 && y_overlap <= 0)
-        return;
+        return false;
 
-    std::cout << "overlap" << std::endl;
-    Collision collision(*body1, *body2);
+    //std::cout << "overlap" << std::endl;
 
     // for rectangles this means that we only solve collision in one axis, the one that has greater overlap
     if(x_overlap > y_overlap)
@@ -152,12 +152,12 @@ inline void checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
         collision.penetration = y_overlap;
     }
 
-    resolveCollision(collision);
+    return true;
 }
 
 
-inline void checkForCollisionRectangle_Circle(const RectangleCollider* shape1, RigidBody* body1, const Transform* transform1, const CircleCollider* shape2,
-                                       RigidBody* body2, const Transform* transform2){
+inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, const CircleCollider* shape2,
+                                       const Transform* transform2, Collision& collision){
 
     Vector_Float n = transform2->m_position - transform1->m_position;
     Vector_Float closest = n;
@@ -212,11 +212,9 @@ inline void checkForCollisionRectangle_Circle(const RectangleCollider* shape1, R
     float r = shape2->m_radius;
 
     if(d > r * r && !inside)
-        return;
+        return false;
 
     d = std::sqrt( d );
-
-    Collision collision(*body1, *body2);
     if(inside)
     {
         collision.normal = n * -1;
@@ -227,14 +225,56 @@ inline void checkForCollisionRectangle_Circle(const RectangleCollider* shape1, R
         collision.normal = n;
         collision.penetration = r - d;
     }
-    resolveCollision(collision);
+    return true;
 }
 
 
 
 
+inline void processTriggerCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, ColliderTrigger trigger,
+                                                    const CircleCollider* shape2, const Transform* transform2){
+
+}
+
+inline void processTriggerCollisionRectangle_Rectangle(const RectangleCollider* shape1, const Transform* transform1, ColliderTrigger trigger,
+                                                    const RectangleCollider* shape2, const Transform* transform2){
+
+}
+
+inline void processTriggerCollisionCircle_Circle(const CircleCollider* shape1, const Transform* transform1, ColliderTrigger trigger,
+                                                    const CircleCollider* shape2, const Transform* transform2){
+
+}
 
 
+inline void processCollisionRectangle_Circle(const RectangleCollider* shape1, RigidBody* body1, const Transform* transform1, const CircleCollider* shape2,
+                                              RigidBody* body2, const Transform* transform2){
+    Collision collision(*body1, *body2);
+    if (checkForCollisionRectangle_Circle(shape1, transform1, shape2,
+    transform2, collision))
+        resolveCollision(collision);
+
+}
+
+
+inline void processCollisionRectangle_Rectangle(const RectangleCollider* shape1, RigidBody* body1, const Transform* transform1, const RectangleCollider* shape2,
+                                                             RigidBody* body2, const Transform* transform2){
+    Collision collision(*body1, *body2);
+    if (checkForCollisionRectangle_Rectangle(shape1, transform1, shape2,
+                                          transform2, collision))
+        resolveCollision(collision);
+}
+
+
+
+inline void processCollisionCircle_Circle(const CircleCollider* shape1, RigidBody* body1,
+                                           const Transform* transform1, const CircleCollider* shape2, RigidBody* body2, const Transform* transform2) {
+
+    Collision collision(*body1, *body2);
+    if (checkForCollisionCircle_Circle(shape1, transform1, shape2,
+                                             transform2, collision))
+        resolveCollision(collision);
+}
 
 
 
@@ -250,10 +290,6 @@ inline void checkForCollisionRectangle_Circle(const RectangleCollider* shape1, R
 template <typename TSettings>
 class PhysicSystem {
 private:
-    // physic engine has view of all gameobjects that physically interact with each other
-    // TODO decide how to represent actual positions and positions to draw
-
-    bool quit;
     ComponentManager<TSettings>* componentManager;
 
 public:
@@ -282,29 +318,38 @@ public:
     transform.position += rigidBody.m_velocity * dt;
 }*/
 
+    void run(float dt){
+        runPhysicUpdate(dt);
+    }
+
     void runPhysicUpdate(float dt) {
+        //std::cout << "run physic update" << std::endl;
+        //std::cout << "run physic update" << std::endl;
 
         componentManager->template forEntitiesMatching<SystemSignature_Movable>([dt](RigidBody* rigidBody, Transform* transform){
             transform->m_position += rigidBody->m_velocity * dt;
             rigidBody->m_velocity /= rigidBody->m_speedDecrement;
         });
 
-        componentManager->template forEntitiesMatchingPairs<SystemSignature_Circle_Collider, SystemSignature_Circle_Collider>(checkForCollisionCircle_Circle);
-        componentManager->template forEntitiesMatchingPairs<SystemSignature_Rectangle_Collider, SystemSignature_Rectangle_Collider>(checkForCollisionRectangle_Rectangle);
-        componentManager->template forEntitiesMatchingPairs<SystemSignature_Rectangle_Collider, SystemSignature_Circle_Collider>(checkForCollisionRectangle_Circle);
+        componentManager->template forEntitiesMatchingPairs<SystemSignature_Circle_Collider, SystemSignature_Circle_Collider>(processCollisionCircle_Circle);
+        componentManager->template forEntitiesMatchingPairs<SystemSignature_Rectangle_Collider, SystemSignature_Rectangle_Collider>(processCollisionRectangle_Rectangle);
+        componentManager->template forEntitiesMatchingPairs<SystemSignature_Rectangle_Collider, SystemSignature_Circle_Collider>(processCollisionRectangle_Circle);
     }
 
     void start() {
 
         Uint32 accumulator = 0;
         Timer timer;
+        timer.start();
 
 
         float frameStart = timer.getTime();
         timer.resetTime();
 
 
-        while( !quit ) {
+        while( true ) {
+            if (componentManager->shouldQuit())
+                return;
             accumulator += timer.getTime() - frameStart;
 
             frameStart = timer.getTime();
