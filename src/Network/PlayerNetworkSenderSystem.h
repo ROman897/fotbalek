@@ -18,12 +18,21 @@ private:
     // id of a gameobject that has NetworkId and MovementInputHolder components
     Id id;
 
-    void prepareData(NetworkId& networkId, MovementInputHolder& inputHolder){
-        m_componentManager->forEntityMatching<SystemSignature_Network_Input>(id, [&networkId, &inputHolder](const auto& _networkId, auto& _inputHolder){
+    PlayerClient* playerClient;
+
+    void prepareData(const NetworkId* networkId, MovementInputHolder* inputHolder){
+        m_componentManager->forEntityMatching<SystemSignature_Network_Input>(id, [&networkId, &inputHolder](const NetworkId* _networkId, MovementInputHolder* _inputHolder){
             networkId = _networkId;
             inputHolder = _inputHolder;
-            _inputHolder.valid = false;
+            _inputHolder->valid = false;
         });
+    }
+
+public:
+    void sendData(){
+        const NetworkId* id;
+        MovementInputHolder * inputHolder;
+
     }
 };
 

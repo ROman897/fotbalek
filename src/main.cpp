@@ -22,14 +22,14 @@ int main() {
     Id id = gameEngine.spawnGameObject();
     Id id2 = gameEngine.spawnGameObject();
     Vector_Float pos = {23.47f ,200};
-    Vector_Float pos2 = {451.43f, 200};
+    Vector_Float pos2 = {700, 200};
     gameEngine.addComponent<Transform>(id, pos);
     SDL_Color color = {.r = 255, .g = 0, .b = 0, .a = 255};
     SDL_Color color2 = {.r = 0, .g = 255, .b = 0, .a = 255};
     gameEngine.addComponent<RectangleShape>(id, -100, -100, 200, 200, color );
     gameEngine.addComponent<Transform>(id2, pos2);
     gameEngine.addComponent<RectangleShape>(id2, -50, -50, 100, 100, color2);
-    Vector_Float vel = {50.0f, 0.0f};
+    Vector_Float vel = {80.0f, 0.0f};
     Vector_Float force = {0.0f, 0.0f};
 
     gameEngine.addComponent<RigidBody>(id, 1.0f, 10.0f, vel, force, 1.001f);
@@ -62,6 +62,7 @@ int main() {
 
     Vector_Float continuePos = {400, 300 };
     spawnButton(gameEngine, true, false,  "continue", "", "", continuePos, "continue");
+    //spawnBarrier(gameEngine)
 
     //auto& graphicSystem =  gameEngine.getSystem<GraphicSystem<settings >>();
     //auto& physicSystem = gameEngine.getSystem<PhysicSystem<settings >>();

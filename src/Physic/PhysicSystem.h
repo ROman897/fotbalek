@@ -57,7 +57,7 @@ inline float Clamp(float min, float max, float val) {
 
 inline bool checkForCollisionCircle_Circle(const CircleCollider* shape1, const Transform* transform1,
                                            const CircleCollider* shape2, const Transform* transform2,
-                                            Collision& collision){
+                                            Collision* collision, bool trigger){
 
 
     // Vector from A to B
@@ -68,6 +68,8 @@ inline bool checkForCollisionCircle_Circle(const CircleCollider* shape1, const T
 
     if(n.lengthSquared() > r)
         return false;
+    if (trigger)
+        return true;
 
     float d = n.length();
 
@@ -75,11 +77,11 @@ inline bool checkForCollisionCircle_Circle(const CircleCollider* shape1, const T
     if(d != 0)
     {
         // Distance is difference between radius and distance
-        collision.penetration = r - d;
+        collision->penetration = r - d;
 
         // now we have to calculate vector perpendicular to vector n and normalize it
         Vector_Float normal = n.getNormal();
-        collision.normal = normal / d;
+        collision->normal = normal / d;
 
     }
 
@@ -87,15 +89,15 @@ inline bool checkForCollisionCircle_Circle(const CircleCollider* shape1, const T
     else
     {
         // this should not be really happening, but just in case when distance is 0 so we dont divide by 0
-        collision.penetration = shape1->m_radius;
-        collision.normal = Vector_Float( 1, 0 );
+        collision->penetration = shape1->m_radius;
+        collision->normal = Vector_Float( 1, 0 );
     }
     return true;
 }
 
 
 inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1, const Transform* transform1, const RectangleCollider* shape2,
-                                          const Transform* transform2, Collision& collision){
+                                          const Transform* transform2, Collision* collision, bool trigger){
 
     //std::cout << "pos1 x: " << transform1->m_position.m_x << " y : " << transform1->m_position.m_y << std::endl;
     //std::cout << "pos2 x: " << transform2->m_position.m_x << " y : " << transform2->m_position.m_y << std::endl;
@@ -129,6 +131,8 @@ inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
     // this means that no collision occured
     if (x_overlap <=0 && y_overlap <= 0)
         return false;
+    if (trigger)
+        return true;
 
     //std::cout << "overlap" << std::endl;
 
@@ -137,19 +141,19 @@ inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
     {
         if(n.m_x
            < 0)
-            collision.normal = Vector_Float(-1, 0);
+            collision->normal = Vector_Float(-1, 0);
         else
-            collision.normal = Vector_Float( 1, 0 );
-        collision.penetration = x_overlap;
+            collision->normal = Vector_Float( 1, 0 );
+        collision->penetration = x_overlap;
     }
     else
     {
         if(n.m_y
            < 0)
-            collision.normal = Vector_Float( 0, -1 );
+            collision->normal = Vector_Float( 0, -1 );
         else
-            collision.normal = Vector_Float( 0, 1 );
-        collision.penetration = y_overlap;
+            collision->normal = Vector_Float( 0, 1 );
+        collision->penetration = y_overlap;
     }
 
     return true;
@@ -157,7 +161,7 @@ inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
 
 
 inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, const CircleCollider* shape2,
-                                       const Transform* transform2, Collision& collision){
+                                       const Transform* transform2, Collision* collision, bool trigger){
 
     Vector_Float n = transform2->m_position - transform1->m_position;
     Vector_Float closest = n;
@@ -214,16 +218,18 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
     if(d > r * r && !inside)
         return false;
 
+    if (trigger)
+        return true;
     d = std::sqrt( d );
     if(inside)
     {
-        collision.normal = n * -1;
-        collision.penetration = r - d;
+        collision->normal = n * -1;
+        collision->penetration = r - d;
     }
     else
     {
-        collision.normal = n;
-        collision.penetration = r - d;
+        collision->normal = n;
+        collision->penetration = r - d;
     }
     return true;
 }
@@ -241,8 +247,14 @@ inline void processTriggerCollisionRectangle_Rectangle(const RectangleCollider* 
 
 }
 
-inline void processTriggerCollisionCircle_Circle(const CircleCollider* shape1, const Transform* transform1, ColliderTrigger trigger,
+inline void processTriggerCollisionCircle_Circle(const CircleCollider* shape1, const Transform* transform1, ColliderTrigger* trigger,
                                                     const CircleCollider* shape2, const Transform* transform2){
+    if (! checkForCollisionCircle_Circle(shape1, transform1, shape2,
+                                          transform2, nullptr, true))
+        return;
+    for (auto& func : trigger->m_callbacks){
+        func();
+    }
 
 }
 
@@ -251,7 +263,7 @@ inline void processCollisionRectangle_Circle(const RectangleCollider* shape1, Ri
                                               RigidBody* body2, const Transform* transform2){
     Collision collision(*body1, *body2);
     if (checkForCollisionRectangle_Circle(shape1, transform1, shape2,
-    transform2, collision))
+    transform2, &collision, false))
         resolveCollision(collision);
 
 }
@@ -261,7 +273,7 @@ inline void processCollisionRectangle_Rectangle(const RectangleCollider* shape1,
                                                              RigidBody* body2, const Transform* transform2){
     Collision collision(*body1, *body2);
     if (checkForCollisionRectangle_Rectangle(shape1, transform1, shape2,
-                                          transform2, collision))
+                                          transform2, &collision, false))
         resolveCollision(collision);
 }
 
@@ -272,7 +284,7 @@ inline void processCollisionCircle_Circle(const CircleCollider* shape1, RigidBod
 
     Collision collision(*body1, *body2);
     if (checkForCollisionCircle_Circle(shape1, transform1, shape2,
-                                             transform2, collision))
+                                             transform2, &collision, false))
         resolveCollision(collision);
 }
 

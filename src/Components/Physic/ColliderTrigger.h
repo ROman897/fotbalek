@@ -8,7 +8,7 @@
 #include <vector>
 #include <functional>
 
-class ColliderTrigger{
+struct ColliderTrigger{
     std::vector<std::function<void(void)>> m_callbacks;
 };
 

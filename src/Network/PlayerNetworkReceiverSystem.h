@@ -14,8 +14,14 @@ class PlayerNetworkReceiverSystem{
     using SystemSignature_Network = Signature<NetworkId, Transform>;
 private:
     ComponentManager<TSettings>* m_componentManager;
+    PlayerClient* playerClient;
 
-    void updatePositions(std::vector<NetworkId>& ids, std::vector<Transform>& transforms){
+    /**
+     * call this when received positions from the server
+     * @param ids
+     * @param transforms
+     */
+    void updatePositions(const std::vector<NetworkId>& ids, const std::vector<Transform>& transforms){
         m_componentManager->forEntitiesMatching<SystemSignature_Network>([&ids, &transforms](auto& id, auto& transform){
             for (int i =0; i < ids.size(); ++i){
                 if (ids[i] == id)
@@ -23,6 +29,16 @@ private:
             }
         });
     }
+
+    /**
+     * call this with callback when received gamestarted from the server
+     */
+    void gameStarted(){
+
+    }
+
+
+
 };
 
 #endif //PV264_PROJECT_PLAYERNETWORKRECEIVER_H

@@ -44,7 +44,7 @@ Id spawnPlayer(EngineType& gameEngine);
 
 Id spawnBall(EngineType& gameEngine);
 
-Id spawnBarrier(EngineType& gameEngine);
+Id spawnBarrier(EngineType& gameEngine, Vector_Float position, const Vector_Float &m_topLeft, const Vector_Float &m_bottomRight);
 
 
 
