@@ -8,6 +8,7 @@
 #include "../Components/Network/NetworkId.h"
 #include "../Components/Transform.h"
 #include "../Core/ComponentManager.h"
+#include "API/Client/PlayerClient.h"
 
 template <typename TSettings>
 class PlayerNetworkReceiverSystem{

@@ -6,6 +6,7 @@
 void PlayerServer::startComm(UdpServer &srv) {
     srv.init();
 }
+/*
 
 int main(void) { //zatial void
     PlayerServer mainSrv;
@@ -20,3 +21,4 @@ int main(void) { //zatial void
             std::cout << "nope\n";
     }
 }
+*/

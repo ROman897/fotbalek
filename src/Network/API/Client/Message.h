@@ -5,15 +5,27 @@
 #ifndef PV264_PROJECT_MESSAGE_H
 #define PV264_PROJECT_MESSAGE_H
 
+#include <vector>
 #include "../../../Utils/declarations.h"
 #include "../../../Components/Network/NetworkId.h"
-#include "../../../Components/MovementInputHolder.h"
+#include "../../../Components/Transform.h"
 
-struct Message {
+class Message {
 	//pridat ID sprav a counter
 	Id messageId;
 	std::vector<NetworkId> playerIds;
-	std::vector<MovementInputHolder> playerMovement;
+	std::vector<Transform> playerMovement;
+
+public:
+	Message() {}
+
+	void addNetworkId(const NetworkId &newId) {
+		playerIds.push_back(newId);
+	}
+
+	void addTransform(const Transform &newTransform) {
+		playerMovement.push_back(newTransform);
+	}
 };
 
 #endif //PV264_PROJECT_MESSAGE_H
