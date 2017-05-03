@@ -14,7 +14,8 @@
 #include "UdpBase.h"
 #include "Player.h"
 #include "Message.h"
-//#include "../../../Vector2.h"
+#include "../../../Components/MovementInputHolder.h"
+#include "../../../Components/Network/NetworkId.h"
 
 class PlayerClient : UdpBase {
 	using udp = boost::asio::ip::udp;
@@ -24,7 +25,6 @@ class PlayerClient : UdpBase {
 	std::function<void()> gameStarted;
 	udp::endpoint m_serverEnd;
 	Player m_me;
-	//pridat ID sprav a counter
 	Message m_lastMessage;
 	std::vector<Player> m_players;
 
@@ -42,11 +42,9 @@ public:
 
 	void parseId(ErrorCode &err, size_t trans);
 
-	void parseMessage(const std::string &message) {
+	void parseMessage(const std::string &message);
 
-	}
-
-	void sendData(/*const NetworkId& id, const MovementInputHolder& inputHolder*/);
+	void sendData(const NetworkId& id, const MovementInputHolder& inputHolder);
 
 	void startSending(const std::string &input);
 

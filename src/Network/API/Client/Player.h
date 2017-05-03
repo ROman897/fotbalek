@@ -12,6 +12,7 @@ struct Player {
 	using Id = size_t;
 	Id id;
 	std::string name;
+	//pridat info o time
 };
 
 #endif //PV264_PROJECT_PLAYER_H

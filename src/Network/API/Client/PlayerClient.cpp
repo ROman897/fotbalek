@@ -1,7 +1,6 @@
 #include "PlayerClient.h"
 
 PlayerClient::PlayerClient() {
-	//spustit vlakno s grafikou
 	std::cout << "Enter your name:" << std::endl;
 	std::string input;
 	getline(std::cin, input);
@@ -52,6 +51,7 @@ void PlayerClient::connect(const std::string &host, const std::string &port) {
 		throw;
 	}
 	startReceiving();
+
 	//na testovanie
 	while (true) {
 		std::string line;
@@ -85,13 +85,18 @@ void PlayerClient::handleData(ErrorCode &err, size_t trans) {
 	startReceiving();
 }
 
+void PlayerClient::parseMessage(const std::string &message) {
+	Message newMessage;
+	//rozparsuj spravu
+}
+
+
 void PlayerClient::parseId(ErrorCode &err, size_t trans) {
 	if (!err)
 	{
 		std::string message(m_buffer.data(), m_buffer.data() + trans);
 		auto index = message.find(":");
 		m_me.id = static_cast<uint8_t>(std::stoul(message.substr(index + 1)));
-
 		std::cout << "dosla ti odpoved na i? " << message << " velkosti:" << trans << std::endl;
 	}
 	else
@@ -101,8 +106,8 @@ void PlayerClient::parseId(ErrorCode &err, size_t trans) {
 
 }
 
-void PlayerClient::sendData(/*const NetworkId& id, const MovementInputHolder& inputHolder*/) {
-
+void PlayerClient::sendData(const NetworkId& id, const MovementInputHolder& inputHolder) {
+	//vytvor spravu a zavolaj startSending
 }
 
 void PlayerClient::startSending(const std::string &input) {
