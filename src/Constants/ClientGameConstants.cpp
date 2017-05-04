@@ -12,6 +12,7 @@ const Vector_Float ClientGameConstants::kButtonLabelOffset = {50, 70};
 const std::string ClientGameConstants::kButtonFontPath = "../Resources/Fonts/BasicFont.ttf";
 const SDL_Color ClientGameConstants::kButtonFontColor = {255, 0, 0, 255};
 const int ClientGameConstants::kButtonFontSize = 22;
+const GraphicLayers ClientGameConstants::kButtonLayer = FOREGROUND;
 //---------------------//Button
 
 
@@ -20,12 +21,16 @@ const std::string ClientGameConstants::kPlayerSpritePath_Team1 = "../Resources/S
 const std::string ClientGameConstants::kPlayerSpritePath_Team2 = "../Resources/Sprites/Player2.png";
 //-----------------------//Player Sprite
 
+//---------------------Menu
+const bool ClientGameConstants::kMenuEnabledAtStart = false;
+//---------------------//Menu
+
 //------------------------Menu Panel
-const Vector_Float kMenuPanelPosition = {200,200};
-const int kMenuPanelXOffset = 0;
-const int kMenuPanelYOffset = 0;
-const int kMenuPanelWidth = 600;
-const int kMenuPanelHeight = 600;
-const SDL_Color kMenuPanelColor = {0,0,0,255};
-const GraphicLayers kMenuPanelLayer = BACKUI;
+const Vector_Float ClientGameConstants::kMenuPanelPosition = {200,200};
+const int ClientGameConstants::kMenuPanelXOffset = 0;
+const int ClientGameConstants::kMenuPanelYOffset = 0;
+const int ClientGameConstants::kMenuPanelWidth = 600;
+const int ClientGameConstants::kMenuPanelHeight = 600;
+const SDL_Color ClientGameConstants::kMenuPanelColor = {0,0,0,255};
+const GraphicLayers ClientGameConstants::kMenuPanelLayer = BACKUI;
 //------------------------//Menu Panel

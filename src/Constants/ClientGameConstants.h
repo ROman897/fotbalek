@@ -48,7 +48,7 @@ struct ClientGameConstants {
     //----------------------//Button
 
     //---------------------Menu
-    static const bool kMenuEnabledAtStart = false;
+    static const bool kMenuEnabledAtStart;
     //---------------------//Menu
 
 
