@@ -17,7 +17,7 @@ static constexpr float kInputMovementCoefficient = 10;
 //-------------------//Physics
 
 //--------------------Player constants
-static const int kMaxNumberOfPlayers;
+static constexpr int kMaxNumberOfPlayers = 4;
 static const Vector_Float startingPositions[kMaxNumberOfPlayers];
 };
 

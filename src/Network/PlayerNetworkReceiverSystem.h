@@ -62,7 +62,7 @@ private:
         auto& ids = message.getIds();
         auto& transforms = message.getTransforms();
         updatePositions(ids, transforms);
-        message.setValid(false);
+        message.releaseMessage();
     }
 
 public:

@@ -16,7 +16,7 @@ struct MovementInputHolder{
     bool shoot;
     bool valid;
 
-    MovementInputHolder() : valid(false) {
+    MovementInputHolder() : moveVertical(false), moveHorizontal(false), valid(false) {
 
     }
 };

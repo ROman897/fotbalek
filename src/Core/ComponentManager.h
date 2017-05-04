@@ -33,7 +33,10 @@ class ComponentManager{
 
 
 
+
 public:
+    std::mutex componentsMutex;
+
     template<typename T>
     auto matchesSignature(Id id) const noexcept
     {
@@ -78,7 +81,7 @@ public:
         //std::cout << "for entities matching" << std::endl;
         //T t;
         //int x = t;
-
+        std::lock_guard<std::mutex> guard(componentsMutex);
 
         static_assert(TSettings::template isSignature<T>(), "requested signature is not in the list of signatures");
 
@@ -92,6 +95,7 @@ public:
     template<typename T, typename U, typename TF>
     void forEntitiesMatchingPairs(TF&& mFunction)
     {
+        std::lock_guard<std::mutex> guard(componentsMutex);
         //std::cout << "thread id entities pairs : " << std::this_thread::get_id() << std::endl;
         static_assert(TSettings::template isSignature<T>(), "");
 
@@ -110,6 +114,7 @@ public:
 
     template<typename T, typename TF>
     void forEntityMatching(Id id, TF&& mFunction){
+        std::lock_guard<std::mutex> guard(componentsMutex);
         if (matchesSignature<T>(id)){
             signatureCallFunction<T, TF>(id, std::forward<TF>(mFunction));
         }
@@ -140,36 +145,6 @@ public:
             hana::at_c<i>(components) = &this->componentStorage.template getComponentVector<typename decltype(+hana::at_c<i>(signature))::type>()[id];
         });
 
-        /*hana::for_each(components, [this, id](auto& comp){
-            int x;
-            Transform t;
-            //using type = typename decltype(t);
-
-            //auto ts = hana::make_tuple(hana::type_c<int>, hana::type_c<char>);
-            using F = decltype(*(comp));
-            Transform trans;
-            F f = trans;
-            //std::cout << f;
-            //comp = &this->componentStorage.template getComponentVector<F>()[id];
-        });*/
-
-        /*auto i = hana::size_c<0>;
-        hana::for_each(signature, [this, &i, id, &components ](auto t) {
-            hana::at(components, hana::size_c<i>) = &this->componentStorage.template getComponentVector<typename decltype(t)::type>()[id];
-        });*/
-
-        /*long i = 0;
-        hana::for_each(components,){
-            item = &this->componentStorage.template getComponentVector<typename decltype(hana::at_c<0>(signature))::type>()[id];
-        }*/
-
-        /*long i = 0;
-        hana::for_each(components, [this, &i, id, &components ](auto& t) {
-            t = &this->componentStorage.template getComponentVector<hana::type_c<(hana::at_c<0>(signature))>::type>()[id];
-        });*/
-
-
-
         hana::unpack(components, mFunction);
     }
 
@@ -192,20 +167,6 @@ public:
         hana::for_each(range2, [&components2, this, id2](auto i){
             hana::at_c<i>(components2) = &this->componentStorage.template getComponentVector<typename decltype(+hana::at_c<i>(signature2))::type>()[id2];
         });
-
-        /*using CombinedTuple = hana::c
-
-        int i = 0;
-        hana::for_each_t(hana::type_c<T>, [this, &i, id, &components ](auto t) {
-            hana::at_c<i>(components) = &this->componentStorage.template getComponentVector<typename decltype(t)::type>()[id];
-            ++i;
-        });
-
-        i = 0;
-        hana::for_each_t(hana::type_c<U>, [this, &i, id2, &components2 ](auto t) {
-            hana::at_c<i>(components2) = &this->componentStorage.template getComponentVector<typename decltype(t)::type>()[id2];
-            ++i;
-        });*/
 
         auto combinedComps = hana::concat(components1, components2);
 

@@ -80,6 +80,7 @@ private:
             auto& ids = data.getIds();
             auto& inputs = data.getInputs();
             updateInput(ids, inputs);
+            m_PlayerServer->releaseMessage();
 
 
             if (m_componentManager->shouldQuit()){
