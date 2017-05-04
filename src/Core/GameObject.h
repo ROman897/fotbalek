@@ -27,7 +27,6 @@ public:
 
 
     GameObject() : m_bitset(){
-        std::cout << "bitset: " << m_bitset << std::endl;
     }
 };
 
