@@ -13,31 +13,35 @@
 class Message {
 	//pridat ID sprav a counter
 	Id messageId;
-	std::vector<NetworkId> playerIds;
-	std::vector<Transform> playerMovement;
-	bool valid;
+	std::vector<NetworkId> m_playerIds;
+	std::vector<Transform> m_playerMovement;
+	bool m_valid;
 
 public:
 	Message() {}
 
 	void addNetworkId(const NetworkId &newId) {
-		playerIds.push_back(newId);
+		m_playerIds.push_back(newId);
 	}
 
 	void addTransform(const Transform &newTransform) {
-		playerMovement.push_back(newTransform);
+		m_playerMovement.push_back(newTransform);
 	}
 
 	const std::vector<NetworkId> &getIds() const {
-		return playerIds;
+		return m_playerIds;
 	}
 
 	const std::vector<Transform> &getTransforms() const {
-		return playerMovement;
+		return m_playerMovement;
+	}
+
+	bool isValid() const {
+		return m_valid;
 	}
 
 	void setValid() {
-		valid = true;
+		m_valid = true;
 	}
 };
 

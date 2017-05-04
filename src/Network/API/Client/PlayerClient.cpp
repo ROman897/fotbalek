@@ -130,7 +130,8 @@ void PlayerClient::parseId(ErrorCode &err, size_t trans) {
 	{
 		std::string message(m_buffer.data(), m_buffer.data() + trans);
 		auto index = message.find(":");
-		m_me.id = static_cast<Id>(std::stoul(message.substr(index + 1)));
+		m_me.id = static_cast<Id>(std::stoul(message));
+		m_me.team = static_cast<bool>(std::stoul(message.substr(index + 1)));
 	}
 	else
 	{
@@ -139,7 +140,7 @@ void PlayerClient::parseId(ErrorCode &err, size_t trans) {
 
 }
 
-void PlayerClient::sendData(const NetworkId& id, const MovementInputHolder& inputHolder) {
+void PlayerClient::sendData(const MovementInputHolder& inputHolder) {
 	std::string message {};
 	if (inputHolder.moveHorizontal) {
 		if (inputHolder.moveRight) {
@@ -170,7 +171,7 @@ void PlayerClient::send(const std::string &input) {
 void PlayerClient::handleErrors( ErrorCode &error, std::size_t bytes_transferred )
 {
 	if ( error ) {
-		std::cerr << "Client error: " << error.message() << "bytes transfered: " << bytes_transferred  << ", exiting\n";
+		std::cerr << "Client error: " << error.message() << "bytes transferred: " << bytes_transferred  << ", exiting\n";
 		std::exit( 1 );
 	}
 }
@@ -193,5 +194,5 @@ const Message &PlayerClient::getMessage() const {
 }
 
 bool PlayerClient::hasStarted() const {
-	return gameStarted.load();
+	return m_gameStarted.load();
 }

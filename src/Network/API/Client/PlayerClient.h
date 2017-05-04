@@ -21,7 +21,7 @@ class PlayerClient : UdpBase {
 	using ErrorCode = const boost::system::error_code;
 
 	//std::function<navratovy typ(argumenty)
-	std::atomic_bool gameStarted;
+	std::atomic_bool m_gameStarted;
 	udp::endpoint m_serverEnd;
 	Player m_me;
 	Message m_lastMessage;
@@ -53,7 +53,7 @@ public:
 
 	void connect( const std::string &host, const std::string &port);
 
-	void sendData(const NetworkId& id, const MovementInputHolder& inputHolder);
+	void sendData(const MovementInputHolder& inputHolder);
 
 	const std::vector<Player> &getPlayers() const;
 

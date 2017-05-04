@@ -11,6 +11,7 @@
 struct Player {
 	using Id = size_t;
 	Id id;
+	bool team;
 	std::string name;
 	//pridat info o time
 };
