@@ -17,7 +17,7 @@ private:
     ComponentManager<TSettings>* m_componentManager;
     UdpServer* m_playerServer;
     void prepareData(std::vector<NetworkId>& ids, std::vector<Transform>& transforms){
-        m_componentManager->forEntitiesMatching<SystemSignature_Network>([&ids, &transforms](auto& id, auto& transform){
+        m_componentManager->template forEntitiesMatching<SystemSignature_Network>([&ids, &transforms](auto& id, auto& transform){
             ids.push_back(id);
             transforms.push_back(transform);
 

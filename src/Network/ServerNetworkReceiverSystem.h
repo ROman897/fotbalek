@@ -42,7 +42,7 @@ private:
     using SystemSignature_Network_Rigid = Signature<NetworkId, RigidBody>;
 
     void updateInputs(std::vector<NetworkId> ids, std::vector<MovementInputHolder> inputs){
-        m_componentManager->forEntitiesMatching<SystemSignature_Network_Rigid>([&ids, &inputs](auto& id, auto& body){
+        m_componentManager->template forEntitiesMatching<SystemSignature_Network_Rigid>([&ids, &inputs](auto& id, auto& body){
             for (int i =0; i < ids.size(); ++i){
                 if (ids[i] == id)
                     applyInputForce(body, inputs[i], ServerGameConstants::kInputMovementCoefficient);
@@ -51,10 +51,10 @@ private:
     }
 
     void gameStarted(){
-        auto& players = m_UdpServer->getPlayers();
+        const auto& players = m_UdpServer->getPlayers();
         Id i = 0;
-        m_componentManager->forEntitiesMatching<SystemSignature_Network>([&players, &i](NetworkId* id, Transform* transform){
-            id->id = players[i].id;
+        m_componentManager->template forEntitiesMatching<SystemSignature_Network>([&players, &i](NetworkId* id, Transform* transform){
+            id->id = players[i].m_id;
             transform->m_position = ServerGameConstants::startingPositions[i];
         });
         m_initialized = true;
