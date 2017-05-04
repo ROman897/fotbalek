@@ -8,10 +8,17 @@
 #include <SDL_quit.h>
 
 struct ServerGameConstants{
+
+//----------------------Physics
 static constexpr Uint32 kPhysicAccumulatorLimit = 20U;
 static constexpr float kPhysicFps = 60;
 static constexpr float kPhysicDeltaTime = 1 / kPhysicFps;
 static constexpr float kInputMovementCoefficient = 10;
+//-------------------//Physics
+
+//--------------------Player constants
+static const int kMaxNumberOfPlayers;
+static const Vector_Float startingPositions[kMaxNumberOfPlayers];
 };
 
 #endif //PV264_PROJECT_SERVERGAMECONSTANTS_H

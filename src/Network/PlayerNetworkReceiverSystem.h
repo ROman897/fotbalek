@@ -47,8 +47,8 @@ private:
             label->enabled = true;
             label->m_text = players[i].name;
             // need to set label color based on which team the client is in
-            m_initialized = true;
         });
+        m_initialized = true;
     }
     void runUpdate(){
         if (! m_playerClient->hasStarted())
