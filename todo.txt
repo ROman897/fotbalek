@@ -1,12 +1,10 @@
-ComponentManager: -- DONE 1. finish signatureCallPairFunction() to concatenate two tuples
-		     and call function.
-		  2. --DONE implement find by signature method that returns id and then
-		     implement forEntity(Id) that does specified function only
-		     for entity with id thus having constant complexity. Used for singleton components(input)
-		  3. decide how players will be drawn and finish graphics
-		  4. Implement System and component for menu controll etc. on client side
-		  5. Merge server and client from other branch with existing network clases
-		  6. implement game logic on server, such as starting a game and handling goal situations etc.
-		   
-			--DONE FIX LINKER ERROR: undefined reference to `ComponentSettings<Transform, RectangleShape>::componentList'
-				FIX compilation error
+Finish implementation of server methods used by ServerNetwork Receiver and Sender
+1. Server: Split players into teams, when max players count is reached, set game started to true
+           Implement get players to return ids, names and teams of all players
+2. Implement message Id on both sides so that older messages are ignored
+3. Add to ServerObjectsSpawner methods to add players ball and barriers on server side
+4. Implement Server game logic such as counting score, checking when ball is in the goal
+   and reseting positions when a goal is scored + game timer
+5. find player and ball sprites to use
+6. Get Menu to work
+7. Send message that game has ended and who won
