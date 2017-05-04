@@ -3,7 +3,7 @@ project(pv264_project)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-set(SOURCE_FILES src/main.cpp src/Physic/PhysicSystem.h src/Components/Physic/RigidBody.h src/Utils/Vector2.h
+set(SOURCE_FILES src/Physic/PhysicSystem.h src/Components/Physic/RigidBody.h src/Utils/Vector2.h
         src/Constants/GameConstants.cpp src/Constants/GameConstants.h src/Utils/Timer.cpp src/Utils/Timer.h src/Physic/Collision.cpp
         src/Physic/Collision.h src/Components/Physic/Shapes/CircleCollider.h src/Components/Physic/Shapes/RectangleCollider.h
         src/Core/GameObject.h src/Core/GameEngine.h src/Core/ComponentManager.h src/Components/Graphic/Shapes/RectangleShape.h
@@ -17,15 +17,22 @@ set(SOURCE_FILES src/main.cpp src/Physic/PhysicSystem.h src/Components/Physic/Ri
         src/Components/Physic/ColliderTrigger.h src/Network/API/Client/Message.h src/Network/API/Client/Player.h
         src/Network/API/Client/PlayerClient.cpp src/Network/API/Client/PlayerClient.h src/Network/API/Client/UdpBase.h
         src/Network/API/Server/PlayerServer.cpp src/Network/API/Server/PlayerServer.h src/Network/API/Server/UdpServer.cpp
-        src/Network/API/Server/UdpServer.h src/Constants/ClientGameConstants.h src/Constants/ClientGameConstants.cpp src/Constants/ServerGameConstants.h src/Constants/ServerGameConstants.cpp)
+        src/Network/API/Server/UdpServer.h src/Constants/ClientGameConstants.h src/Constants/ClientGameConstants.cpp
+        src/Constants/ServerGameConstants.h src/Constants/ServerGameConstants.cpp)
+
+set(SERVER_MAIN src/mainServer.cpp)
+set(CLIENT_MAIN src/mainClient.cpp)
 
 set(BOOST_ROOT /opt/boost)
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost COMPONENTS system)
 
 include_directories(${Boost_INCLUDE_DIR})
-add_executable(pv264_project ${SOURCE_FILES})
-target_link_libraries(pv264_project ${Boost_LIBRARIES})
+add_executable(pv264_project_server ${SOURCE_FILES} ${SERVER_MAIN})
+target_link_libraries(pv264_project_server ${Boost_LIBRARIES})
+
+add_executable(pv264_project_client ${SOURCE_FILES} ${CLIENT_MAIN})
+target_link_libraries(pv264_project_client ${Boost_LIBRARIES})
 
 
 INCLUDE(FindPkgConfig)
@@ -36,7 +43,8 @@ PKG_SEARCH_MODULE(SDL2MIXER REQUIRED SDL2_mixer)
 PKG_SEARCH_MODULE(SDL2TTF REQUIRED SDL2_ttf)
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES})
+TARGET_LINK_LIBRARIES(pv264_project_client ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES})
+TARGET_LINK_LIBRARIES(pv264_project_server ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2TTF_LIBRARIES})
 
-#ADD_LIBRARY(Tetris SHARED ${SRC_FILES})
-TARGET_LINK_LIBRARIES(pv264_project ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${SDL2TTF_LIBRARY})
+TARGET_LINK_LIBRARIES(pv264_project_client ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${SDL2TTF_LIBRARY})
+TARGET_LINK_LIBRARIES(pv264_project_server ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${SDL2TTF_LIBRARY})

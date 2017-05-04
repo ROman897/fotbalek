@@ -1,11 +1,6 @@
 
 #include "ClientObjectsSpawner.h"
 
-
-void createClient(){
-
-}
-
 int main() {
     namespace hana = boost::hana;
     using namespace hana::literals;
@@ -21,7 +16,6 @@ int main() {
 
     PlayerClient client;
     client.connect(ClientGameConstants::kServerAddress, ClientGameConstants::kServerPort);
-
 
     EngineType gameEngine;
     Id id = gameEngine.spawnGameObject();

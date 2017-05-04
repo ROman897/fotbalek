@@ -13,19 +13,6 @@ PlayerClient::~PlayerClient() {
 	stop();
 }
 
-/*
-int main( int argc, char **argv ) {
-	if ( argc != 3 ) {
-		std::cerr << "Invalid number of arguments passed\n"
-				  << "usage: fotbalek host port \n";  //upravit mozno na 13000 defaultne
-		return 1;
-	}
-	PlayerClient player;
-	player.connect(argv[1], argv[2]);
-	player.disconnect();
-	return 0;
-}*/
-
 void PlayerClient::askForId() {
 	m_socket.async_send(boost::asio::buffer("i?" + m_me.name), boost::bind(&PlayerClient::handleErrors,
 																  this,
@@ -83,7 +70,7 @@ void PlayerClient::parseMessage(std::string &input) {
 		getY,
 		index
 	};
-
+	//pridat parsovanie game started a nastavit gamestarted na true
 	size_t index_start = 0;
 	float x;
 	float y;
@@ -144,7 +131,6 @@ void PlayerClient::parseId(ErrorCode &err, size_t trans) {
 		std::string message(m_buffer.data(), m_buffer.data() + trans);
 		auto index = message.find(":");
 		m_me.id = static_cast<Id>(std::stoul(message.substr(index + 1)));
-		std::cout << "dosla ti odpoved na i? " << message << " velkosti:" << trans << std::endl;
 	}
 	else
 	{
@@ -174,7 +160,6 @@ void PlayerClient::sendData(const NetworkId& id, const MovementInputHolder& inpu
 }
 
 void PlayerClient::send(const std::string &input) {
-	std::cout << "nieco posielam" << std::endl;
 	std::string message {std::to_string(m_me.id) + "_" + input};
 	m_socket.async_send(boost::asio::buffer(message.data(), message.size()), boost::bind(&PlayerClient::handleErrors,
 															   this,
@@ -205,4 +190,8 @@ const Player &PlayerClient::getMe() const {
 const Message &PlayerClient::getMessage() {
 	std::lock_guard<std::mutex> lock(m_mutex);
 	return m_lastMessage;
+}
+
+bool PlayerClient::hasStarted() const {
+	return gameStarted.load();
 }

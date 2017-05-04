@@ -21,7 +21,7 @@ class PlayerClient : UdpBase {
 	using ErrorCode = const boost::system::error_code;
 
 	//std::function<navratovy typ(argumenty)
-	std::function<void()> gameStarted;
+	std::atomic_bool gameStarted;
 	udp::endpoint m_serverEnd;
 	Player m_me;
 	Message m_lastMessage;
@@ -59,6 +59,8 @@ public:
 	const Player &getMe() const;
 
 	const Message &getMessage();
+
+	bool hasStarted() const;
 
 };
 
