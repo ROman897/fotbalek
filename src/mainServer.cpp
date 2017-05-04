@@ -6,6 +6,7 @@
 #include "ClientObjectsSpawner.h"
 #include "Network/API/Server/UdpServer.h"
 #include "Network/ServerNetworkSenderSystem.h"
+#include "Network/ServerNetworkReceiverSystem.h"
 
 int main() {
 	namespace hana = boost::hana;
@@ -70,6 +71,9 @@ int main() {
 	spawnButton(gameEngine, "options", "", "", optionsPos, "OPTIONS");
 	spawnButton(gameEngine, "quit", "", "", quitPos, "QUIT");
 	auto& serverSender = gameEngine.getSystem<ServerNetworkSenderSystem<settings>>();
+	auto& serverReceiver = gameEngine.getSystem<ServerNetworkReceiverSystem<settings>>();
+	serverReceiver.setServer(&server);
+	serverSender.setServer(&server);
 	//spawnBarrier(gameEngine)
 
 	//auto& graphicSystem =  gameEngine.getSystem<GraphicSystem<settings >>();

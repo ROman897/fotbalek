@@ -10,7 +10,7 @@
 #include "../Components/MovementInputHolder.h"
 #include "../Components/Physic/RigidBody.h"
 #include "../Constants/GameConstants.h"
-#include "API/Server/PlayerServer.h"
+#include "API/Server/UdpServer.h"
 #include "../Constants/ServerGameConstants.h"
 #include "../SettingsDefines.h"
 #include "../Utils/Timer.h"
@@ -37,7 +37,7 @@ class ServerNetworkReceiverSystem{
 
 private:
     ComponentManager<TSettings>* m_componentManager;
-    PlayerServer* m_PlayerServer;
+    UdpServer* m_UdpServer;
     bool m_initialized;
     using SystemSignature_Network_Rigid = Signature<NetworkId, RigidBody>;
 
@@ -51,7 +51,7 @@ private:
     }
 
     void gameStarted(){
-        auto& players = m_PlayerServer->getPlayers();
+        auto& players = m_UdpServer->getPlayers();
         Id i = 0;
         m_componentManager->forEntitiesMatching<SystemSignature_Network>([&players, &i](NetworkId* id, Transform* transform){
             id->id = players[i].id;
@@ -66,21 +66,21 @@ private:
 
         while(true){
 
-            if (! m_PlayerServer->hasStarted())
+            if (! m_UdpServer->hasStarted())
                 continue;
             if (! m_initialized)
                 gameStarted();
             if (timer.getTime() < ClientGameConstants::kClientNetworkReceiverDt)
                 continue;
 
-            auto& data = m_PlayerServer->getMessage();
+            auto& data = m_UdpServer->getMessage();
             if (! data.isValid())
                 continue;
 
             auto& ids = data.getIds();
             auto& inputs = data.getMovements();
             updateInputs(ids, inputs);
-            m_PlayerServer->releaseMessage();
+            m_UdpServer->releaseMessage();
 
 
             if (m_componentManager->shouldQuit()){
@@ -95,8 +95,8 @@ public:
 
     }
 
-    void setServer(PlayerServer* server){
-        m_PlayerServer = server;
+    void setServer(UdpServer* server){
+        m_UdpServer = server;
     }
 
     void start(){
