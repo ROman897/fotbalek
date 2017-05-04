@@ -35,7 +35,8 @@ class ServerNetworkReceiverSystem{
 
 private:
     ComponentManager<TSettings>* m_componentManager;
-    PlayerServer* playerServer;
+    PlayerServer* m_PlayerServer;
+    bool initialized;
     using SystemSignature_Network_Rigid = Signature<NetworkId, RigidBody>;
 
     void updateInput(std::vector<NetworkId> ids, std::vector<MovementInputHolder> inputs){
@@ -47,8 +48,24 @@ private:
         });
     }
 
+    void gameStarted(){
+
+    }
+
     void run(){
         while(true){
+            if (! m_PlayerServer->hasStarted())
+                continue;
+            if (! initialized)
+                gameStarted();
+
+            auto& data = m_PlayerServer->getData();
+            if (! data.isValid())
+                continue;
+            auto& ids = data.getIds();
+            auto& inputs = data.getInputs();
+            updateInput(ids, inputs);
+
 
 
             if (m_componentManager->shouldQuit())
@@ -57,9 +74,12 @@ private:
     }
 
 public:
+    ServerNetworkReceiverSystem() : initialized(false) {
 
-    void setServer(){
+    }
 
+    void setServer(PlayerServer* server){
+        m_PlayerServer = server;
     }
 
     void start(){

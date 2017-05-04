@@ -11,13 +11,15 @@
 #include "API/Client/PlayerClient.h"
 #include "../Utils/Timer.h"
 #include "../SettingsDefines.h"
+#include "../Constants/GameConstants.h"
 
 template <typename TSettings>
 class PlayerNetworkReceiverSystem{
 private:
     ComponentManager<TSettings>* m_componentManager;
     PlayerClient* m_playerClient;
-    Timer timer;
+    Timer m_timer;
+    bool m_initialized;
 
     /**
      * call this when received positions from the server
@@ -45,7 +47,22 @@ private:
             label->enabled = true;
             label->m_text = players[i].name;
             // need to set label color based on which team the client is in
+            m_initialized = true;
         });
+    }
+    void runUpdate(){
+        if (! m_playerClient->hasStarted())
+            return;
+        if (! m_initialized){
+            gameStarted();
+        }
+        auto& message = m_playerClient->getMessage();
+        if (!message.isValid())
+            return;
+        auto& ids = message.getIds();
+        auto& transforms = message.getTransforms();
+        updatePositions(ids, transforms);
+        message.setValid(false);
     }
 
 public:
@@ -54,16 +71,40 @@ public:
         m_playerClient = playerClient;
     }
 
+    PlayerNetworkReceiverSystem() : m_initialized(false) {
+
+    }
+
+
 void start(){
     run();
+
 }
 
     void run(){
+        Uint32 accumulator = 0;
+        Timer timer;
+        timer.start();
+
+        Uint32 frameStart = timer.getTime();
+        timer.resetTime();
+
         while (true){
+            accumulator += timer.getTime() - frameStart;
 
+            frameStart = timer.getTime();
 
-            if (m_componentManager->shouldQuit())
+            if (accumulator > GameConstants::kEngineAccumulatorLimit)
+                accumulator = GameConstants::kEngineAccumulatorLimit;
+
+            while (accumulator > ClientGameConstants::kClientNetworkReceiverDt) {
+                runUpdate();
+                accumulator -= GameConstants::kEngineDeltaTime;
+            }
+
+            if (m_componentManager->shouldQuit()){
                 break;
+            }
         }
     }
 

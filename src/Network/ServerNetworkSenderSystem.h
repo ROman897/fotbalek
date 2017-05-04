@@ -33,7 +33,7 @@ public:
         std::vector<NetworkId> ids;
         std::vector<Transform> transforms;
         prepareData(ids, transforms);
-        //playerServer->sendData(ids, transforms);
+        playerServer->sendData(ids, transforms);
     }
 
 };

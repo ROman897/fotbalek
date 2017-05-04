@@ -19,18 +19,16 @@ private:
     // id of a gameobject that has NetworkId and MovementInputHolder components
     Id id;
 
-    const NetworkId* m_networkId;
     MovementInputHolder * m_inputHolder;
 
     PlayerClient* m_playerClient;
 
-    bool prepareData(const NetworkId* networkId, MovementInputHolder* inputHolder){
+    bool prepareData(MovementInputHolder* inputHolder){
         bool result = false;
-        m_componentManager->template forEntityMatching<SystemSignature_Network_Input>(id, [&networkId, &inputHolder, &result](const NetworkId* _networkId, MovementInputHolder* _inputHolder){
+        m_componentManager->template forEntityMatching<SystemSignature_Network_Input>(id, [this, &result](MovementInputHolder* _inputHolder){
             if (! _inputHolder->valid)
                 return;
-            networkId = _networkId;
-            inputHolder = _inputHolder;
+            m_inputHolder = _inputHolder;
             _inputHolder->valid = false;
             result = true;
         });
@@ -38,9 +36,10 @@ private:
     }
 
     void sendData(){
-        if (prepareData(m_networkId, m_inputHolder)) {
-            m_playerClient->sendData(*m_networkId, *m_inputHolder);
+        if (prepareData(m_inputHolder)) {
             std::cout << "sending data on client sender system" << std::endl;
+            m_playerClient->sendData(*m_inputHolder);
+
         }
 
     }

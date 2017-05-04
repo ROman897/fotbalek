@@ -33,7 +33,7 @@ using SystemSignature_Circle_Collider = Signature <CircleCollider, Transform>;
 using SystemSignature_Rectangle_Collider = Signature <RectangleCollider, Transform>;
 using SystemSignature_Input = Signature<MovementInputHolder>;
 using SystemSignature_Button = Signature<Button, Sprite, Label, Transform>;
-using SystemSignature_Network_Input = Signature<NetworkId, MovementInputHolder>;
+using SystemSignature_Network_Input = Signature<MovementInputHolder>;
 using SystemSignature_Network = Signature<NetworkId, Transform>;
 using SystemSignature_Network_Graphic = Signature<NetworkId, Sprite, Label>;
 
