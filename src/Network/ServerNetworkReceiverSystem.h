@@ -12,6 +12,8 @@
 #include "../Constants/GameConstants.h"
 #include "API/Server/PlayerServer.h"
 #include "../Constants/ServerGameConstants.h"
+#include "../SettingsDefines.h"
+#include "../Utils/Timer.h"
 
 void applyInputForce(RigidBody& body, const MovementInputHolder& inputHolder, float coef){
     if (inputHolder.moveVertical){
@@ -36,10 +38,10 @@ class ServerNetworkReceiverSystem{
 private:
     ComponentManager<TSettings>* m_componentManager;
     PlayerServer* m_PlayerServer;
-    bool initialized;
+    bool m_initialized;
     using SystemSignature_Network_Rigid = Signature<NetworkId, RigidBody>;
 
-    void updateInput(std::vector<NetworkId> ids, std::vector<MovementInputHolder> inputs){
+    void updateInputs(std::vector<NetworkId> ids, std::vector<MovementInputHolder> inputs){
         m_componentManager->forEntitiesMatching<SystemSignature_Network_Rigid>([&ids, &inputs](auto& id, auto& body){
             for (int i =0; i < ids.size(); ++i){
                 if (ids[i] == id)
@@ -49,32 +51,47 @@ private:
     }
 
     void gameStarted(){
-
+        auto& players = m_PlayerServer->getPlayers();
+        Id i = 0;
+        m_componentManager->forEntitiesMatching<SystemSignature_Network>([&players, &i](NetworkId* id, Transform* transform){
+            id->id = players[i].id;
+            transform->m_position = ServerGameConstants::startingPositions[i];
+        });
+        m_initialized = true;
     }
 
     void run(){
+        Timer timer;
+        timer.start();
+
         while(true){
+
             if (! m_PlayerServer->hasStarted())
                 continue;
-            if (! initialized)
+            if (! m_initialized)
                 gameStarted();
+            if (timer.getTime() < ClientGameConstants::kClientNetworkReceiverDt)
+                continue;
 
             auto& data = m_PlayerServer->getData();
             if (! data.isValid())
                 continue;
+
             auto& ids = data.getIds();
             auto& inputs = data.getInputs();
             updateInput(ids, inputs);
+            m_PlayerServer->releaseMessage();
 
 
-
-            if (m_componentManager->shouldQuit())
+            if (m_componentManager->shouldQuit()){
                 break;
+            }
         }
+
     }
 
 public:
-    ServerNetworkReceiverSystem() : initialized(false) {
+    ServerNetworkReceiverSystem() : m_initialized(false) {
 
     }
 

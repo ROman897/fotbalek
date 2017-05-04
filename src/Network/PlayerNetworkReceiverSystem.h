@@ -47,8 +47,8 @@ private:
             label->enabled = true;
             label->m_text = players[i].name;
             // need to set label color based on which team the client is in
-            m_initialized = true;
         });
+        m_initialized = true;
     }
     void runUpdate(){
         if (! m_playerClient->hasStarted())
@@ -62,7 +62,7 @@ private:
         auto& ids = message.getIds();
         auto& transforms = message.getTransforms();
         updatePositions(ids, transforms);
-        message.setValid(false);
+        message.releaseMessage();
     }
 
 public:
