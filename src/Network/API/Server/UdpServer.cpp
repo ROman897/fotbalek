@@ -113,7 +113,9 @@ void UdpServer::parseInput(size_t length) {
     enum class state {
         init,
         new_pl,
-        ind
+        ind,
+        discnct_1,
+        discnct_2
     };
 
     unsigned short index = 0;
@@ -127,6 +129,8 @@ void UdpServer::parseInput(size_t length) {
                 currSt = state::ind;
             } else if (m_buffer[i] == 'i') {
                 currSt = state::new_pl;
+            } else if (m_buffer[i] == 'e') {
+                currSt = state::discnct_1;
             } else {
                 return;
             }
@@ -153,6 +157,23 @@ void UdpServer::parseInput(size_t length) {
                 }
                 std::cout << std::endl << "port: " << m_clients[index]->m_endpt.port() << '\n';
                 respond(m_clients[index]->m_endpt, "jaaaaaaaaj ty kkt");
+            }
+            return;
+        }
+        case state::discnct_1 : {
+            if (m_buffer[i] != 'n')
+                return;
+            currSt = state::discnct_2;
+            break;
+        }
+        case state::discnct_2 : {
+            if (m_buffer[i] != 'd')
+                return;
+            for (auto &i : m_clients) {
+                if (i && endptEq(i->m_endpt, m_pending)) {
+                    abandonClient(i->m_index);
+                    return;
+                }
             }
             return;
         }

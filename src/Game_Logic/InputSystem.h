@@ -9,7 +9,7 @@
 #include "../Components/MovementInputHolder.h"
 #include "../Utils/declarations.h"
 #include "../Core/ComponentManager.h"
-#include "../Utils/GameConstants.h"
+#include "../Constants/GameConstants.h"
 #include "../Utils/Timer.h"
 #include "../Components/UI/Button.h"
 #include "../Components/Graphic/Sprite.h"
@@ -28,20 +28,25 @@ class InputSystem{
 public:
     void run(float dt) {
         time += dt;
-        if (time < GameConstants::kKeyCooldown)
+        if (time < ClientGameConstants::kKeyCooldown)
             return;
-        time -= GameConstants::kKeyCooldown;
+        time -= ClientGameConstants::kKeyCooldown;
         SDL_Event event;
         bool moveLeft = false;
         bool moveRight = false;
         bool moveUp = false;
         bool moveDown = false;
         bool shoot = false;
-        int menuMoveUp = 0;
-        int menuMoveDown = 0;
+        //int menuMoveUp = 0;
+        //int menuMoveDown = 0;
 
 
         while (SDL_PollEvent(&event) != 0) {
+            moveLeft = false;
+            moveRight = false;
+            moveUp = false;
+            moveDown = false;
+            shoot = false;
             if (event.type == SDL_QUIT){
                 m_manager->setQuit(true);
             }
@@ -97,7 +102,7 @@ public:
                                                                                                         Transform *transform1) {
                                                                                                transform1->m_position =
                                                                                                        transform->m_position +
-                                                                                                       GameConstants::kButtonOffset;
+                                                                                                               ClientGameConstants::kButtonOffset;
                                                                                            });
                                                                                });
                             break;
@@ -116,7 +121,7 @@ public:
                                                                                                         Transform *transform1) {
                                                                                                transform1->m_position =
                                                                                                        transform->m_position +
-                                                                                                       GameConstants::kButtonOffset;
+                                                                                                               ClientGameConstants::kButtonOffset;
                                                                                            });
                                                                                });
                             break;
@@ -140,8 +145,8 @@ public:
             }
         }
 
-            bool moveVertical = (moveUp && !moveDown) || (moveDown && !moveUp);
-            bool moveHorizontal = (moveRight && !moveLeft) || (moveLeft && !moveRight);
+            bool moveVertical = (moveUp  || moveDown);
+            bool moveHorizontal = (moveRight || moveLeft);
 
             if (moveHorizontal || moveVertical || shoot) {
                 m_manager->template forEntityMatching<SystemSignature_Input >(movementInputId,
@@ -159,26 +164,20 @@ public:
 
     }
 
-    void initialize(){
-        activeButtonArrowId = m_manager->findGameObjectByTag("button_arrow");
-        movementInputId = m_manager->template findEntityMatching<SystemSignature_Input>();
-        escape = false;
-        // now we need to decide how the button that is selected at the start is marked
-    }
-
     void setManager(ComponentManager<settings >* manager){
         m_manager = manager;
     }
 
     void start(){
-
+        activeButtonArrowId = m_manager->findGameObjectByTag("button_arrow");
+        movementInputId = m_manager->template findEntityMatching<SystemSignature_Input>();
+        escape = false;
     }
 
 private:
     Timer inputTimer;
 // id of gameobject with movementinputholder component
     Id movementInputId;
-    Id menuInputId;
     Id activeButtonId;
     Id activeButtonArrowId;
 

@@ -8,13 +8,16 @@
 #include "../Components/Network/NetworkId.h"
 #include "../Components/Transform.h"
 #include "../Core/ComponentManager.h"
+#include "API/Client/PlayerClient.h"
+#include "../Utils/Timer.h"
+#include "../SettingsDefines.h"
 
 template <typename TSettings>
 class PlayerNetworkReceiverSystem{
-    using SystemSignature_Network = Signature<NetworkId, Transform>;
 private:
     ComponentManager<TSettings>* m_componentManager;
-    PlayerClient* playerClient;
+    PlayerClient* m_playerClient;
+    Timer timer;
 
     /**
      * call this when received positions from the server
@@ -30,11 +33,38 @@ private:
         });
     }
 
-    /**
-     * call this with callback when received gamestarted from the server
-     */
     void gameStarted(){
+        // here we need to set all ids and set player visuals to match their respective teams
+       const std::vector<Player> & players = m_playerClient->getPlayers();
+        Id i = 0;
+        m_componentManager->forEntitiesMatching<SystemSignature_Network_Graphic>([&players, &i](NetworkId* id, Sprite* sprite, Label* label){
+            id->id = players[i].id;
+            sprite->enabled = true;
+            //sprite->m_texturePath =
+            // need to set sprite based on which team the client is in
+            label->enabled = true;
+            label->m_text = players[i].name;
+            // need to set label color based on which team the client is in
+        });
+    }
 
+public:
+
+    void setPlayerClient(PlayerClient* playerClient){
+        m_playerClient = playerClient;
+    }
+
+void start(){
+    run();
+}
+
+    void run(){
+        while (true){
+
+
+            if (m_componentManager->shouldQuit())
+                break;
+        }
     }
 
 

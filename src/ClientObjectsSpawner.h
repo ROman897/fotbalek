@@ -21,14 +21,15 @@
 #include "Components/Graphic/Layers/RenderingLayer_UI.h"
 #include "SettingsDefines.h"
 #include "Game_Logic/InputSystem.h"
+#include "Network/PlayerNetworkSenderSystem.h"
 
 
 template<typename... Sigs> constexpr decltype(hana::make_tuple(hana::type_c<Sigs>...)) SignatureSettings<Sigs...>::signatureList;
 
-template<typename Settings> constexpr decltype(hana::replicate<hana::tuple_tag>(SignatureManager<Settings>::b,
-                                                                                hana::length(Settings::signatureSettings::signatureList))) SignatureManager<Settings>::m_signatures;
+//template<typename Settings> constexpr decltype(hana::replicate<hana::tuple_tag>(SignatureManager<Settings>::b,
+                                                                                //hana::length(Settings::signatureSettings::signatureList))) SignatureManager<Settings>::m_signatures;
 
-using sysSettings = SystemSettings <GraphicSystem<settings >, InputSystem<settings >>;
+using sysSettings = SystemSettings <GraphicSystem<settings >, InputSystem<settings >, PlaynerNetworkSenderSystem<settings>>;
 using externalSysSettings = SystemSettings<PhysicSystem<settings >>;
 
 using EngineType = GameEngine<settings, sysSettings, externalSysSettings >;

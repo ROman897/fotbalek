@@ -7,9 +7,7 @@
 #include <boost/bind.hpp>
 #include <boost/array.hpp>
 #include <iostream>
-#include <deque>
-#include <vector>
-#include <queue>
+#include <cstdlib>
 
 #include "UdpBase.h"
 #include "Player.h"
@@ -42,7 +40,7 @@ public:
 
 	void parseId(ErrorCode &err, size_t trans);
 
-	void parseMessage(const std::string &message);
+	void parseMessage(std::string &message);
 
 	void sendData(const NetworkId& id, const MovementInputHolder& inputHolder);
 

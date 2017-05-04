@@ -15,5 +15,9 @@ struct MovementInputHolder{
     bool moveHorizontal;
     bool shoot;
     bool valid;
+
+    MovementInputHolder() : valid(false) {
+
+    }
 };
 #endif //PV264_PROJECT_INPUTHOLDER_H

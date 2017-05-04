@@ -29,10 +29,13 @@ int main() {
     gameEngine.addComponent<RectangleShape>(id, -100, -100, 200, 200, color );
     gameEngine.addComponent<Transform>(id2, pos2);
     gameEngine.addComponent<RectangleShape>(id2, -50, -50, 100, 100, color2);
-    Vector_Float vel = {80.0f, 0.0f};
+    Vector_Float vel = {50.0f, 0.0f};
     Vector_Float force = {0.0f, 0.0f};
 
     gameEngine.addComponent<RigidBody>(id, 1.0f, 10.0f, vel, force, 1.001f);
+    gameEngine.addComponent<NetworkId>(id, 1);
+    gameEngine.addComponent<MovementInputHolder>(id);
+
     Vector_Float vel2 = {0.0f, 0.0f};
     gameEngine.addComponent<RigidBody>(id2, 0.0f, 1.0f, vel2, force, 1.001f );
 
@@ -48,7 +51,7 @@ int main() {
     Vector_Float pitchPos = {0.0f, 0.0f};
     Vector_Float spriteOffset = {0.0f, 0.0f};
     gameEngine.addComponent<Transform>(pitchId, pitchPos);
-    gameEngine.addComponent<Sprite>(pitchId, spriteOffset, GameConstants::kPitchSpritePath, true);
+    gameEngine.addComponent<Sprite>(pitchId, spriteOffset, ClientGameConstants::kPitchSpritePath, true);
 
     gameEngine.addComponent<RenderingLayer_Foreground>(id);
     gameEngine.addComponent<RenderingLayer_Foreground>(id2);

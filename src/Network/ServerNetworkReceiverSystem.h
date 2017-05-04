@@ -9,7 +9,9 @@
 #include "../Components/Network/NetworkId.h"
 #include "../Components/MovementInputHolder.h"
 #include "../Components/Physic/RigidBody.h"
-#include "../Utils/GameConstants.h"
+#include "../Constants/GameConstants.h"
+#include "API/Server/PlayerServer.h"
+#include "../Constants/ServerGameConstants.h"
 
 void applyInputForce(RigidBody& body, const MovementInputHolder& inputHolder, float coef){
     if (inputHolder.moveVertical){
@@ -33,15 +35,35 @@ class ServerNetworkReceiverSystem{
 
 private:
     ComponentManager<TSettings>* m_componentManager;
+    PlayerServer* playerServer;
     using SystemSignature_Network_Rigid = Signature<NetworkId, RigidBody>;
 
     void updateInput(std::vector<NetworkId> ids, std::vector<MovementInputHolder> inputs){
         m_componentManager->forEntitiesMatching<SystemSignature_Network_Rigid>([&ids, &inputs](auto& id, auto& body){
             for (int i =0; i < ids.size(); ++i){
                 if (ids[i] == id)
-                    applyInputForce(body, inputs[i], GameConstants::kInputMovementCoefficient);
+                    applyInputForce(body, inputs[i], ServerGameConstants::kInputMovementCoefficient);
             }
         });
+    }
+
+    void run(){
+        while(true){
+
+
+            if (m_componentManager->shouldQuit())
+                break;
+        }
+    }
+
+public:
+
+    void setServer(){
+
+    }
+
+    void start(){
+        run();
     }
 };
 

@@ -15,7 +15,7 @@
 #include "../Core/EngineStructures.h"
 #include "../Components/Graphic/Label.h"
 #include "../Components/Graphic/Camera.h"
-#include "../Utils/GameConstants.h"
+#include "../Constants/GameConstants.h"
 #include "../Components/Graphic/Layers/RenderingLayer_Background.h"
 #include "../Components/Graphic/Layers/RenderingLayer_Foreground.h"
 #include <SDL.h>
@@ -24,6 +24,7 @@
 #include <stdexcept>
 #include <map>
 #include "../SettingsDefines.h"
+#include "../Constants/ClientGameConstants.h"
 
 
 using FontSizeMap = std::map<int, FontSmartPtr>;
@@ -235,7 +236,7 @@ public:
         SDL_RenderPresent(getRenderer());
     }
 
-    GraphicSystem() : m_componentManager(nullptr), m_ScreenHeight(GameConstants::kWindowHeight), m_ScreenWidth(GameConstants::kWindowWidth),
+    GraphicSystem() : m_componentManager(nullptr), m_ScreenHeight(ClientGameConstants::kWindowHeight), m_ScreenWidth(ClientGameConstants::kWindowWidth),
                       m_WindowHolder("MainWindow", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_ScreenWidth, m_ScreenHeight, SDL_WINDOW_SHOWN),
                                                                        m_RendererHolder(m_WindowHolder.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC){
 
