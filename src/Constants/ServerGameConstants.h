@@ -6,6 +6,7 @@
 #define PV264_PROJECT_SERVERGAMECONSTANTS_H
 
 #include <SDL_quit.h>
+#include "../Utils/declarations.h"
 
 struct ServerGameConstants{
 

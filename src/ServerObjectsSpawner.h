@@ -18,9 +18,9 @@
 #include "Network/ServerNetworkSenderSystem.h"
 #include "Network/ServerNetworkReceiverSystem.h"
 
-using sysSettings = SystemSettings <ServerNetworkSenderSystem<settings>, ServerNetworkReceiverSystem<settings>>;
-using externalSysSettings = SystemSettings<PhysicSystem<settings >>;
+using sysSettings_Server = SystemSettings <ServerNetworkSenderSystem<settings>>;
+using externalSysSettings_Server = SystemSettings<PhysicSystem<settings >, ServerNetworkReceiverSystem<settings>>;
 
-using EngineType_Server = GameEngine<settings, sysSettings, externalSysSettings >;
+using EngineType_Server = GameEngine<settings, sysSettings_Server, externalSysSettings_Server >;
 
 #endif //PV264_PROJECT_SERVEROBJECTSSPAWNER_H

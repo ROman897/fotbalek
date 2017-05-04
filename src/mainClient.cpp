@@ -17,7 +17,7 @@ int main() {
     PlayerClient client;
     client.connect(ClientGameConstants::kServerAddress, ClientGameConstants::kServerPort);
 
-    EngineType gameEngine;
+    EngineType_Client gameEngine;
     Id id = gameEngine.spawnGameObject();
     Id id2 = gameEngine.spawnGameObject();
     Vector_Float pos = {23.47f ,200};

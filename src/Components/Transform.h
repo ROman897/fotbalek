@@ -13,5 +13,12 @@ Vector_Float m_position;
     Transform(const Vector_Float &m_position) : m_position(m_position) {}
     Transform() = default;
 
+    bool operator==(const Transform &rhs) const {
+        return m_position == rhs.m_position;
+    }
+
+    bool operator!=(const Transform &rhs) const {
+        return !(rhs == *this);
+    }
 };
 #endif //PV264_PROJECT_TRANSFORM_H

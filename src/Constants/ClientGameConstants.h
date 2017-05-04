@@ -71,7 +71,7 @@ struct ClientGameConstants {
     static const std::string kServerPort;
     static const std::string kServerAddress;
 
-    static const Uint32 kClientNetworkReceiverDt;
+    static constexpr Uint32 kClientNetworkReceiverDt = 20;
 
 
     //--------------------------// client constants

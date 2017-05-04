@@ -39,13 +39,13 @@ private:
     ComponentManager<TSettings>* m_componentManager;
     UdpServer* m_UdpServer;
     bool m_initialized;
-    using SystemSignature_Network_Rigid = Signature<NetworkId, RigidBody>;
+
 
     void updateInputs(std::vector<NetworkId> ids, std::vector<MovementInputHolder> inputs){
-        m_componentManager->template forEntitiesMatching<SystemSignature_Network_Rigid>([&ids, &inputs](auto& id, auto& body){
+        m_componentManager->template forEntitiesMatching<SystemSignature_Network_Rigid>([&ids, &inputs](NetworkId* id, RigidBody* body){
             for (int i =0; i < ids.size(); ++i){
-                if (ids[i] == id)
-                    applyInputForce(body, inputs[i], ServerGameConstants::kInputMovementCoefficient);
+                if (ids[i].id == id->id)
+                    applyInputForce(*body, inputs[i], ServerGameConstants::kInputMovementCoefficient);
             }
         });
     }
@@ -91,6 +91,11 @@ private:
     }
 
 public:
+
+    void setManager(ComponentManager<TSettings> *manager){
+        m_componentManager = manager;
+    }
+
     ServerNetworkReceiverSystem() : m_initialized(false) {
 
     }

@@ -4,6 +4,7 @@
 
 
 #include "ServerObjectsSpawner.h"
+#include "SettingsDefines.h"
 
 int main() {
 	namespace hana = boost::hana;
@@ -19,12 +20,12 @@ int main() {
 
 	UdpServer server;
 	server.init();
-
 	EngineType_Server gameEngine;
-	auto& serverSender = gameEngine.getSystem<ServerNetworkSenderSystem<settings>>();
-	auto& serverReceiver = gameEngine.getSystem<ServerNetworkReceiverSystem<settings>>();
-	serverReceiver.setServer(&server);
-	serverSender.setServer(&server);
+
+	auto& senderSystem = gameEngine. getExternalSystem<ServerNetworkReceiverSystem<settings>>();
+	auto& receiverSystem = gameEngine.getSystem<ServerNetworkSenderSystem<settings >>();
+	senderSystem.setServer(&server);
+	receiverSystem.setServer(&server);
 	//spawnBarrier(gameEngine)
 
 	//auto& graphicSystem =  gameEngine.getSystem<GraphicSystem<settings >>();

@@ -27,10 +27,10 @@ private:
      * @param transforms
      */
     void updatePositions(const std::vector<NetworkId>& ids, const std::vector<Transform>& transforms){
-        m_componentManager->forEntitiesMatching<SystemSignature_Network>([&ids, &transforms](auto& id, auto& transform){
+        m_componentManager->forEntitiesMatching<SystemSignature_Network>([&ids, &transforms](NetworkId* id, Transform* transform){
             for (int i =0; i < ids.size(); ++i){
-                if (ids[i] == id)
-                    transform = transforms[i];
+                if (ids[i].id == id->id)
+                    *transform = transforms[i];
             }
         });
     }
@@ -40,12 +40,12 @@ private:
        const std::vector<Player> & players = m_playerClient->getPlayers();
         Id i = 0;
         m_componentManager->forEntitiesMatching<SystemSignature_Network_Graphic>([&players, &i](NetworkId* id, Sprite* sprite, Label* label){
-            id->id = players[i].id;
+            id->id = players[i].m_id;
             sprite->enabled = true;
             sprite->m_texturePath = players[i].m_team ? ClientGameConstants::kPlayerSpritePath_Team1 : ClientGameConstants::kPlayerSpritePath_Team2;
             // need to set sprite based on which team the client is in
             label->enabled = true;
-            label->m_text = players[i].name;
+            label->m_text = players[i].m_name;
         });
         m_initialized = true;
     }
@@ -61,9 +61,9 @@ private:
         if (!message.isValid())
             return;
         auto& ids = message.getIds();
-        auto& transforms = message.getTransforms();
+        auto& transforms = message.getMovements();
         updatePositions(ids, transforms);
-        message.releaseMessage();
+        m_playerClient->releaseMessage();
     }
 
 public:

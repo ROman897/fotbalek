@@ -36,13 +36,15 @@ using SystemSignature_Button = Signature<Button, Sprite, Label, Transform>;
 using SystemSignature_Network_Input = Signature<MovementInputHolder>;
 using SystemSignature_Network = Signature<NetworkId, Transform>;
 using SystemSignature_Network_Graphic = Signature<NetworkId, Sprite, Label>;
+using SystemSignature_Network_Rigid = Signature<NetworkId, RigidBody>;
 
 // define which signatures will the engine use
 using sigSettings = SignatureSettings <SystemSignature_SpriteGraphic,
         SystemSignature_Movable, SystemSignature_Circle_Collider_Body, SystemSignature_Rectangle_Collider_Body,
         SystemSignature_Input, SystemSignature_Button, SystemSignature_LabelGraphic ,
         SystemSignature_RectangleGraphic , SystemSignature_Network_Input, SystemSignature_Network,
-        SystemSignature_Network_Graphic, SystemSignature_Rectangle_Collider, SystemSignature_Circle_Collider
+        SystemSignature_Network_Graphic, SystemSignature_Rectangle_Collider, SystemSignature_Circle_Collider,
+        SystemSignature_Network_Rigid
 >;
 
 using settings = EngineSettings<compSettings , sigSettings>;
