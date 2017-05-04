@@ -234,7 +234,7 @@ bool UdpServer::endptEq(const udp::endpoint &a, const udp::endpoint &b) const {
     return a.address() == b.address();
 }
 
-const std::vector<Player> &UdpServer::getPlayers() const {
+std::vector<Player> UdpServer::getPlayers() const {
     std::vector<Player> result;
 	for (const auto &i : m_clients) {
         result.push_back(i->baseInfo);

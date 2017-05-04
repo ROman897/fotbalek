@@ -86,7 +86,7 @@ public:
 
     void init();
 
-	const std::vector<Player> &getPlayers() const;
+	std::vector<Player> getPlayers() const;
 
 	Message<MovementInputHolder> &getMessage();
 
