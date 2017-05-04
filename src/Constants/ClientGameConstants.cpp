@@ -34,3 +34,9 @@ const int ClientGameConstants::kMenuPanelHeight = 600;
 const SDL_Color ClientGameConstants::kMenuPanelColor = {0,0,0,255};
 const GraphicLayers ClientGameConstants::kMenuPanelLayer = BACKUI;
 //------------------------//Menu Panel
+
+//-------------------------Client constants
+const std::string ClientGameConstants::kServerPort = "13000";
+const std::string ClientGameConstants::kServerAddress = "147.251.47.243";
+
+//-------------------------//Client constants

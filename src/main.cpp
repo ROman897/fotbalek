@@ -2,6 +2,9 @@
 #include "ClientObjectsSpawner.h"
 
 
+void createClient(){
+
+}
 
 int main() {
     namespace hana = boost::hana;
@@ -16,6 +19,8 @@ int main() {
     // define full settings of the engine
 
 
+    PlayerClient client;
+    client.connect(ClientGameConstants::kServerAddress, ClientGameConstants::kServerPort);
 
 
     EngineType gameEngine;
@@ -67,6 +72,8 @@ int main() {
     spawnButton(gameEngine, "quit", "", "", quitPos, "QUIT");
     auto& inputSystem = gameEngine.template getSystem<InputSystem<settings >>();
     inputSystem.setActiveButton(activeButtonId);
+    auto& clientSender = gameEngine.getSystem<PlaynerNetworkSenderSystem<settings>>();
+    clientSender.setPlayerClient(&client);
     //spawnBarrier(gameEngine)
 
     //auto& graphicSystem =  gameEngine.getSystem<GraphicSystem<settings >>();

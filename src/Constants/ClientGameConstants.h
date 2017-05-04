@@ -67,5 +67,12 @@ struct ClientGameConstants {
     static const GraphicLayers kMenuPanelLayer;
     //-----------------------//Menu Panel
 
+    //------------------------ client constants
+    static const std::string kServerPort;
+    static const std::string kServerAddress;
+
+
+    //--------------------------// client constants
+
 };
 #endif //PV264_PROJECT_CLIENTGAMECONSTANTS_H
