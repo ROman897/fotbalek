@@ -1,7 +1,7 @@
 #include "ClientObjectsSpawner.h"
 #include "Constants/GameConstants.h"
 
-Id spawnButton(EngineType& gameEngine, const std::string& tag, const std::string& upTag,
+Id spawnButton(EngineType_Client& gameEngine, const std::string& tag, const std::string& upTag,
                const std::string& downTag, Vector_Float position,const std::string& text){
 
     Id id = gameEngine.spawnGameObject(tag);
@@ -16,7 +16,7 @@ Id spawnButton(EngineType& gameEngine, const std::string& tag, const std::string
     return id;
 }
 
-Id spawnPlayer(EngineType& gameEngine){
+Id spawnPlayer(EngineType_Client& gameEngine){
     /*Id id = gameEngine.spawnGameObject("player");
     gameEngine.addComponent<Transform>(id, ClientGameConstants::kMenuPanelPosition);
     gameEngine.addComponent<NetworkId>(id);
@@ -28,18 +28,18 @@ Id spawnPlayer(EngineType& gameEngine){
     return id;*/
 }
 
-Id spawnBall(EngineType& gameEngine){
+Id spawnBall(EngineType_Client& gameEngine){
 
 }
 
-Id spawnBarrier(EngineType& gameEngine, Vector_Float position, const Vector_Float &m_topLeft, const Vector_Float &m_bottomRight){
+Id spawnBarrier(EngineType_Client& gameEngine, Vector_Float position, const Vector_Float &m_topLeft, const Vector_Float &m_bottomRight){
     Id id = gameEngine.spawnGameObject();
     gameEngine.addComponent<Transform>(id, position);
     gameEngine.addComponent<RectangleCollider>(id, m_topLeft, m_bottomRight);
     return id;
 }
 
-Id spawnMenuPanel(EngineType &gameEngine) {
+Id spawnMenuPanel(EngineType_Client &gameEngine) {
     Id id = gameEngine.spawnGameObject("menuPanel");
     gameEngine.addComponent<Transform>(id, ClientGameConstants::kMenuPanelPosition);
     gameEngine.addComponent<RectangleShape>(id, ClientGameConstants::kMenuPanelXOffset, ClientGameConstants::kMenuPanelYOffset,

@@ -21,6 +21,6 @@
 using sysSettings = SystemSettings <ServerNetworkSenderSystem<settings>, ServerNetworkReceiverSystem<settings>>;
 using externalSysSettings = SystemSettings<PhysicSystem<settings >>;
 
-using EngineType = GameEngine<settings, sysSettings, externalSysSettings >;
+using EngineType_Server = GameEngine<settings, sysSettings, externalSysSettings >;
 
 #endif //PV264_PROJECT_SERVEROBJECTSSPAWNER_H

@@ -29,20 +29,20 @@ template<typename... Sigs> constexpr decltype(hana::make_tuple(hana::type_c<Sigs
 using sysSettings = SystemSettings <GraphicSystem<settings >, InputSystem<settings >, PlaynerNetworkSenderSystem<settings>>;
 using externalSysSettings = SystemSettings<PhysicSystem<settings >>;
 
-using EngineType = GameEngine<settings, sysSettings, externalSysSettings >;
+using EngineType_Client = GameEngine<settings, sysSettings, externalSysSettings >;
 
 
-Id spawnButton(EngineType& gameEngine, const std::string& tag, const std::string& upTag,
+Id spawnButton(EngineType_Client& gameEngine, const std::string& tag, const std::string& upTag,
                const std::string& downTag, Vector_Float position,const std::string& text);
 
-Id spawnMenuPanel(EngineType& gameEngine);
+Id spawnMenuPanel(EngineType_Client& gameEngine);
 
-Id spawnPlayer(EngineType& gameEngine);
+Id spawnPlayer(EngineType_Client& gameEngine);
 
 
-Id spawnBall(EngineType& gameEngine);
+Id spawnBall(EngineType_Client& gameEngine);
 
-Id spawnBarrier(EngineType& gameEngine, Vector_Float position, const Vector_Float &m_topLeft, const Vector_Float &m_bottomRight);
+Id spawnBarrier(EngineType_Client& gameEngine, Vector_Float position, const Vector_Float &m_topLeft, const Vector_Float &m_bottomRight);
 
 
 
