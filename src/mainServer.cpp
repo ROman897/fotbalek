@@ -5,6 +5,7 @@
 
 #include "ClientObjectsSpawner.h"
 #include "Network/API/Server/UdpServer.h"
+#include "Network/ServerNetworkSenderSystem.h"
 
 int main() {
 	namespace hana = boost::hana;
@@ -68,9 +69,7 @@ int main() {
 	Id activeButtonId = spawnButton(gameEngine, "continue", "", "", continuePos, "CONTINUE");
 	spawnButton(gameEngine, "options", "", "", optionsPos, "OPTIONS");
 	spawnButton(gameEngine, "quit", "", "", quitPos, "QUIT");
-	auto& inputSystem = gameEngine.template getSystem<InputSystem<settings >>();
-	inputSystem.setActiveButton(activeButtonId);
-	auto& clientSender = gameEngine.getSystem<PlaynerNetworkSenderSystem<settings>>();
+	auto& serverSender = gameEngine.getSystem<ServerNetworkSenderSystem<settings>>();
 	//spawnBarrier(gameEngine)
 
 	//auto& graphicSystem =  gameEngine.getSystem<GraphicSystem<settings >>();

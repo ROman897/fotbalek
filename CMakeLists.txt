@@ -18,7 +18,7 @@ set(SOURCE_FILES src/Physic/PhysicSystem.h src/Components/Physic/RigidBody.h src
         src/Network/API/Client/PlayerClient.cpp src/Network/API/Client/PlayerClient.h src/Network/API/Client/UdpBase.h
         src/Network/API/Server/PlayerServer.cpp src/Network/API/Server/PlayerServer.h src/Network/API/Server/UdpServer.cpp
         src/Network/API/Server/UdpServer.h src/Constants/ClientGameConstants.h src/Constants/ClientGameConstants.cpp
-        src/Constants/ServerGameConstants.h src/Constants/ServerGameConstants.cpp)
+        src/Constants/ServerGameConstants.h src/Constants/ServerGameConstants.cpp src/ServerObjectsSpawner.h src/ServerObjectsSpawner.cpp)
 
 set(SERVER_MAIN src/mainServer.cpp)
 set(CLIENT_MAIN src/mainClient.cpp)

@@ -15,6 +15,7 @@
 #include "../../../Components/MovementInputHolder.h"
 #include "../Client/Message.h"
 #include "../../../Constants/ServerGameConstants.h"
+#include "../../../Components/Transform.h"
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include <memory>
@@ -105,6 +106,8 @@ public:
 	std::vector<Player> getPlayers() const;
 
 	Message<MovementInputHolder> &getMessage();
+	
+	void sendData(const std::vector<NetworkId> &ids, const std::vector<Transform> &transforms);
 
 	void releaseMessage();
 
