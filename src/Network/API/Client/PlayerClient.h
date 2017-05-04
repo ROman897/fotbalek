@@ -8,6 +8,7 @@
 #include <boost/array.hpp>
 #include <iostream>
 #include <cstdlib>
+#include <mutex>
 
 #include "UdpBase.h"
 #include "Player.h"
@@ -24,6 +25,7 @@ class PlayerClient : UdpBase {
 	udp::endpoint m_serverEnd;
 	Player m_me;
 	Message m_lastMessage;
+	mutable std::mutex m_mutex;
 	std::vector<Player> m_players;
 
 public:
@@ -44,7 +46,7 @@ public:
 
 	void sendData(const NetworkId& id, const MovementInputHolder& inputHolder);
 
-	void startSending(const std::string &input);
+	void send(const std::string &input);
 
 	void handleErrors(ErrorCode &error, std::size_t bytes_transferred );
 
@@ -55,6 +57,8 @@ public:
 	const std::vector<Player> &getPlayers() const;
 
 	const Player &getMe() const;
+
+	const Message &getMessage();
 
 };
 

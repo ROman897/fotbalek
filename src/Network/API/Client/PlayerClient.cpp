@@ -9,6 +9,7 @@ PlayerClient::PlayerClient() {
 }
 
 PlayerClient::~PlayerClient() {
+	disconnect();
 	stop();
 }
 
@@ -52,17 +53,6 @@ void PlayerClient::connect(const std::string &host, const std::string &port) {
 		throw;
 	}
 	startReceiving();
-
-	//na testovanie
-	while (true) {
-		std::string line;
-		getline(std::cin, line);
-		if (line.compare("quit") == 0) {
-			break;
-		} else {
-			startSending(line);
-		}
-	}
 }
 
 void PlayerClient::startReceiving() {
@@ -76,7 +66,6 @@ void PlayerClient::handleData(ErrorCode &err, size_t trans) {
 	if (!err)
 	{
 		std::string message(m_buffer.data(), m_buffer.data() + trans);
-		std::cout << "hej nieco doslo " << message << " velkosti:" << trans << std::endl;
 		parseMessage(message);
 	}
 	else
@@ -145,6 +134,7 @@ void PlayerClient::parseMessage(std::string &input) {
 			}
 		}
 	}
+	newMessage.setValid();
 	m_lastMessage = std::move(newMessage);
 }
 
@@ -180,10 +170,10 @@ void PlayerClient::sendData(const NetworkId& id, const MovementInputHolder& inpu
 		}
 	}
 	message += ".";
-	startSending(message);
+	send(message);
 }
 
-void PlayerClient::startSending(const std::string &input) {
+void PlayerClient::send(const std::string &input) {
 	std::cout << "nieco posielam" << std::endl;
 	std::string message {std::to_string(m_me.id) + "_" + input};
 	m_socket.async_send(boost::asio::buffer(message.data(), message.size()), boost::bind(&PlayerClient::handleErrors,
@@ -201,8 +191,7 @@ void PlayerClient::handleErrors( ErrorCode &error, std::size_t bytes_transferred
 }
 
 void PlayerClient::disconnect() {
-	startSending("end");
-	stop();
+	send("end");
 }
 
 const std::vector<Player> &PlayerClient::getPlayers() const {
@@ -211,4 +200,9 @@ const std::vector<Player> &PlayerClient::getPlayers() const {
 
 const Player &PlayerClient::getMe() const {
 	return m_me;
+}
+
+const Message &PlayerClient::getMessage() {
+	std::lock_guard<std::mutex> lock(m_mutex);
+	return m_lastMessage;
 }

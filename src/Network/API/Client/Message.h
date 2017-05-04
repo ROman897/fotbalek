@@ -15,6 +15,7 @@ class Message {
 	Id messageId;
 	std::vector<NetworkId> playerIds;
 	std::vector<Transform> playerMovement;
+	bool valid;
 
 public:
 	Message() {}
@@ -25,6 +26,10 @@ public:
 
 	void addTransform(const Transform &newTransform) {
 		playerMovement.push_back(newTransform);
+	}
+
+	void setValid() {
+		valid = true;
 	}
 };
 

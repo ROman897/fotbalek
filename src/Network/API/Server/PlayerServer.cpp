@@ -8,7 +8,7 @@ void PlayerServer::startComm(UdpServer &srv) {
 }
 /*
 
-/*int main(void) { //zatial void
+int main(void) { //zatial void
     PlayerServer mainSrv;
 
     while (1) {
