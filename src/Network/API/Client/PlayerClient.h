@@ -15,6 +15,7 @@
 #include "Message.h"
 #include "../../../Components/MovementInputHolder.h"
 #include "../../../Components/Network/NetworkId.h"
+#include "../../../Components/Transform.h"
 
 class PlayerClient : UdpBase {
 	using udp = boost::asio::ip::udp;
@@ -24,8 +25,9 @@ class PlayerClient : UdpBase {
 	std::atomic_bool m_gameStarted;
 	udp::endpoint m_serverEnd;
 	Player m_me;
-	Message m_lastMessage;
+	Message<Transform> m_lastMessage;
 	mutable std::mutex m_mutex;
+	std::unique_lock<std::mutex> m_lock;
 	std::vector<Player> m_players;
 
 	void startReceiving();
@@ -59,7 +61,9 @@ public:
 
 	const Player &getMe() const;
 
-	const Message &getMessage() const;
+	Message<Transform> &getMessage();
+
+	void releaseMessage();
 
 	bool hasStarted() const;
 

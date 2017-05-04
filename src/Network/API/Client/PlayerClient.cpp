@@ -1,10 +1,11 @@
 #include "PlayerClient.h"
 
-PlayerClient::PlayerClient() {
+PlayerClient::PlayerClient() : m_lock(m_mutex) {
+	m_gameStarted.store(false);
 	std::cout << "Enter your name:" << std::endl;
 	std::string input;
 	getline(std::cin, input);
-	m_me.name = input;
+	m_me.m_name = input;
 	std::cout << "Hi " << input << " we are now connecting you to the server!" << std::endl;
 }
 
@@ -14,7 +15,7 @@ PlayerClient::~PlayerClient() {
 }
 
 void PlayerClient::askForId() {
-	m_socket.async_send(boost::asio::buffer("i?" + m_me.name), boost::bind(&PlayerClient::handleErrors,
+	m_socket.async_send(boost::asio::buffer("i?" + m_me.m_name), boost::bind(&PlayerClient::handleErrors,
 																  this,
 																  boost::asio::placeholders::error,
 																  boost::asio::placeholders::bytes_transferred));
@@ -63,18 +64,19 @@ void PlayerClient::handleData(ErrorCode &err, size_t trans) {
 }
 
 void PlayerClient::parseMessage(std::string &input) {
-	Message newMessage;
+	Message<Transform> newMessage;
 	enum class state {
 		init,
 		getX,
 		getY,
 		index
 	};
-	//pridat parsovanie game started a nastavit gamestarted na true
+
 	size_t index_start = 0;
 	float x;
 	float y;
 	state currSt = state::init;
+
 	for (size_t i = 0; i < input.size(); ++i) {
 		switch (currSt) {
 			case state::init : {
@@ -83,7 +85,10 @@ void PlayerClient::parseMessage(std::string &input) {
 					currSt = state::index;
 				} else if (input[i] == '.') {
 					continue;
-				} else {
+				} else if (input[i] == 's') {
+					m_gameStarted.store(true);
+				}
+				else {
 					std::cerr << "wrong message was received" << std::endl;
 					return;
 				}
@@ -121,7 +126,7 @@ void PlayerClient::parseMessage(std::string &input) {
 			}
 		}
 	}
-	newMessage.setValid();
+	newMessage.setValid(true);
 	m_lastMessage = std::move(newMessage);
 }
 
@@ -130,8 +135,8 @@ void PlayerClient::parseId(ErrorCode &err, size_t trans) {
 	{
 		std::string message(m_buffer.data(), m_buffer.data() + trans);
 		auto index = message.find(":");
-		m_me.id = static_cast<Id>(std::stoul(message));
-		m_me.team = static_cast<bool>(std::stoul(message.substr(index + 1)));
+		m_me.m_id = static_cast<Id>(std::stoul(message));
+		m_me.m_team = static_cast<bool>(std::stoul(message.substr(index + 1)));
 	}
 	else
 	{
@@ -161,7 +166,7 @@ void PlayerClient::sendData(const MovementInputHolder& inputHolder) {
 }
 
 void PlayerClient::send(const std::string &input) {
-	std::string message {std::to_string(m_me.id) + "_" + input};
+	std::string message {std::to_string(m_me.m_id) + "_" + input};
 	m_socket.async_send(boost::asio::buffer(message.data(), message.size()), boost::bind(&PlayerClient::handleErrors,
 															   this,
 															   boost::asio::placeholders::error,
@@ -188,9 +193,14 @@ const Player &PlayerClient::getMe() const {
 	return m_me;
 }
 
-const Message &PlayerClient::getMessage() const {
-	std::lock_guard<std::mutex> lock(m_mutex);
+Message<Transform> &PlayerClient::getMessage() {
+	m_lock.lock();
 	return m_lastMessage;
+}
+
+void PlayerClient::releaseMessage() {
+	m_lastMessage.setValid(false);
+	m_lock.unlock();
 }
 
 bool PlayerClient::hasStarted() const {

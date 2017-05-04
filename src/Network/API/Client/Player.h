@@ -7,12 +7,15 @@
 
 #include <string>
 
-
 struct Player {
+	Player() = default;
 	using Id = size_t;
-	Id id;
-	bool team;
-	std::string name;
+
+	Player(const std::string &name, Id id) : m_name(name), m_id(id) {}
+
+	Id m_id;
+	bool m_team;
+	std::string m_name;
 	//pridat info o time
 };
 
