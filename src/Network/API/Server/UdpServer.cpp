@@ -119,6 +119,9 @@ void UdpServer::emplaceClient(udp::endpoint endpt, size_t trans) {
                                               std::to_string(viable_index) +                       ^
 										  	  "\n"});											   ^*/
 	respond(m_clients[viable_index]->m_endpt, { std::to_string(viable_index) + ":" + std::to_string(team)}); //prerobit viz vyssie
+	if (m_clientNr == ServerGameConstants::kMaxNumberOfPlayers) {
+		respondAll("starting");
+	}
 }
 
 //void UdpServer::abandonClient(unsigned short client_index) {

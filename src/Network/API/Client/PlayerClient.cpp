@@ -77,6 +77,12 @@ void PlayerClient::parseMessage(std::string &input) {
 	float y;
 	state currSt = state::init;
 
+	if (input.compare("starting") == 0) {
+		m_gameStarted.store(true);
+		std::cout << "starting the game" << std::endl;
+		return;
+	}
+
 	for (size_t i = 0; i < input.size(); ++i) {
 		switch (currSt) {
 			case state::init : {
@@ -85,10 +91,7 @@ void PlayerClient::parseMessage(std::string &input) {
 					currSt = state::index;
 				} else if (input[i] == '.') {
 					continue;
-				} else if (input[i] == 's') {
-					m_gameStarted.store(true);
-				}
-				else {
+				} else {
 					std::cerr << "wrong message was received" << std::endl;
 					return;
 				}
