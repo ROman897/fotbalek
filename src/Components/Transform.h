@@ -10,7 +10,7 @@
 struct Transform{
 Vector_Float m_position;
 
-    Transform(const Vector_Float &position) : m_position(position) {}
+    Transform(const Vector_Float &m_position) : m_position(m_position) {}
     Transform() = default;
 
 };

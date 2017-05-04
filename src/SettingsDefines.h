@@ -18,10 +18,11 @@
 #include "Components/UI/Button.h"
 #include "Components/MovementInputHolder.h"
 #include "Components/Graphic/Label.h"
+#include "Components/Network/NetworkId.h"
 
 
 using compSettings = ComponentSettings <Transform, RectangleShape, RigidBody, CircleCollider, RectangleCollider, Sprite, RenderingLayer_Foreground,
-        RenderingLayer_Background, RenderingLayer_UI, MovementInputHolder, Button, Label>;
+        RenderingLayer_Background, RenderingLayer_UI, MovementInputHolder, Button, Label, NetworkId>;
 
 using SystemSignature_Sprite = Signature <Sprite, Transform>;
 using SystemSignature_Rectangle_Background = Signature <RectangleShape, Transform, RenderingLayer_Background>;
@@ -34,13 +35,17 @@ using SystemSignature_Circle_Collider = Signature <CircleCollider, RigidBody, Tr
 using SystemSignature_Rectangle_Collider = Signature <RectangleCollider, RigidBody, Transform>;
 using SystemSignature_Input = Signature<MovementInputHolder>;
 using SystemSignature_Button = Signature<Button, Sprite, Label, Transform>;
+using SystemSignature_Network_Input = Signature<NetworkId, MovementInputHolder>;
+using SystemSignature_Network = Signature<NetworkId, Transform>;
+using SystemSignature_Network_Graphic = Signature<NetworkId, Sprite, Label>;
 
 // define which signatures will the engine use
 using sigSettings = SignatureSettings <SystemSignature_Rectangle_Background, SystemSignature_Rectangle_Foreground,
         SystemSignature_Sprite_Background, SystemSignature_Sprite_Foreground,
         SystemSignature_Movable, SystemSignature_Circle_Collider, SystemSignature_Rectangle_Collider,
         SystemSignature_Input, SystemSignature_Button, SystemSignature_Sprite,
-        SystemSignature_Sprite_UI
+        SystemSignature_Sprite_UI, SystemSignature_Network_Input, SystemSignature_Network,
+        SystemSignature_Network_Graphic
 >;
 
 using settings = EngineSettings<compSettings , sigSettings>;

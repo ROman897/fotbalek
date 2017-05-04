@@ -11,6 +11,9 @@
 struct NetworkId{
     // id to identify gameObjects over the network
     Id id;
+
+    NetworkId(Id id) : id(id) {}
+    NetworkId() = default;
 };
 
 #endif //PV264_PROJECT_NETWORKID_H

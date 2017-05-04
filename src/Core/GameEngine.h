@@ -150,20 +150,38 @@ private:
     Timer timer;
 
     void run(){
-        //std::cout << "run started" << std::endl;
+        Uint32 accumulator = 0;
+        Timer timer;
         timer.start();
+
+        Uint32 frameStart = timer.getTime();
+        timer.resetTime();
+
         while (true){
-            //std::cout << "run" << std::endl;
-            float dt = static_cast<float >(timer.getTime()) / 1000.0f;
-            hana::for_each(m_systems, [dt, this](auto& system){
-                system.run(dt);
-            });
+            accumulator += timer.getTime() - frameStart;
+
+            frameStart = timer.getTime();
+
+            if (accumulator > GameConstants::kEngineAccumulatorLimit)
+                accumulator = GameConstants::kEngineAccumulatorLimit;
+
+            while (accumulator > GameConstants::kEngineDeltaTime) {
+                runUpdate(GameConstants::kEngineDeltaTime);
+                accumulator -= GameConstants::kEngineDeltaTime;
+            }
+
             if (m_componentManager.shouldQuit()){
                 std::cout << "gameengine should quit" << std::endl;
                 break;
             }
         }
         std::cout << "out of main loop" << std::endl;
+    }
+
+    void runUpdate(float dt){
+        hana::for_each(m_systems, [dt, this](auto& system){
+            system.run(dt);
+        });
     }
 
 

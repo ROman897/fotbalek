@@ -8,7 +8,7 @@
 
 #include <vector>
 #include "../Components/Physic/RigidBody.h"
-#include "../Utils/GameConstants.h"
+#include "../Constants/GameConstants.h"
 #include "../Components/Physic/Shapes/CircleCollider.h"
 #include "../Components/Physic/Shapes/RectangleCollider.h"
 #include "Collision.h"
@@ -19,6 +19,7 @@
 #include "../Utils/Timer.h"
 #include "../SettingsDefines.h"
 #include "../Components/Physic/ColliderTrigger.h"
+#include "../Constants/ServerGameConstants.h"
 
 
 inline void resolveCollision(const Collision &collision) {
@@ -355,7 +356,7 @@ public:
         timer.start();
 
 
-        float frameStart = timer.getTime();
+        Uint32 frameStart = timer.getTime();
         timer.resetTime();
 
 
@@ -366,12 +367,12 @@ public:
 
             frameStart = timer.getTime();
 
-            if (accumulator > GameConstants::kAccumulatorLimit)
-                accumulator = GameConstants::kAccumulatorLimit;
+            if (accumulator > ServerGameConstants::kPhysicAccumulatorLimit)
+                accumulator = ServerGameConstants::kPhysicAccumulatorLimit;
 
-            while (accumulator > GameConstants::kDeltaTime) {
-                runPhysicUpdate(GameConstants::kDeltaTime);
-                accumulator -= GameConstants::kDeltaTime;
+            while (accumulator > ServerGameConstants::kPhysicDeltaTime) {
+                runPhysicUpdate(ServerGameConstants::kPhysicDeltaTime);
+                accumulator -= ServerGameConstants::kPhysicDeltaTime;
             }
         }
 
