@@ -18,6 +18,7 @@ static constexpr float kInputMovementCoefficient = 10;
 
 //--------------------Player constants
 static constexpr int kMaxNumberOfPlayers = 4;
+static constexpr int portNumber = 13000; //modify also ClientGameConstants.cpp
 static const Vector_Float startingPositions[kMaxNumberOfPlayers];
 };
 

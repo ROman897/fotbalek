@@ -69,16 +69,20 @@ void UdpServer::responseHandler(const boost::system::error_code &err, size_t tra
 }
 
 void UdpServer::emplaceClient(udp::endpoint endpt, size_t trans) {
-    if (m_clientNr >= MAX_PLAYERCOUNT) {
+    //if (m_clientNr >= MAX_PLAYERCOUNT) {
+	if (m_clientNr >= ServerGameConstants::kMaxNumberOfPlayers) {
         respond(endpt, {"full\n"});
         return;
     }
 
     //poslat mu jeho index a indexy vsetkych aj s menami + vsetkym ostatnym jeho meno a index
     std::string newName(&m_buffer[2], &m_buffer[trans]);
-    unsigned short viable_index = MAX_PLAYERCOUNT - 1;
-    for (unsigned i = 0; i < MAX_PLAYERCOUNT; ++i) {
-        if (!m_clients[i] && viable_index == MAX_PLAYERCOUNT - 1)
+    //unsigned short viable_index = MAX_PLAYERCOUNT - 1;
+	unsigned short viable_index = ServerGameConstants::kMaxNumberOfPlayers - 1;
+    //for (unsigned i = 0; i < MAX_PLAYERCOUNT; ++i) {
+	for (unsigned short i = 0; i < ServerGameConstants::kMaxNumberOfPlayers; ++i) {
+        //if (!m_clients[i] && viable_index == MAX_PLAYERCOUNT - 1)
+		if (!m_clients[i] && viable_index == ServerGameConstants::kMaxNumberOfPlayers - 1)
             viable_index = i;
         if (m_clients[i] && endptEq(m_clients[i]->m_endpt, endpt)) {
             respond(endpt, {"you've already logged in\n"});
@@ -93,13 +97,19 @@ void UdpServer::emplaceClient(udp::endpoint endpt, size_t trans) {
         }
     }
     m_clients[viable_index] = std::make_unique<Client>(std::move(endpt), std::move(newName), viable_index);
+	if (m_clientNr > ServerGameConstants::kMaxNumberOfPlayers / 2) {
+		m_clients[viable_index]->baseInfo.m_team = 1;
+	} else {
+		m_clients[viable_index]->baseInfo.m_team = 0;
+	}
     std::cout << "new guy's name: " << m_clients[viable_index]->baseInfo.m_name << std::endl;
     ++m_clientNr;
+	int team = m_clients[viable_index]->baseInfo.m_team;
     std::cout << "port: " << m_clients[viable_index]->m_endpt.port() << '\n'; //prerob aby to bolo id:[1/0] podla toho v akom je to teame zapisane ako 0 alebo 1
     /*respond(m_clients[viable_index]->m_endpt, {std::string("you got a new index: ") +            ^
                                               std::to_string(viable_index) +                       ^
 										  	  "\n"});											   ^*/
-	respond(m_clients[viable_index]->m_endpt, { std::to_string(viable_index) + ":1"}); //prerobit viz vyssie
+	respond(m_clients[viable_index]->m_endpt, { std::to_string(viable_index) + ":" + std::to_string(team)}); //prerobit viz vyssie
 }
 
 //void UdpServer::abandonClient(unsigned short client_index) {
@@ -251,6 +261,10 @@ Message<MovementInputHolder> &UdpServer::getMessage() {
 void UdpServer::releaseMessage() {
 	m_message.setValid(false);
 	m_lock.unlock();
+}
+
+bool UdpServer::hasStarted() const {
+	return m_gameStarted.load();
 }
 
 /*
