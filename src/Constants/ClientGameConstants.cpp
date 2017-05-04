@@ -36,7 +36,7 @@ const GraphicLayers ClientGameConstants::kMenuPanelLayer = BACKUI;
 //------------------------//Menu Panel
 
 //-------------------------Client constants
-const std::string ClientGameConstants::kServerPort = "13000";
+const std::string ClientGameConstants::kServerPort = "13000"; //modify also ServerGameConstants.h
 const std::string ClientGameConstants::kServerAddress = "147.251.47.243";
 
 //-------------------------//Client constants
