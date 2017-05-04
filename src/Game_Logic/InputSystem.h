@@ -22,7 +22,7 @@ class InputSystem{
     ComponentManager<TSettings>* m_manager;
 
 
-    bool escape;
+    bool m_escape;
     float time = 0;
 
 public:
@@ -52,7 +52,7 @@ public:
             }
 
 
-            if (event.type == SDL_KEYDOWN && !escape) {
+            if (event.type == SDL_KEYDOWN && !m_escape) {
 
                 switch (event.key.keysym.sym) {
                     case SDLK_a:
@@ -84,7 +84,7 @@ public:
                     continue;
                 }
 
-                if (escape) {
+                if (m_escape) {
 
                     switch (event.key.keysym.sym) {
                         case SDLK_w:
@@ -174,7 +174,8 @@ public:
     void start(){
         activeButtonArrowId = m_manager->findGameObjectByTag("button_arrow");
         movementInputId = m_manager->template findEntityMatching<SystemSignature_Input>();
-        escape = false;
+        m_escape = false;
+        menuPanelId = m_manager->findGameObjectByTag("menuPanel");
 
     }
 
@@ -184,15 +185,19 @@ private:
     Id movementInputId;
     Id activeButtonId;
     Id activeButtonArrowId;
+    Id menuPanelId;
 
     void escPressed(){
-        std::cout << "esc: " << escape << std::endl;
-        escape = !escape;
+        std::cout << "esc: " << m_escape << std::endl;
+        m_escape = !m_escape;
         m_manager->template forEntitiesMatching<SystemSignature_Button>(
                 [this](const Button *button, Sprite *sprite, Label *label, Transform* transform) {
-                    sprite->enabled = escape;
-                    label->enabled = escape;
+                    sprite->enabled = m_escape;
+                    label->enabled = m_escape;
                 });
+        m_manager->template forEntityMatching<SystemSignature_RectangleGraphic>(menuPanelId, [this](RectangleShape* rect, Transform* trans){
+            rect->m_enabled = m_escape;
+        });
         /*m_manager->template forEntityMatching<SystemSignature_Sprite>(activeButtonArrowId, [this](Sprite *sprite,
                                                                                          const Transform *transform) {
             sprite->enabled = escape;

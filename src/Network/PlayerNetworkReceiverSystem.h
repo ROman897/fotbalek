@@ -42,14 +42,15 @@ private:
         m_componentManager->forEntitiesMatching<SystemSignature_Network_Graphic>([&players, &i](NetworkId* id, Sprite* sprite, Label* label){
             id->id = players[i].id;
             sprite->enabled = true;
-            //sprite->m_texturePath =
+            sprite->m_texturePath = players[i].m_team ? ClientGameConstants::kPlayerSpritePath_Team1 : ClientGameConstants::kPlayerSpritePath_Team2;
             // need to set sprite based on which team the client is in
             label->enabled = true;
             label->m_text = players[i].name;
-            // need to set label color based on which team the client is in
         });
         m_initialized = true;
     }
+
+
     void runUpdate(){
         if (! m_playerClient->hasStarted())
             return;

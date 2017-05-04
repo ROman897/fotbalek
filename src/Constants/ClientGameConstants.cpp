@@ -12,7 +12,7 @@ const Vector_Float ClientGameConstants::kButtonLabelOffset = {50, 70};
 const std::string ClientGameConstants::kButtonFontPath = "../Resources/Fonts/BasicFont.ttf";
 const SDL_Color ClientGameConstants::kButtonFontColor = {255, 0, 0, 255};
 const int ClientGameConstants::kButtonFontSize = 22;
-const GraphicLayers ClientGameConstants::kButtonLayer = FOREGROUND;
+const GraphicLayers ClientGameConstants::kButtonLayer = FRONTUI;
 //---------------------//Button
 
 
@@ -26,7 +26,7 @@ const bool ClientGameConstants::kMenuEnabledAtStart = false;
 //---------------------//Menu
 
 //------------------------Menu Panel
-const Vector_Float ClientGameConstants::kMenuPanelPosition = {200,200};
+const Vector_Float ClientGameConstants::kMenuPanelPosition = {225,50};
 const int ClientGameConstants::kMenuPanelXOffset = 0;
 const int ClientGameConstants::kMenuPanelYOffset = 0;
 const int ClientGameConstants::kMenuPanelWidth = 600;

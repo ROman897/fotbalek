@@ -126,6 +126,8 @@ class GraphicSystem {
             // draw rect with position and size of one block
             if (shape->m_graphicLayer != layer)
                 return;
+            if (! shape->m_enabled)
+                return;
             SDL_Rect fillRect = {static_cast<int>(std::round(transform->m_position.m_x + shape->x)), static_cast<int>(std::round(transform->m_position.m_y + shape->y)), shape->mWidth,
                                  shape->mHeight };
             SDL_RenderFillRect(this->getRenderer(), &fillRect);

@@ -68,6 +68,7 @@ int main() {
     inputSystem.setActiveButton(activeButtonId);
     auto& clientSender = gameEngine.getSystem<PlaynerNetworkSenderSystem<settings>>();
     clientSender.setPlayerClient(&client);
+    spawnMenuPanel(gameEngine);
     //spawnBarrier(gameEngine)
 
     //auto& graphicSystem =  gameEngine.getSystem<GraphicSystem<settings >>();

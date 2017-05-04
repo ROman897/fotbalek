@@ -73,13 +73,13 @@ private:
             if (timer.getTime() < ClientGameConstants::kClientNetworkReceiverDt)
                 continue;
 
-            auto& data = m_PlayerServer->getData();
+            auto& data = m_PlayerServer->getMessage();
             if (! data.isValid())
                 continue;
 
             auto& ids = data.getIds();
-            auto& inputs = data.getInputs();
-            updateInput(ids, inputs);
+            auto& inputs = data.getMovements();
+            updateInputs(ids, inputs);
             m_PlayerServer->releaseMessage();
 
 
