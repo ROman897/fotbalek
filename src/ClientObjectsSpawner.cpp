@@ -17,7 +17,15 @@ Id spawnButton(EngineType& gameEngine, const std::string& tag, const std::string
 }
 
 Id spawnPlayer(EngineType& gameEngine){
+    /*Id id = gameEngine.spawnGameObject("player");
+    gameEngine.addComponent<Transform>(id, ClientGameConstants::kMenuPanelPosition);
+    gameEngine.addComponent<NetworkId>(id);
 
+
+    gameEngine.addComponent<RectangleShape>(id, ClientGameConstants::kMenuPanelXOffset, ClientGameConstants::kMenuPanelYOffset,
+                                            ClientGameConstants::kMenuPanelWidth, ClientGameConstants::kMenuPanelHeight, ClientGameConstants::kMenuPanelColor,
+                                            ClientGameConstants::kMenuPanelLayer, ClientGameConstants::kMenuEnabledAtStart);
+    return id;*/
 }
 
 Id spawnBall(EngineType& gameEngine){

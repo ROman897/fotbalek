@@ -15,7 +15,7 @@ class ServerNetworkSenderSystem{
     using SystemSignature_Network = Signature<NetworkId, Transform>;
 private:
     ComponentManager<TSettings>* m_componentManager;
-    PlayerServer* playerServer;
+    PlayerServer* m_playerServer;
     void prepareData(std::vector<NetworkId>& ids, std::vector<Transform>& transforms){
         m_componentManager->forEntitiesMatching<SystemSignature_Network>([&ids, &transforms](auto& id, auto& transform){
             ids.push_back(id);
@@ -26,14 +26,17 @@ private:
 
 public:
     void start(){
+    }
 
+    void setServer(PlayerServer* server){
+        m_playerServer = server;
     }
 
     void run(float dt){
         std::vector<NetworkId> ids;
         std::vector<Transform> transforms;
         prepareData(ids, transforms);
-        playerServer->sendData(ids, transforms);
+        m_playerServer->sendData(ids, transforms);
     }
 
 };
