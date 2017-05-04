@@ -238,13 +238,27 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
 
 
 
-inline void processTriggerCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, ColliderTrigger trigger,
+inline void processTriggerCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, ColliderTrigger* trigger,
                                                     const CircleCollider* shape2, const Transform* transform2){
+
+    if (! checkForCollisionRectangle_Circle(shape1, transform1, shape2,
+                                         transform2, nullptr, true))
+        return;
+    for (auto& func : trigger->m_callbacks){
+        func();
+    }
 
 }
 
-inline void processTriggerCollisionRectangle_Rectangle(const RectangleCollider* shape1, const Transform* transform1, ColliderTrigger trigger,
+inline void processTriggerCollisionRectangle_Rectangle(const RectangleCollider* shape1, const Transform* transform1, ColliderTrigger* trigger,
                                                     const RectangleCollider* shape2, const Transform* transform2){
+
+    if (! checkForCollisionRectangle_Rectangle(shape1, transform1, shape2,
+                                         transform2, nullptr, true))
+        return;
+    for (auto& func : trigger->m_callbacks){
+        func();
+    }
 
 }
 
@@ -306,47 +320,27 @@ private:
     ComponentManager<TSettings>* componentManager;
 
 public:
-    //void start();
-    /*using SystemSignature_Movable = Signature<RigidBody, Transform>;
-    using SystemSignature_Circle_Collider = Signature <CircleCollider, RigidBody, Transform>;
-    using SystemSignature_Rectangle_Collider = Signature <RectangleCollider, RigidBody, Transform>;*/
-
 
     void setManager(ComponentManager<TSettings>* manager){
         componentManager = manager;
     }
 
 
-
-
-
-
-
-
-
-
-
-
-/*void PhysicSystem::runMovements(RigidBody& rigidBody, Transform& transform){
-    transform.position += rigidBody.m_velocity * dt;
-}*/
-
+    // only if you wish to run physics as internal system, on the same thread as engine
     void run(float dt){
         runPhysicUpdate(dt);
     }
 
     void runPhysicUpdate(float dt) {
-        //std::cout << "run physic update" << std::endl;
-        //std::cout << "run physic update" << std::endl;
 
         componentManager->template forEntitiesMatching<SystemSignature_Movable>([dt](RigidBody* rigidBody, Transform* transform){
             transform->m_position += rigidBody->m_velocity * dt;
             rigidBody->m_velocity /= rigidBody->m_speedDecrement;
         });
 
-        componentManager->template forEntitiesMatchingPairs<SystemSignature_Circle_Collider, SystemSignature_Circle_Collider>(processCollisionCircle_Circle);
-        componentManager->template forEntitiesMatchingPairs<SystemSignature_Rectangle_Collider, SystemSignature_Rectangle_Collider>(processCollisionRectangle_Rectangle);
-        componentManager->template forEntitiesMatchingPairs<SystemSignature_Rectangle_Collider, SystemSignature_Circle_Collider>(processCollisionRectangle_Circle);
+        componentManager->template forEntitiesMatchingPairs<SystemSignature_Circle_Collider_Body, SystemSignature_Circle_Collider_Body>(processCollisionCircle_Circle);
+        componentManager->template forEntitiesMatchingPairs<SystemSignature_Rectangle_Collider_Body, SystemSignature_Rectangle_Collider_Body>(processCollisionRectangle_Rectangle);
+        componentManager->template forEntitiesMatchingPairs<SystemSignature_Rectangle_Collider_Body, SystemSignature_Circle_Collider_Body>(processCollisionRectangle_Circle);
     }
 
     void start() {

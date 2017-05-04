@@ -11,10 +11,9 @@ set(SOURCE_FILES src/main.cpp src/Physic/PhysicSystem.h src/Components/Physic/Ri
         src/Components/Transform.h src/Graphic/GraphicSystem.h src/Components/Graphic/Sprite.h src/Core/SignatureManager.h
         src/Core/EngineStructures.h src/Components/Graphic/Label.h src/Components/Network/NetworkId.h src/Game_Logic/InputSystem.h
         src/Components/MovementInputHolder.h src/Network/PlayerNetworkReceiverSystem.h src/Network/PlayerNetworkSenderSystem.h
-        src/Network/ServerNetworkSenderSystem.h src/Network/ServerNetworkReceiverSystem.h src/Components/Graphic/Camera.h
+        src/Network/ServerNetworkSenderSystem.h src/Network/ServerNetworkReceiverSystem.h
         src/Components/ClientMenuInputHolder.h src/Game_Logic/MenuSystem.h src/Components/UI/Button.h
-        src/Components/Graphic/Layers/RenderingLayer_Background.h src/Components/Graphic/Layers/RenderingLayer_Foreground.h
-        src/Components/Graphic/Layers/RenderingLayer_UI.h src/SettingsDefines.h src/ClientObjectsSpawner.h src/ClientObjectsSpawner.cpp
+        src/SettingsDefines.h src/ClientObjectsSpawner.h src/ClientObjectsSpawner.cpp
         src/Components/Physic/ColliderTrigger.h src/Network/API/Client/Message.h src/Network/API/Client/Player.h
         src/Network/API/Client/PlayerClient.cpp src/Network/API/Client/PlayerClient.h src/Network/API/Client/UdpBase.h
         src/Network/API/Server/PlayerServer.cpp src/Network/API/Server/PlayerServer.h src/Network/API/Server/UdpServer.cpp

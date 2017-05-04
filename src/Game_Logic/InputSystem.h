@@ -93,10 +93,9 @@ public:
                                                                                [this](Button *button, Sprite *sprite,
                                                                                       Label *label,
                                                                                       const Transform *transform) {
-                                                                                   button->isSelected = false;
                                                                                    this->activeButtonId = m_manager->findGameObjectByTag(
                                                                                            button->m_moveUpButtonTag);
-                                                                                   m_manager->template forEntityMatching<SystemSignature_Sprite>(
+                                                                                   m_manager->template forEntityMatching<SystemSignature_SpriteGraphic>(
                                                                                            activeButtonArrowId,
                                                                                            [&transform](Sprite *sprite,
                                                                                                         Transform *transform1) {
@@ -112,10 +111,9 @@ public:
                                                                                [this](Button *button, Sprite *sprite,
                                                                                       Label *label,
                                                                                       const Transform *transform) {
-                                                                                   button->isSelected = false;
                                                                                    this->activeButtonId = m_manager->findGameObjectByTag(
                                                                                            button->m_moveDownButtonTag);
-                                                                                   m_manager->template forEntityMatching<SystemSignature_Sprite>(
+                                                                                   m_manager->template forEntityMatching<SystemSignature_SpriteGraphic>(
                                                                                            activeButtonArrowId,
                                                                                            [&transform](Sprite *sprite,
                                                                                                         Transform *transform1) {
@@ -126,11 +124,12 @@ public:
                                                                                });
                             break;
 
-                        case SDLK_KP_ENTER:
+                        case SDLK_RETURN:
+                        std::cout << "enter pressed " << std::endl;
                             m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
                                                                                [this](Button *button, Sprite *sprite,
                                                                                       Label *label, Transform* transform) {
-                                                                                   button->isSelected = false;
+                                                                                   std::cout << "button doing work" << std::endl;
                                                                                    for (auto &func : button->m_callbacks) {
                                                                                        func();
                                                                                    }
@@ -168,10 +167,15 @@ public:
         m_manager = manager;
     }
 
+    void setActiveButton(Id id){
+        activeButtonId = id;
+    }
+
     void start(){
         activeButtonArrowId = m_manager->findGameObjectByTag("button_arrow");
         movementInputId = m_manager->template findEntityMatching<SystemSignature_Input>();
         escape = false;
+
     }
 
 private:

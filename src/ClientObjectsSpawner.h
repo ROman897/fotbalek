@@ -16,9 +16,6 @@
 #include "Graphic/GraphicSystem.h"
 #include "Components/Physic/RigidBody.h"
 #include "Physic/PhysicSystem.h"
-#include "Components/Graphic/Layers/RenderingLayer_Foreground.h"
-#include "Components/Graphic/Layers/RenderingLayer_Background.h"
-#include "Components/Graphic/Layers/RenderingLayer_UI.h"
 #include "SettingsDefines.h"
 #include "Game_Logic/InputSystem.h"
 #include "Network/PlayerNetworkSenderSystem.h"
@@ -35,10 +32,10 @@ using externalSysSettings = SystemSettings<PhysicSystem<settings >>;
 using EngineType = GameEngine<settings, sysSettings, externalSysSettings >;
 
 
-Id spawnButton(EngineType& gameEngine, bool selected, bool enabled, const std::string& tag, const std::string& upTag,
+Id spawnButton(EngineType& gameEngine, const std::string& tag, const std::string& upTag,
                const std::string& downTag, Vector_Float position,const std::string& text);
 
-
+Id spawnMenuPanel(EngineType& gameEngine);
 
 Id spawnPlayer(EngineType& gameEngine);
 

@@ -26,9 +26,9 @@ int main() {
     gameEngine.addComponent<Transform>(id, pos);
     SDL_Color color = {.r = 255, .g = 0, .b = 0, .a = 255};
     SDL_Color color2 = {.r = 0, .g = 255, .b = 0, .a = 255};
-    gameEngine.addComponent<RectangleShape>(id, -100, -100, 200, 200, color );
+    gameEngine.addComponent<RectangleShape>(id, -100, -100, 200, 200, color, FOREGROUND, true );
     gameEngine.addComponent<Transform>(id2, pos2);
-    gameEngine.addComponent<RectangleShape>(id2, -50, -50, 100, 100, color2);
+    gameEngine.addComponent<RectangleShape>(id2, -50, -50, 100, 100, color2, FOREGROUND, true);
     Vector_Float vel = {50.0f, 0.0f};
     Vector_Float force = {0.0f, 0.0f};
 
@@ -51,11 +51,7 @@ int main() {
     Vector_Float pitchPos = {0.0f, 0.0f};
     Vector_Float spriteOffset = {0.0f, 0.0f};
     gameEngine.addComponent<Transform>(pitchId, pitchPos);
-    gameEngine.addComponent<Sprite>(pitchId, spriteOffset, ClientGameConstants::kPitchSpritePath, true);
-
-    gameEngine.addComponent<RenderingLayer_Foreground>(id);
-    gameEngine.addComponent<RenderingLayer_Foreground>(id2);
-    gameEngine.addComponent<RenderingLayer_Background>(pitchId);
+    gameEngine.addComponent<Sprite>(pitchId, spriteOffset, ClientGameConstants::kPitchSpritePath, BACKGROUND, true);
 
 
     Id arrowId = gameEngine.spawnGameObject("arrow");
@@ -63,8 +59,14 @@ int main() {
     gameEngine.addComponent<Transform>(arrowId, arrowPos);
     gameEngine.addComponent<Sprite>(arrowId);
 
-    Vector_Float continuePos = {400, 300 };
-    spawnButton(gameEngine, true, false,  "continue", "", "", continuePos, "continue");
+    Vector_Float continuePos = {400, 100 };
+    Vector_Float optionsPos = {400, 200 };
+    Vector_Float quitPos = {400, 300 };
+    Id activeButtonId = spawnButton(gameEngine, "continue", "", "", continuePos, "CONTINUE");
+    spawnButton(gameEngine, "options", "", "", optionsPos, "OPTIONS");
+    spawnButton(gameEngine, "quit", "", "", quitPos, "QUIT");
+    auto& inputSystem = gameEngine.template getSystem<InputSystem<settings >>();
+    inputSystem.setActiveButton(activeButtonId);
     //spawnBarrier(gameEngine)
 
     //auto& graphicSystem =  gameEngine.getSystem<GraphicSystem<settings >>();

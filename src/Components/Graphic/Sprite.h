@@ -6,6 +6,7 @@
 #define PV264_PROJECT_SPRITE_H
 
 #include "../../Core/EngineStructures.h"
+#include "../../Constants/ClientGameConstants.h"
 
 struct Sprite{
     int m_Width;
@@ -14,9 +15,10 @@ struct Sprite{
     std::string m_texturePath;
     TextureSmartPtr m_Texture;
     bool enabled;
+    GraphicLayers m_graphicLayer;
 
-    Sprite(const Vector_Float &m_positionOffset, const std::string &m_texturePath, bool enabled) : m_positionOffset(
-            m_positionOffset), m_texturePath(m_texturePath), enabled(enabled) {}
+    Sprite(const Vector_Float &m_positionOffset, const std::string &m_texturePath, GraphicLayers layer,bool enabled) : m_positionOffset(
+            m_positionOffset), m_texturePath(m_texturePath), m_graphicLayer(layer), enabled(enabled) {}
     Sprite() = default;
 };
 

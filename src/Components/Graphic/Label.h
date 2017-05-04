@@ -17,12 +17,13 @@ struct Label{
     std::string m_fontPath;
     SDL_Color m_fontColor;
     int m_size;
+    GraphicLayers m_graphicLayer;
     bool enabled;
 
     Label(const Vector_Float &m_positionOffset, const std::string &m_text, const std::string &m_fontPath,
-          const SDL_Color &m_fontColor, int m_size, bool enabled) : m_positionOffset(m_positionOffset), m_text(m_text),
+          const SDL_Color &m_fontColor, int m_size, GraphicLayers layer, bool enabled) : m_positionOffset(m_positionOffset), m_text(m_text),
                                                                     m_fontPath(m_fontPath), m_fontColor(m_fontColor),
-                                                                    m_size(m_size), enabled(enabled) {}
+                                                                    m_size(m_size), m_graphicLayer(layer), enabled(enabled) {}
 
     Label() = default;
 };
