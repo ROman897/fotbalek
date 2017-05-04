@@ -12,7 +12,7 @@ PlayerClient::~PlayerClient() {
 	stop();
 }
 
-int main( int argc, char **argv ) {
+/*int main( int argc, char **argv ) {
 	if ( argc != 3 ) {
 		std::cerr << "Invalid number of arguments passed\n"
 				  << "usage: fotbalek host port \n";  //upravit mozno na 13000 defaultne
@@ -22,7 +22,7 @@ int main( int argc, char **argv ) {
 	player.connect(argv[1], argv[2]);
 	player.disconnect();
 	return 0;
-}
+}*/
 
 void PlayerClient::askForId() {
 	m_socket.async_send(boost::asio::buffer("i?" + m_me.name), boost::bind(&PlayerClient::handleErrors,
