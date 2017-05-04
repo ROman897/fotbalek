@@ -96,9 +96,10 @@ void UdpServer::emplaceClient(udp::endpoint endpt, size_t trans) {
     std::cout << "new guy's name: " << m_clients[viable_index]->baseInfo.m_name << std::endl;
     ++m_clientNr;
     std::cout << "port: " << m_clients[viable_index]->m_endpt.port() << '\n'; //prerob aby to bolo id:[1/0] podla toho v akom je to teame zapisane ako 0 alebo 1
-    respond(m_clients[viable_index]->m_endpt, {std::string("you got a new index: ") +
-                                              std::to_string(viable_index) +
-                                              "\n"});
+    /*respond(m_clients[viable_index]->m_endpt, {std::string("you got a new index: ") +            ^
+                                              std::to_string(viable_index) +                       ^
+										  	  "\n"});											   ^*/
+	respond(m_clients[viable_index]->m_endpt, { std::to_string(viable_index) + ":1"}); //prerobit viz vyssie
 }
 
 //void UdpServer::abandonClient(unsigned short client_index) {
