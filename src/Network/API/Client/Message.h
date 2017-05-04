@@ -28,6 +28,14 @@ public:
 		playerMovement.push_back(newTransform);
 	}
 
+	const std::vector<NetworkId> &getIds() const {
+		return playerIds;
+	}
+
+	const std::vector<Transform> &getTransforms() const {
+		return playerMovement;
+	}
+
 	void setValid() {
 		valid = true;
 	}

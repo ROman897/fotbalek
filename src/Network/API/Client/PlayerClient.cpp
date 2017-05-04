@@ -187,7 +187,7 @@ const Player &PlayerClient::getMe() const {
 	return m_me;
 }
 
-const Message &PlayerClient::getMessage() {
+const Message &PlayerClient::getMessage() const {
 	std::lock_guard<std::mutex> lock(m_mutex);
 	return m_lastMessage;
 }

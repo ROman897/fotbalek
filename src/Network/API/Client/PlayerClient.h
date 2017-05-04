@@ -28,14 +28,6 @@ class PlayerClient : UdpBase {
 	mutable std::mutex m_mutex;
 	std::vector<Player> m_players;
 
-public:
-
-	PlayerClient();
-
-	~PlayerClient();
-
-	void connect( const std::string &host, const std::string &port);
-
 	void startReceiving();
 
 	void handleData(ErrorCode &err, size_t trans);
@@ -43,8 +35,6 @@ public:
 	void parseId(ErrorCode &err, size_t trans);
 
 	void parseMessage(std::string &message);
-
-	void sendData(const NetworkId& id, const MovementInputHolder& inputHolder);
 
 	void send(const std::string &input);
 
@@ -54,11 +44,22 @@ public:
 
 	void disconnect();
 
+
+public:
+
+	PlayerClient();
+
+	~PlayerClient();
+
+	void connect( const std::string &host, const std::string &port);
+
+	void sendData(const NetworkId& id, const MovementInputHolder& inputHolder);
+
 	const std::vector<Player> &getPlayers() const;
 
 	const Player &getMe() const;
 
-	const Message &getMessage();
+	const Message &getMessage() const;
 
 	bool hasStarted() const;
 
