@@ -37,6 +37,8 @@ public:
     }
 
     void run(float dt){
+        if (! m_playerServer->hasStarted())
+            return;
         std::vector<NetworkId> ids;
         std::vector<Transform> transforms;
         prepareData(ids, transforms);
