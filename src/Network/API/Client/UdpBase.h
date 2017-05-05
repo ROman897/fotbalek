@@ -38,6 +38,7 @@ protected:
 	boost::asio::io_service::work m_work;
 	udp::socket m_socket;
     std::thread m_dispatcher;
+	std::mutex m_lockBuffer;
     boost::array<char, BUFFER_LEN> m_buffer;
 };
 

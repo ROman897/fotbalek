@@ -51,7 +51,8 @@ void Client::startReceiving() {
 void Client::handleData(ErrorCode &err, size_t trans) {
 	if (!err)
 	{
-		std::string message(m_buffer.begin(), m_buffer.begin() + trans);
+		std::lock_guard<std::mutex> bufferLock (m_lockBuffer);
+		std::string message(m_buffer.begin(), trans);
 		parseMessage(message);
 	}
 	else
@@ -198,7 +199,8 @@ void Client::parseMessage(std::string &input) {
 void Client::parseId(ErrorCode &err, size_t trans) {
 	if (!err)
 	{
-		std::string message(m_buffer.begin(), m_buffer.begin() + trans);
+		std::lock_guard<std::mutex> bufferLock (m_lockBuffer);
+		std::string message(m_buffer.begin(), trans);
 		auto index = message.find(":");
 		std::cout << "msg: " << message << " index: " << index << std::endl;
 		try {

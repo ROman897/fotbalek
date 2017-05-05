@@ -121,6 +121,7 @@ void Server::emplaceClient(udp::endpoint endpoint, size_t trans) {
                                 "_" + (client->baseInfo.m_team ? "1" : "0") + "."
                               : ""; // <<< should not happen
         }
+		m_gameStarted.store(true);
         respondAll(startMessage);
     }
 }
