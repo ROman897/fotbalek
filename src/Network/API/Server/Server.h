@@ -43,7 +43,7 @@ class Server : UdpBase {
 
 	void handleErrors(ErrorCode &err, size_t trans);
 
-	void abandonClient(size_t client_index);
+    void abandonClient(size_t client_index); //index as stored in struct Player
 
 	void parseInput(const std::string &message, size_t length);
 
