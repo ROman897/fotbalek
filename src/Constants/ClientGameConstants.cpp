@@ -54,7 +54,7 @@ const GraphicLayers ClientGameConstants::kPlayerLabelLayer = FOREGROUND;
 
 
 //-----------------------Selection Arrow
-const Vector_Float ClientGameConstants::kArrowSpriteOffset = {0,0};
+const Vector_Float ClientGameConstants::kArrowSpriteOffset = {0,50};
 const GraphicLayers ClientGameConstants::kArrowSpriteLayer = FRONTUI;
 const bool ClientGameConstants::kArrowEnabledAtStart = false;
 const std::string ClientGameConstants::kArrowSpritePath = "../Resources/Sprites/Ball.png";

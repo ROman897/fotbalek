@@ -20,5 +20,10 @@ Vector_Float m_position;
     bool operator!=(const Transform &rhs) const {
         return !(rhs == *this);
     }
+
+    Transform&operator=(const Transform& rhs){
+        m_position = rhs.m_position;
+        return *this;
+    }
 };
 #endif //PV264_PROJECT_TRANSFORM_H
