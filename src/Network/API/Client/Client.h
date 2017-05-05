@@ -21,6 +21,8 @@ class Client : UdpBase {
 	Message<Transform> m_lastMessage;
 	mutable std::mutex m_mutex;
 	std::unique_lock<std::mutex> m_lock;
+	mutable std::mutex m_playerMutex;
+	std::unique_lock<std::mutex> m_playerLock;
 	std::vector<Player> m_players;
 	/*uint64_t m_myCounter;
 	uint64_t m_serverCounter;*/
@@ -52,7 +54,9 @@ public:
 
 	void sendData(const MovementInputHolder& inputHolder);
 
-	const std::vector<Player> &getPlayers() const;
+	const std::vector<Player> &getPlayers();
+
+	void unlockPlayers();
 
 	const Player &getMe() const;
 
