@@ -36,8 +36,9 @@ private:
     }
 
     void sendData(){
+        if (! m_playerClient->hasStarted())
+            return;
         if (prepareData(m_inputHolder)) {
-            std::cout << "sending data on client sender system" << std::endl;
             m_playerClient->sendData(*m_inputHolder);
 
         }

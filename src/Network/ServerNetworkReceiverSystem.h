@@ -53,7 +53,7 @@ private:
     void gameStarted(){
         const auto& players = m_UdpServer->getPlayers();
         Id i = 0;
-        m_componentManager->template forEntitiesMatching<SystemSignature_Network>([&players, &i](NetworkId* id, Transform* transform){
+        m_componentManager->template forEntitiesMatching<SystemSignature_Network_Player>([&players, &i](NetworkId* id, Transform* transform, PlayerComp* playerComp){
             id->id = players[i].m_id;
             transform->m_position = ServerGameConstants::startingPositions[i];
         });

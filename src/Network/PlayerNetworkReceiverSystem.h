@@ -48,6 +48,12 @@ private:
             label->enabled = true;
             label->m_text = players[i].m_name;
         });
+        Id ballId = m_componentManager->findGameObjectByTag("ball");
+        m_componentManager->template forEntityMatching<SystemSignature_SpriteGraphic >(ballId, [](Sprite *sprite, Transform* transform){
+            sprite->m_enabled = true;
+
+        });
+
         m_initialized = true;
     }
 
@@ -64,6 +70,7 @@ private:
             return;
         auto& ids = message.getIds();
         auto& transforms = message.getMovements();
+        std::cout << "received number of positions: " << transforms.size() << std::endl;
         updatePositions(ids, transforms);
     }
 

@@ -6,6 +6,8 @@
 #define PV264_PROJECT_SCORE_H
 
 struct Score {
+    Score() = default;
+
 	Score(int trueTeam, int falseTeam) : team1(trueTeam), team2(falseTeam) {}
 
 	int team1;
