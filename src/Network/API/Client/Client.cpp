@@ -185,9 +185,11 @@ void Client::parseMessage(std::string &input) {
 		m_gameStarted.store(started);
 	} catch (std::exception &ex) {
 		std::cerr << ex.what() << std::endl;
+		std::cout << "zparsoval som msg" << std::endl;
 	}
 	newMessage.setValid(true);//vyriesit messageID
 	m_lastMessage = std::move(newMessage);
+	std::cout << "move-ol som msg" << std::endl;
 }
 
 void Client::parseId(ErrorCode &err, size_t trans) {
@@ -197,7 +199,7 @@ void Client::parseId(ErrorCode &err, size_t trans) {
 		auto index = message.find(":");
 		m_me.m_id = static_cast<Id>(std::stoul(message));
 		m_me.m_team = static_cast<bool>(std::stoul(message.substr(index + 1)));
-		std::cout << "received id: " << m_me.m_id << std::endl;
+		std::cout << "received id: " << m_me.m_id  << "team: " << m_me.m_team << std::endl;
 	}
 	else
 	{
