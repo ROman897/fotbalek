@@ -1,6 +1,6 @@
 #include "Client.h"
 
-Client::Client() : m_lock(m_mutex) {
+Client::Client() : m_lock(m_mutex), m_myCounter(0), m_serverCounter(0) {
 	m_gameStarted.store(false);
 	std::cout << "Enter your name:" << std::endl;
 	std::string input;
@@ -156,7 +156,7 @@ void Client::parseMessage(std::string &input) {
 			}
 		}
 	}
-	newMessage.setValid(true);
+	newMessage.setValid(true);//vyriesit messageID
 	m_lastMessage = std::move(newMessage);
 }
 
