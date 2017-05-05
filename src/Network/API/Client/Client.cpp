@@ -84,7 +84,7 @@ void Client::parseMessage(std::string &input) {
 	bool team;
 	unsigned trueTeam = 0;
 	unsigned falseTeam = 0;
-	//add parsing for end:score1:score2
+	
 	for (size_t i = 0; i < input.size(); ++i) {
 		switch (currSt) {
 			case state::init : {
@@ -119,7 +119,6 @@ void Client::parseMessage(std::string &input) {
 			case state::getX : {
 				size_t next;
 				x = std::stof(input.substr(index_start), &next);
-				//input = input.substr(next);
 				i = next;
 				currSt = state::getY;
 				break;
@@ -130,7 +129,6 @@ void Client::parseMessage(std::string &input) {
 				}
 				size_t next;
 				y = std::stof(input.substr(index_start), &next);
-				//input = input.substr(next + 1);
 				i = next;
 				newMessage.addTransform(Transform (Vector_Float(x, y)));
 				currSt = state::init;
