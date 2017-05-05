@@ -175,6 +175,7 @@ public:
 
 
     void changeSize(size_t newCapacity){
+        std::cout << "change size: " << newCapacity << std::endl;
         assert(newCapacity > m_capacity);
 
         componentStorage.grow(newCapacity);
