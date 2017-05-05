@@ -100,11 +100,11 @@ void UdpServer::emplaceClient(udp::endpoint endpoint, size_t trans) {
             return;
         }
     }
-    m_clients[viable_index] = std::make_unique<Client>(std::move(endpoint), std::move(newName), viable_index);
+    m_clients[viable_index] = std::make_unique<Client>(std::move(endpoint), std::move(newName), viable_index + 1);
     if (m_clientNr > ServerGameConstants::kMaxNumberOfPlayers / 2) {
-        m_clients[viable_index]->baseInfo.m_team = 1;
+        m_clients[viable_index]->baseInfo.m_team = true;
     } else {
-        m_clients[viable_index]->baseInfo.m_team = 0;
+        m_clients[viable_index]->baseInfo.m_team = false;
     }
     //test
     std::cout << "new guy's name: " << m_clients[viable_index]->baseInfo.m_name << std::endl;
@@ -115,7 +115,7 @@ void UdpServer::emplaceClient(udp::endpoint endpoint, size_t trans) {
     //test
     std::cout << "port: " << m_clients[viable_index]->m_endpoint.port() << '\n';
 
-    respond(m_clients[viable_index]->m_endpoint, { std::to_string(viable_index) + ":" + std::to_string(team)});
+    respond(m_clients[viable_index]->m_endpoint, { std::to_string(viable_index + 1) + ":" + std::to_string(team)});
     if (m_clientNr == ServerGameConstants::kMaxNumberOfPlayers) {
         std::string startMessage("s;");
         for (auto &i : m_clients) {
@@ -129,7 +129,7 @@ void UdpServer::emplaceClient(udp::endpoint endpoint, size_t trans) {
 }
 
 void UdpServer::abandonClient(size_t client_index) {
-    m_clients[client_index] = nullptr;
+    m_clients[client_index - 1] = nullptr;
     --m_clientNr;
     std::cout << "client " << client_index << " has disconnected\n";
 }
@@ -171,11 +171,11 @@ void UdpServer::parseInput(const std::string &message, size_t length) {
                 continue;
             if (message[i] == '_') {
                 index = static_cast<size_t>(std::stol(message.substr(index_start, i - index_start)));
-                if (!m_clients[index] || !endpointEq(m_pending, m_clients[index]->m_endpoint))
+                if (!m_clients[index - 1] || !endpointEq(m_pending, m_clients[index - 1]->m_endpoint))
                     return;
                 //test
                 std::cout << "client " << index << " sent " << message;
-                std::cout << std::endl << "port: " << m_clients[index]->m_endpoint.port() << '\n';
+                std::cout << std::endl << "port: " << m_clients[index - 1]->m_endpoint.port() << '\n';
                 parseMessage(index, message.substr(2));
             }
             return;
@@ -190,7 +190,7 @@ void UdpServer::parseInput(const std::string &message, size_t length) {
             if (message[i] != 'd')
                 return;
             for (auto &client : m_clients) {
-                if (i && endpointEq(client->m_endpoint, m_pending)) {
+                if (client && endpointEq(client->m_endpoint, m_pending)) {
                     abandonClient(client->baseInfo.m_id);
                     return;
                 }
