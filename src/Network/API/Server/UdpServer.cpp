@@ -117,7 +117,7 @@ void UdpServer::emplaceClient(udp::endpoint endpoint, size_t trans) {
 
 	respond(m_clients[viable_index]->m_endpoint, { std::to_string(viable_index) + ":" + std::to_string(team)});
 	if (m_clientNr == ServerGameConstants::kMaxNumberOfPlayers) {
-		respondAll("starting");
+		respondAll("s;");
 	}
 }
 

@@ -66,7 +66,10 @@ void PlayerClient::parseMessage(std::string &input) {
 		init,
 		getX,
 		getY,
-		index
+		index,
+		starting,
+		startIndex,
+		startName
 	};
 
 	size_t index_start = 0;
@@ -74,11 +77,9 @@ void PlayerClient::parseMessage(std::string &input) {
 	float y;
 	state currSt = state::init;
 
-	if (input.compare("starting") == 0) {
-		m_gameStarted.store(true);
-		std::cout << "starting the game" << std::endl;
-		return;
-	}
+	Id id = 0;
+	std::string name{};
+	bool team;
 
 	for (size_t i = 0; i < input.size(); ++i) {
 		switch (currSt) {
@@ -88,6 +89,8 @@ void PlayerClient::parseMessage(std::string &input) {
 					currSt = state::index;
 				} else if (input[i] == '.') {
 					continue;
+				} else if (input[i] == 's') {
+					currSt = state::starting;
 				} else {
 					std::cerr << "wrong message was received" << std::endl;
 					return;
@@ -122,6 +125,33 @@ void PlayerClient::parseMessage(std::string &input) {
 				input = input.substr(next + 1);
 				newMessage.addTransform(Transform (Vector_Float(x, y)));
 				currSt = state::init;
+				break;
+			}
+			case state::starting : {
+				if (input[i] == ';' || input[i] == '.') {
+					continue;
+				}
+				if (std::isdigit(input[i]))
+					index_start = i;
+				break;
+			}
+			case state::startIndex : {
+				if (std::isdigit(input[i]))
+					continue;
+				if (input[i] == '_') {
+					id = std::stoul(input.substr(index_start, i - index_start));
+					index_start = i + 1;
+					currSt = state::startName;
+				}
+				break;
+			}
+			case state::startName : {
+				if (input[i] != '_')
+					continue;
+				name = input.substr(index_start, i - index_start);
+				team = input[i + 1];
+				m_players.push_back(Player(name, id, team));
+				currSt = state::starting;
 				break;
 			}
 		}
