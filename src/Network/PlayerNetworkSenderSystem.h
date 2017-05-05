@@ -8,7 +8,7 @@
 #include "../Components/Network/NetworkId.h"
 #include "../Components/MovementInputHolder.h"
 #include "../Core/ComponentManager.h"
-#include "API/Client/PlayerClient.h"
+#include "API/Client/Client.h"
 
 template <typename TSettings>
 class PlayerNetworkSenderSystem{
@@ -21,7 +21,7 @@ private:
 
     MovementInputHolder * m_inputHolder;
 
-    PlayerClient* m_playerClient;
+    Client* m_playerClient;
 
     bool prepareData(MovementInputHolder* inputHolder){
         bool result = false;
@@ -47,7 +47,7 @@ private:
 
 
 public:
-    void setPlayerClient(PlayerClient* playerClient){
+    void setPlayerClient(Client* playerClient){
         m_playerClient = playerClient;
     }
 

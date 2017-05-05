@@ -15,10 +15,11 @@ set(SOURCE_FILES src/Physic/PhysicSystem.h src/Components/Physic/RigidBody.h src
         src/Components/ClientMenuInputHolder.h src/Components/UI/Button.h
         src/SettingsDefines.h src/ClientObjectsSpawner.h src/ClientObjectsSpawner.cpp
         src/Components/Physic/ColliderTrigger.h src/Network/API/Client/Message.h src/Network/API/Client/Player.h
-        src/Network/API/Client/PlayerClient.cpp src/Network/API/Client/PlayerClient.h src/Network/API/Client/UdpBase.h
-        src/Network/API/Server/PlayerServer.cpp src/Network/API/Server/PlayerServer.h src/Network/API/Server/UdpServer.cpp
-        src/Network/API/Server/UdpServer.h src/Constants/ClientGameConstants.h src/Constants/ClientGameConstants.cpp
-        src/Constants/ServerGameConstants.h src/Constants/ServerGameConstants.cpp src/ServerObjectsSpawner.h src/ServerObjectsSpawner.cpp src/Components/PlayerComp.h src/Components/BallComp.h src/Game_Logic/ServerLogicSystem.h)
+        src/Network/API/Client/Client.cpp src/Network/API/Client/Client.h src/Network/API/Client/UdpBase.h
+        src/Network/API/Server/Server.cpp src/Network/API/Server/Server.h src/Constants/ClientGameConstants.h src/Constants/ClientGameConstants.cpp
+        src/Constants/ServerGameConstants.h src/Constants/ServerGameConstants.cpp src/ServerObjectsSpawner.h src/ServerObjectsSpawner.cpp
+        src/Components/PlayerComp.h src/Components/BallComp.h src/Game_Logic/ServerLogicSystem.h)
+
 
 set(SERVER_MAIN src/mainServer.cpp)
 set(CLIENT_MAIN src/mainClient.cpp src/Constants/NetworkConstants.h src/Constants/NetworkConstants.cpp)

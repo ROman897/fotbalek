@@ -11,7 +11,7 @@ int main() {
 	using namespace hana::literals;
 
 
-	UdpServer server;
+	Server server;
 	server.init();
 	EngineType_Server gameEngine;
 

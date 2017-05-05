@@ -1,6 +1,6 @@
-#include "PlayerClient.h"
+#include "Client.h"
 
-PlayerClient::PlayerClient() : m_lock(m_mutex) {
+Client::Client() : m_lock(m_mutex)/*, m_myCounter(0), m_serverCounter(0)*/ {
 	m_gameStarted.store(false);
 	std::cout << "Enter your name:" << std::endl;
 	std::string input;
@@ -9,23 +9,23 @@ PlayerClient::PlayerClient() : m_lock(m_mutex) {
 	std::cout << "Hi " << input << " we are now connecting you to the server!" << std::endl;
 }
 
-PlayerClient::~PlayerClient() {
+Client::~Client() {
 	disconnect();
 	stop();
 }
 
-void PlayerClient::askForId() {
-	m_socket.async_send(boost::asio::buffer("i?" + m_me.m_name), boost::bind(&PlayerClient::handleErrors,
+void Client::askForId() {
+	m_socket.async_send(boost::asio::buffer("i?" + m_me.m_name), boost::bind(&Client::handleErrors,
 																  this,
 																  boost::asio::placeholders::error,
 																  boost::asio::placeholders::bytes_transferred));
-	m_socket.async_receive(boost::asio::buffer(m_buffer), boost::bind(&PlayerClient::parseId,
+	m_socket.async_receive(boost::asio::buffer(m_buffer), boost::bind(&Client::parseId,
 																	 this,
 																	 boost::asio::placeholders::error,
 																	 boost::asio::placeholders::bytes_transferred));
 }
 
-void PlayerClient::connect(const std::string &host, const std::string &port) {
+void Client::connect(const std::string &host, const std::string &port) {
 	udp::resolver resolver(io_service);
 	udp::resolver::query query(udp::v4(), host, port);
 	m_serverEnd = *resolver.resolve(query);
@@ -40,14 +40,14 @@ void PlayerClient::connect(const std::string &host, const std::string &port) {
 	startReceiving();
 }
 
-void PlayerClient::startReceiving() {
-	m_socket.async_receive(boost::asio::buffer(m_buffer), boost::bind(&PlayerClient::handleData,
+void Client::startReceiving() {
+	m_socket.async_receive(boost::asio::buffer(m_buffer), boost::bind(&Client::handleData,
 																	this,
 																	boost::asio::placeholders::error,
 																	boost::asio::placeholders::bytes_transferred));
 }
 
-void PlayerClient::handleData(ErrorCode &err, size_t trans) {
+void Client::handleData(ErrorCode &err, size_t trans) {
 	if (!err)
 	{
 		std::string message(m_buffer.data(), m_buffer.data() + trans);
@@ -60,13 +60,16 @@ void PlayerClient::handleData(ErrorCode &err, size_t trans) {
 	startReceiving();
 }
 
-void PlayerClient::parseMessage(std::string &input) {
+void Client::parseMessage(std::string &input) {
 	Message<Transform> newMessage;
 	enum class state {
 		init,
 		getX,
 		getY,
-		index
+		index,
+		starting,
+		startIndex,
+		startName
 	};
 
 	size_t index_start = 0;
@@ -74,12 +77,10 @@ void PlayerClient::parseMessage(std::string &input) {
 	float y;
 	state currSt = state::init;
 
-	if (input.compare("starting") == 0) {
-		m_gameStarted.store(true);
-		std::cout << "starting the game" << std::endl;
-		return;
-	}
-
+	Id id = 0;
+	std::string name{};
+	bool team;
+	//add parsing for end:score1:score2
 	for (size_t i = 0; i < input.size(); ++i) {
 		switch (currSt) {
 			case state::init : {
@@ -88,6 +89,8 @@ void PlayerClient::parseMessage(std::string &input) {
 					currSt = state::index;
 				} else if (input[i] == '.') {
 					continue;
+				} else if (input[i] == 's') {
+					currSt = state::starting;
 				} else {
 					std::cerr << "wrong message was received" << std::endl;
 					return;
@@ -124,13 +127,40 @@ void PlayerClient::parseMessage(std::string &input) {
 				currSt = state::init;
 				break;
 			}
+			case state::starting : {
+				if (input[i] == ';' || input[i] == '.') {
+					continue;
+				}
+				if (std::isdigit(input[i]))
+					index_start = i;
+				break;
+			}
+			case state::startIndex : {
+				if (std::isdigit(input[i]))
+					continue;
+				if (input[i] == '_') {
+					id = std::stoul(input.substr(index_start, i - index_start));
+					index_start = i + 1;
+					currSt = state::startName;
+				}
+				break;
+			}
+			case state::startName : {
+				if (input[i] != '_')
+					continue;
+				name = input.substr(index_start, i - index_start);
+				team = input[i + 1];
+				m_players.push_back(Player(name, id, team));
+				currSt = state::starting;
+				break;
+			}
 		}
 	}
-	newMessage.setValid(true);
+	newMessage.setValid(true);//vyriesit messageID
 	m_lastMessage = std::move(newMessage);
 }
 
-void PlayerClient::parseId(ErrorCode &err, size_t trans) {
+void Client::parseId(ErrorCode &err, size_t trans) {
 	if (!err)
 	{
 		std::string message(m_buffer.data(), m_buffer.data() + trans);
@@ -145,7 +175,7 @@ void PlayerClient::parseId(ErrorCode &err, size_t trans) {
 
 }
 
-void PlayerClient::sendData(const MovementInputHolder &inputHolder) {
+void Client::sendData(const MovementInputHolder &inputHolder) {
 	std::string message {};
 	if (inputHolder.moveHorizontal) {
 		if (inputHolder.moveRight) {
@@ -165,15 +195,15 @@ void PlayerClient::sendData(const MovementInputHolder &inputHolder) {
 	send(message);
 }
 
-void PlayerClient::send(const std::string &input) {
+void Client::send(const std::string &input) {
 	std::string message {std::to_string(m_me.m_id) + "_" + input};
-	m_socket.async_send(boost::asio::buffer(message.data(), message.size()), boost::bind(&PlayerClient::handleErrors,
+	m_socket.async_send(boost::asio::buffer(message.data(), message.size()), boost::bind(&Client::handleErrors,
 															   this,
 															   boost::asio::placeholders::error,
 															   boost::asio::placeholders::bytes_transferred));
 }
 
-void PlayerClient::handleErrors( ErrorCode &error, std::size_t bytes_transferred )
+void Client::handleErrors( ErrorCode &error, std::size_t bytes_transferred )
 {
 	if ( error ) {
 		std::cerr << "Client error: " << error.message() << "bytes transferred: " << bytes_transferred  << ", exiting" << std::endl;
@@ -181,30 +211,30 @@ void PlayerClient::handleErrors( ErrorCode &error, std::size_t bytes_transferred
 	}
 }
 
-void PlayerClient::disconnect() {
+void Client::disconnect() {
 	send("end");
 }
 
-const std::vector<Player> &PlayerClient::getPlayers() const {
+const std::vector<Player> &Client::getPlayers() const {
 	return m_players;
 }
 
-const Player &PlayerClient::getMe() const {
+const Player &Client::getMe() const {
 	return m_me;
 }
 
-Message<Transform> &PlayerClient::getMessage() {
+Message<Transform> &Client::getMessage() {
 	m_lock.lock();
 	return m_lastMessage;
 }
 
-void PlayerClient::releaseMessage() {
+void Client::releaseMessage() {
 	m_lastMessage.setValid(false);
 	m_lock.unlock();
 }
 
 
-bool PlayerClient::hasStarted() const {
+bool Client::hasStarted() const {
 	return m_gameStarted.load();
 }
 

@@ -7,7 +7,8 @@ int main() {
     namespace hana = boost::hana;
     using namespace hana::literals;
 
-    PlayerClient client;
+
+    Client client;
     client.connect(NetworkConstants::kServerAddress, NetworkConstants::kServerPort);
 
     EngineType_Client gameEngine;

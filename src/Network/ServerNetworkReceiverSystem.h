@@ -10,7 +10,7 @@
 #include "../Components/MovementInputHolder.h"
 #include "../Components/Physic/RigidBody.h"
 #include "../Constants/GameConstants.h"
-#include "API/Server/UdpServer.h"
+#include "API/Server/Server.h"
 #include "../Constants/ServerGameConstants.h"
 #include "../SettingsDefines.h"
 #include "../Utils/Timer.h"
@@ -37,7 +37,7 @@ class ServerNetworkReceiverSystem{
 
 private:
     ComponentManager<TSettings>* m_componentManager;
-    UdpServer* m_UdpServer;
+    Server* m_UdpServer;
     bool m_initialized;
 
 
@@ -100,7 +100,7 @@ public:
 
     }
 
-    void setServer(UdpServer* server){
+    void setServer(Server* server){
         m_UdpServer = server;
     }
 

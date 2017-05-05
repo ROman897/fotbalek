@@ -13,7 +13,7 @@
 #include "../../../Components/Network/NetworkId.h"
 #include "../../../Components/Transform.h"
 
-class PlayerClient : UdpBase {
+class Client : UdpBase {
 
 	std::atomic_bool m_gameStarted;
 	udp::endpoint m_serverEnd;
@@ -22,6 +22,8 @@ class PlayerClient : UdpBase {
 	mutable std::mutex m_mutex;
 	std::unique_lock<std::mutex> m_lock;
 	std::vector<Player> m_players;
+	/*uint64_t m_myCounter;
+	uint64_t m_serverCounter;*/
 
 	void startReceiving();
 
@@ -42,9 +44,9 @@ class PlayerClient : UdpBase {
 
 public:
 
-	PlayerClient();
+	Client();
 
-	~PlayerClient();
+	~Client();
 
 	void connect( const std::string &host, const std::string &port);
 

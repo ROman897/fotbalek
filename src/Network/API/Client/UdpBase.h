@@ -2,7 +2,7 @@
 #define PV264_PROJECT_UDPBASE_H
 
 #ifndef BUFFER_LEN
-#define BUFFER_LEN 128
+#define BUFFER_LEN 256
 #endif // BUFFER_LEN
 
 #include <boost/asio.hpp>

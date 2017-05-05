@@ -8,14 +8,14 @@
 #include "../Core/ComponentManager.h"
 #include "../Components/Network/NetworkId.h"
 #include "../Components/Transform.h"
-#include "API/Server/UdpServer.h"
+#include "API/Server/Server.h"
 
 template <typename TSettings>
 class ServerNetworkSenderSystem{
     using SystemSignature_Network = Signature<NetworkId, Transform>;
 private:
     ComponentManager<TSettings>* m_componentManager;
-    UdpServer* m_playerServer;
+    Server* m_playerServer;
     void prepareData(std::vector<NetworkId>& ids, std::vector<Transform>& transforms){
         m_componentManager->template forEntitiesMatching<SystemSignature_Network>([&ids, &transforms](NetworkId* id, Transform* transform){
             ids.push_back(*id);
@@ -32,7 +32,7 @@ public:
     void start(){
     }
 
-    void setServer(UdpServer* server){
+    void setServer(Server* server){
         m_playerServer = server;
     }
 
