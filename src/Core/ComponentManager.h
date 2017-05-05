@@ -27,8 +27,8 @@ class ComponentManager{
     SignatureManager<TSettings> signatureManager;
     ComponentStorage<TSettings> componentStorage;
     std::vector<GameObject<TSettings>> m_gameObjects;
-    size_t m_size, m_capacity, m_newSize;
-    const size_t m_startingSize = 50U;
+    size_t m_size, m_capacity;
+    const size_t m_startingSize = 15U;
     std::atomic_bool quit;
 
 
@@ -190,7 +190,7 @@ public:
     }
 
     void tryChangeSize(){
-        if (m_newSize > m_size){
+        if (m_size >= m_capacity){
             changeSize(20 + m_size * 2);
         }
     }
@@ -203,7 +203,7 @@ public:
         return m_gameObjects[id];
     }
 
-    ComponentManager() : m_size(0U), m_capacity(0U), m_newSize(0U), quit(false){
+    ComponentManager() : m_size(0U), m_capacity(0U), quit(false){
         changeSize(m_startingSize);
     }
 
@@ -249,11 +249,10 @@ public:
 
     Id addEmptyGameObject(){
         tryChangeSize();
-        Id thisId = m_newSize++;
+        Id thisId = m_size++;
         auto& g(m_gameObjects[thisId]);
         g.m_alive = true;
         g.m_bitset.reset();
-        ++m_size;
         return thisId;
     }
 
