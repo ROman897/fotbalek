@@ -11,14 +11,21 @@
 
 template<typename T>
 class Message {
-	//pridat ID sprav a counter
-	Id messageId;
+	Id m_messageId;
 	std::vector<NetworkId> m_playerIds;
 	std::vector<T> m_playerMovement;
 	bool m_valid;
 
 public:
 	Message() {}
+
+	Id getMessageId() const {
+		return m_messageId;
+	}
+
+	void setMessageId(Id messageId) {
+		m_messageId = messageId;
+	}
 
 	void addNetworkId(const NetworkId &newId) {
 		m_playerIds.push_back(newId);
