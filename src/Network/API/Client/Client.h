@@ -23,8 +23,6 @@ public:
 	mutable std::mutex m_messageMutex;
 	mutable std::mutex m_playersMutex;
 private:
-	/*std::lock_guard<std::mutex> m_messageLock;
-	std::lock_guard<std::mutex> m_playerLock;*/
 	std::vector<Player> m_players;
 	/*uint64_t m_myCounter;
 	uint64_t m_serverCounter;*/
@@ -35,7 +33,7 @@ private:
 
 	void parseId(ErrorCode &err, size_t trans);
 
-	void parseMessage(std::string &message);
+	void parseMessage(std::string message);
 
 	void send(const std::string &input);
 
@@ -61,8 +59,6 @@ public:
 	const Player &getMe() const;
 
 	Message<Transform> &getMessage();
-
-	//void releaseMessage();
 
 	bool hasStarted() const;
 

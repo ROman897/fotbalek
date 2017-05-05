@@ -1,9 +1,7 @@
 #include "Client.h"
 
-Client::Client() /*: m_lock(m_mutex), m_playerLock(m_playerMutex)*//*, m_myCounter(0), m_serverCounter(0)*/ {
+Client::Client() /*: m_myCounter(0), m_serverCounter(0)*/ {
 	m_gameStarted.store(false);
-	/*m_lock.unlock();
-	m_playerLock.unlock();*/
 	std::cout << "Enter your name:" << std::endl;
 	std::string input;
 	getline(std::cin, input);
@@ -62,7 +60,7 @@ void Client::handleData(ErrorCode &err, size_t trans) {
 	startReceiving();
 }
 
-void Client::parseMessage(std::string &input) {
+void Client::parseMessage(std::string input) {
 	Message<Transform> newMessage;
 	enum class state {
 		init,
@@ -201,8 +199,13 @@ void Client::parseId(ErrorCode &err, size_t trans) {
 	{
 		std::string message(m_buffer.data(), m_buffer.data() + trans);
 		auto index = message.find(":");
-		m_me.m_id = static_cast<Id>(std::stoul(message));
-		m_me.m_team = static_cast<bool>(std::stoul(message.substr(index + 1)));
+		std::cout << "msg: " << message << " index: " << index << std::endl;
+		try {
+			m_me.m_id = static_cast<Id>(std::stoul(message));
+			m_me.m_team = static_cast<bool>(std::stoul(message.substr(index + 1)));
+		}catch (std::exception &ex) {
+			std::cerr << "parseId failed : " << ex.what() << std::endl;
+		}
 		std::cout << "received id: " << m_me.m_id  << "team: " << m_me.m_team << std::endl;
 	}
 	else
@@ -263,12 +266,6 @@ const Player &Client::getMe() const {
 Message<Transform> &Client::getMessage() {
 	return m_lastMessage;
 }
-
-/*void Client::releaseMessage() {
-	m_lastMessage.setValid(false);
-	m_messageLock.unlock();
-}*/
-
 
 bool Client::hasStarted() const {
 	return m_gameStarted.load();
