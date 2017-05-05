@@ -42,6 +42,7 @@ public:
         std::vector<NetworkId> ids;
         std::vector<Transform> transforms;
         prepareData(ids, transforms);
+        std::cout << "server system prepared data length: " << transforms.size() << std::endl;
         m_playerServer->sendData(ids, transforms);
     }
 

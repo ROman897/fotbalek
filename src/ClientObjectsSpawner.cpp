@@ -58,9 +58,9 @@ Id spawnMenuPanel(EngineType_Client &gameEngine) {
 }
 
 Id spawnSelectionArrow(EngineType_Client &gameEngine) {
-    Id id = gameEngine.spawnGameObject("menuPanel");
+    Id id = gameEngine.spawnGameObject("arrow");
     gameEngine.addComponent<Transform>(id);
-    gameEngine.addComponent<Sprite>(id, ClientGameConstants::kArrowSpriteOffset, ClientGameConstants::kArrowSpriteLayer,
+    gameEngine.addComponent<Sprite>(id, ClientGameConstants::kArrowSpriteOffset, ClientGameConstants::kArrowSpritePath, ClientGameConstants::kArrowSpriteLayer,
     ClientGameConstants::kArrowEnabledAtStart);
     return id;
 }
@@ -68,7 +68,7 @@ Id spawnSelectionArrow(EngineType_Client &gameEngine) {
 Id spawnPitch(EngineType_Client &gameEngine) {
     Id id = gameEngine.spawnGameObject("pitch");
     gameEngine.addComponent<Transform>(id, ClientGameConstants::kPitchPos);
-    gameEngine.addComponent<Sprite>(id, ClientGameConstants::kPitchSpriteOffset, ClientGameConstants::kArrowSpriteLayer,
+    gameEngine.addComponent<Sprite>(id, ClientGameConstants::kPitchSpriteOffset, ClientGameConstants::kPitchSpritePath, ClientGameConstants::kPitchSpriteLayer,
                                     ClientGameConstants::kPitchEnabledAtStart);
     return id;
 }
