@@ -53,7 +53,7 @@ static const float kBallColliderRadius;
 //--------------------------//Goals
 
 //--------------------Player constants
-static constexpr int kMaxNumberOfPlayers = 4;
+static constexpr int kMaxNumberOfPlayers = 2;
 static constexpr int portNumber = 13000; //modify also ClientGameConstants.cpp
 static const Vector_Float startingPositions[kMaxNumberOfPlayers];
 //--------------------//Player Constants
