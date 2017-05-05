@@ -37,6 +37,7 @@ public:
     }
 
     void run(float dt){
+        std::cout << "server sender run" << std::endl;
         if (! m_playerServer->hasStarted())
             return;
         std::vector<NetworkId> ids;
