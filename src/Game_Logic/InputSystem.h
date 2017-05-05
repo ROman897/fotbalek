@@ -95,15 +95,9 @@ public:
                                                                                       const Transform *transform) {
                                                                                    this->activeButtonId = m_manager->findGameObjectByTag(
                                                                                            button->m_moveUpButtonTag);
-                                                                                   m_manager->template forEntityMatching<SystemSignature_SpriteGraphic>(
-                                                                                           activeButtonArrowId,
-                                                                                           [&transform](Sprite *sprite,
-                                                                                                        Transform *transform1) {
-                                                                                               transform1->m_position =
-                                                                                                       transform->m_position +
-                                                                                                               ClientGameConstants::kButtonOffset;
-                                                                                           });
+
                                                                                });
+                            setArrowPosition();
                             break;
                         case SDLK_s:
                         case SDLK_DOWN:
@@ -113,27 +107,14 @@ public:
                                                                                       const Transform *transform) {
                                                                                    this->activeButtonId = m_manager->findGameObjectByTag(
                                                                                            button->m_moveDownButtonTag);
-                                                                                   m_manager->template forEntityMatching<SystemSignature_SpriteGraphic>(
-                                                                                           activeButtonArrowId,
-                                                                                           [&transform](Sprite *sprite,
-                                                                                                        Transform *transform1) {
-                                                                                               transform1->m_position =
-                                                                                                       transform->m_position +
-                                                                                                               ClientGameConstants::kButtonOffset;
-                                                                                           });
                                                                                });
+                            setArrowPosition();
                             break;
 
                         case SDLK_RETURN:
-                        std::cout << "enter pressed " << std::endl;
-                            m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
-                                                                               [this](Button *button, Sprite *sprite,
-                                                                                      Label *label, Transform* transform) {
-                                                                                   std::cout << "button doing work" << std::endl;
-                                                                                   for (auto &func : button->m_callbacks) {
-                                                                                       func();
-                                                                                   }
-                                                                               });
+                        if(activeButtonId == m_QuitButtonId){
+                            m_manager->setQuit(true);
+                        }
                             escPressed();
                             break;
                         default:
@@ -172,10 +153,17 @@ public:
     }
 
     void start(){
-        activeButtonArrowId = m_manager->findGameObjectByTag("button_arrow");
+        activeButtonArrowId = m_manager->findGameObjectByTag("arrow");
         movementInputId = m_manager->template findEntityMatching<SystemSignature_Input>();
         m_escape = false;
         menuPanelId = m_manager->findGameObjectByTag("menuPanel");
+
+        m_continueButtonId = m_manager->findGameObjectByTag(ClientGameConstants::kContinueButtonTag);
+        m_OptionsButtonId = m_manager->findGameObjectByTag(ClientGameConstants::kOptionsButtonTag);
+        m_QuitButtonId = m_manager->findGameObjectByTag(ClientGameConstants::kQuitButtonTag);
+        Transform t;
+
+        setArrowPosition();
 
     }
 
@@ -186,6 +174,29 @@ private:
     Id activeButtonId;
     Id activeButtonArrowId;
     Id menuPanelId;
+    Id m_continueButtonId;
+    Id m_OptionsButtonId;
+    Id m_QuitButtonId;
+
+    void setArrowPosition(){
+
+        Transform t;
+        m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
+                                                                      [&t](Button *button, Sprite *sprite,
+                                                                           Label *label,
+                                                                           const Transform *transform) {
+                                                                          t = *transform;
+                                                                      });
+
+        m_manager->template forEntityMatching<SystemSignature_SpriteGraphic>(
+                activeButtonArrowId,
+                [&t](Sprite *sprite,
+                            Transform *transform1) {
+                    transform1->m_position =
+                            t.m_position +
+                            ClientGameConstants::kButtonOffset;
+                });
+    }
 
     void escPressed(){
         std::cout << "esc: " << m_escape << std::endl;
@@ -198,10 +209,10 @@ private:
         m_manager->template forEntityMatching<SystemSignature_RectangleGraphic>(menuPanelId, [this](RectangleShape* rect, Transform* trans){
             rect->m_enabled = m_escape;
         });
-        /*m_manager->template forEntityMatching<SystemSignature_Sprite>(activeButtonArrowId, [this](Sprite *sprite,
+        m_manager->template forEntityMatching<SystemSignature_SpriteGraphic >(activeButtonArrowId, [this](Sprite *sprite,
                                                                                          const Transform *transform) {
-            sprite->enabled = escape;
-        });*/
+            sprite->m_enabled = m_escape;
+        });
     }
 
 

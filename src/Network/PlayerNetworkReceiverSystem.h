@@ -47,6 +47,7 @@ private:
             // need to set sprite based on which team the client is in
             label->enabled = true;
             label->m_text = players[i].m_name;
+            std::cout << "player: " << players[i].m_name << " id: " << players[i].m_id << " team: " << players[i].m_team << std::endl;
         });
         Id ballId = m_componentManager->findGameObjectByTag("ball");
         m_componentManager->template forEntityMatching<SystemSignature_SpriteGraphic >(ballId, [](Sprite *sprite, Transform* transform){
@@ -70,7 +71,7 @@ private:
             return;
         auto& ids = message.getIds();
         auto& transforms = message.getMovements();
-        std::cout << "received number of positions: " << transforms.size() << std::endl;
+        //std::cout << "received number of positions: " << transforms.size() << std::endl;
         updatePositions(ids, transforms);
     }
 
