@@ -103,7 +103,7 @@ void Server::emplaceClient(udp::endpoint endpoint, size_t trans) {
     m_clients[viable_index] = std::make_unique<Client>(std::move(endpoint), std::move(newName), viable_index + 1);
 	m_clients[viable_index]->baseInfo.m_team = m_clientNr > ServerGameConstants::kMaxNumberOfPlayers / 2;
     //test
-    std::cout << "new guy's name: " << m_clients[viable_index]->baseInfo.m_name << std::endl;
+    std::cout << "new guy's name: " << m_clients[viable_index]->baseInfo.m_name << "id:" << m_clients[viable_index]->baseInfo.m_name <<std::endl;
 
     ++m_clientNr;
     int team = m_clients[viable_index]->baseInfo.m_team;

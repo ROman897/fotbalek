@@ -31,7 +31,8 @@ class Client : UdpBase {
 
 	void parseId(ErrorCode &err, size_t trans);
 
-	void parseMessage(std::string &message);
+	//void parseMessage(std::string &message);
+	void parseMessage(std::string message);
 
 	void send(const std::string &input);
 
