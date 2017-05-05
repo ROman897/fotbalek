@@ -19,6 +19,7 @@ class Server : UdpBase {
 
         const udp::endpoint m_endpoint;
 		Player baseInfo;
+        Id lastMessage;
     };
 
 	std::atomic_bool m_gameStarted;
