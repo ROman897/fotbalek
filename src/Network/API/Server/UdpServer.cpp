@@ -12,7 +12,7 @@ UdpServer::~UdpServer() {
 
 void UdpServer::listen() {
     m_socket.async_receive_from(boost::asio::buffer(m_buffer),
-                               m_pending, //je nutne specifikovat z akeho endpointu ?
+                               m_pending,
                                boost::bind(&UdpServer::handleRequest,
                                            this,
                                            boost::asio::placeholders::error,
@@ -20,10 +20,6 @@ void UdpServer::listen() {
 }
 
 void UdpServer::handleRequest(ErrorCode &error, size_t transferred) {
-    /*if (transferred > BUFFER_LEN) { //je to nutne? co to ma robit?
-        listen();
-        return;
-    }*/
     if (error) {
         if (error == boost::asio::error::eof) {
             for (auto &i : m_clients) {
