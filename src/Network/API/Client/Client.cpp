@@ -50,7 +50,7 @@ void Client::startReceiving() {
 void Client::handleData(ErrorCode &err, size_t trans) {
 	if (!err)
 	{
-		std::string message(m_buffer.data(), m_buffer.data() + trans);
+		std::string message(m_buffer.begin(), m_buffer.begin() + trans);
 		parseMessage(message);
 	}
 	else
@@ -60,7 +60,7 @@ void Client::handleData(ErrorCode &err, size_t trans) {
 	startReceiving();
 }
 
-void Client::parseMessage(std::string input) {
+void Client::parseMessage(std::string &input) {
 	Message<Transform> newMessage;
 	enum class state {
 		init,
@@ -197,7 +197,7 @@ void Client::parseMessage(std::string input) {
 void Client::parseId(ErrorCode &err, size_t trans) {
 	if (!err)
 	{
-		std::string message(m_buffer.data(), m_buffer.data() + trans);
+		std::string message(m_buffer.begin(), m_buffer.begin() + trans);
 		auto index = message.find(":");
 		std::cout << "msg: " << message << " index: " << index << std::endl;
 		try {
