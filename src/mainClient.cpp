@@ -13,13 +13,14 @@ int main() {
 
     EngineType_Client gameEngine;
 
-    spawnPitch(gameEngine);
+
     auto& clientSender = gameEngine.getSystem<PlayerNetworkSenderSystem<settings>>();
     clientSender.setPlayerClient(&client);
     auto& clientReceiver = gameEngine.getExternalSystem<PlayerNetworkReceiverSystem<settings>>();
     clientReceiver.setPlayerClient(&client);
 
 
+    spawnPitch(gameEngine);
 
     Id activeButtonId = spawnButton(gameEngine, ClientGameConstants::kContinueButtonTag,
     ClientGameConstants::kQuitButtonTag, ClientGameConstants::kOptionsButtonTag,

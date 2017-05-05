@@ -69,7 +69,7 @@ Id spawnPitch(EngineType_Client &gameEngine) {
     Id id = gameEngine.spawnGameObject("pitch");
     gameEngine.addComponent<Transform>(id, ClientGameConstants::kPitchPos);
     gameEngine.addComponent<Sprite>(id, ClientGameConstants::kPitchSpriteOffset, ClientGameConstants::kArrowSpriteLayer,
-                                    ClientGameConstants::kArrowEnabledAtStart);
+                                    ClientGameConstants::kPitchEnabledAtStart);
     return id;
 }
 
