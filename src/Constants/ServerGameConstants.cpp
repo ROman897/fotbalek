@@ -30,3 +30,13 @@ const std::string ServerGameConstants::kRightGoalTag = "rightGoal";
 //---------------------Game Time
 const float ServerGameConstants::kGameTime = 300;
 //---------------------//Game Time
+
+//----------------------Barriers
+const Vector_Float ServerGameConstants::kBarriersTopLeft = {0, 0};
+const Vector_Float ServerGameConstants::kLeftBarrier_Pos = {0,0};
+const Vector_Float ServerGameConstants::kSideBarrier_BotRight = {50, 1000};
+const Vector_Float ServerGameConstants::kTopBarrier_Pos = {0, 0};
+const Vector_Float ServerGameConstants::kUpDownBarrier_BotRight = {50, 800};
+const Vector_Float ServerGameConstants::kBotBarrier_Pos = {0, 850};
+const Vector_Float ServerGameConstants::kRightBarrier_Pos = {1000, 0};
+//------------------------//Barriers
