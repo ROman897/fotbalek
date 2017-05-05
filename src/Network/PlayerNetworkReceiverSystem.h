@@ -8,7 +8,7 @@
 #include "../Components/Network/NetworkId.h"
 #include "../Components/Transform.h"
 #include "../Core/ComponentManager.h"
-#include "API/Client/PlayerClient.h"
+#include "API/Client/Client.h"
 #include "../Utils/Timer.h"
 #include "../SettingsDefines.h"
 #include "../Constants/GameConstants.h"
@@ -17,7 +17,7 @@ template <typename TSettings>
 class PlayerNetworkReceiverSystem{
 private:
     ComponentManager<TSettings>* m_componentManager;
-    PlayerClient* m_playerClient;
+    Client* m_playerClient;
     Timer m_timer;
     bool m_initialized;
 
@@ -68,7 +68,7 @@ private:
 
 public:
 
-    void setPlayerClient(PlayerClient* playerClient){
+    void setPlayerClient(Client* playerClient){
         m_playerClient = playerClient;
     }
 

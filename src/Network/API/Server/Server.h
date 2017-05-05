@@ -12,7 +12,7 @@
 #include "../../../Constants/ServerGameConstants.h"
 #include "../../../Components/Transform.h"
 
-class UdpServer : UdpBase {
+class Server : UdpBase {
 
 	struct Client {
         Client(udp::endpoint &&endpoint, const std::string &name, Id index) : m_endpoint(endpoint), baseInfo(name, index) {}
@@ -52,9 +52,9 @@ class UdpServer : UdpBase {
 
 public:
 
-	UdpServer();
+	Server();
 
-	~UdpServer();
+	~Server();
 
     void init();
 

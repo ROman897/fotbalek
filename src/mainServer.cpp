@@ -18,7 +18,7 @@ int main() {
 
 	// define full settings of the engine
 
-	UdpServer server;
+	Server server;
 	server.init();
 	EngineType_Server gameEngine;
 

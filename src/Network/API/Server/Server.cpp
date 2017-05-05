@@ -1,25 +1,25 @@
-#include "UdpServer.h"
+#include "Server.h"
 
-UdpServer::UdpServer() : m_lock(m_mutex){
+Server::Server() : m_lock(m_mutex){
     m_clients.resize(ServerGameConstants::kMaxNumberOfPlayers);
     m_socket.bind(udp::endpoint(udp::v4(), ServerGameConstants::portNumber));
     m_lock.unlock();
 }
-UdpServer::~UdpServer() {
+Server::~Server() {
     respondAll("disconnect");
     stop();
 }
 
-void UdpServer::listen() {
+void Server::listen() {
     m_socket.async_receive_from(boost::asio::buffer(m_buffer),
                                m_pending,
-                               boost::bind(&UdpServer::handleRequest,
+                               boost::bind(&Server::handleRequest,
                                            this,
                                            boost::asio::placeholders::error,
                                            boost::asio::placeholders::bytes_transferred));
 }
 
-void UdpServer::handleRequest(ErrorCode &error, size_t transferred) {
+void Server::handleRequest(ErrorCode &error, size_t transferred) {
     if (error) {
         if (error == boost::asio::error::eof) {
             for (auto &i : m_clients) {
@@ -29,7 +29,7 @@ void UdpServer::handleRequest(ErrorCode &error, size_t transferred) {
                 }
             }
         }
-        std::cerr << "UdpServer::handleRequest:" << error.message();
+        std::cerr << "Server::handleRequest:" << error.message();
     }
     std::string message(m_buffer.data(), m_buffer.data() + transferred);
 
@@ -40,7 +40,7 @@ void UdpServer::handleRequest(ErrorCode &error, size_t transferred) {
     listen();
 }
 
-void UdpServer::sendData(const std::vector<NetworkId> &ids, const std::vector<Transform> &transforms) {
+void Server::sendData(const std::vector<NetworkId> &ids, const std::vector<Transform> &transforms) {
     std::string message{};
     for (size_t i = 0; i < ids.size(); ++i) {
         const auto &position = transforms[i].m_position;
@@ -49,35 +49,35 @@ void UdpServer::sendData(const std::vector<NetworkId> &ids, const std::vector<Tr
     respondAll(message);
 }
 
-void UdpServer::respondAll(const std::string &response) {
+void Server::respondAll(const std::string &response) {
     for (auto &i : m_clients) {
         if (i)
             respond(i->m_endpoint, response);
     }
 }
 
-void UdpServer::respond(const udp::endpoint &cl, const std::string &response) {
+void Server::respond(const udp::endpoint &cl, const std::string &response) {
     std::cout << "sending to " << cl.address() << ":" << cl.port() << '\n';
     m_socket.async_send_to(boost::asio::buffer(response),
                           cl,
-                           boost::bind(&UdpServer::handleErrors,
+                           boost::bind(&Server::handleErrors,
                                       this,
                                       boost::asio::placeholders::error,
                                       boost::asio::placeholders::bytes_transferred));
 }
 
-void UdpServer::init() {
+void Server::init() {
     listen();
 }
 
-void UdpServer::handleErrors(ErrorCode &err, size_t trans) {
+void Server::handleErrors(ErrorCode &err, size_t trans) {
     if ( err ) {
         std::cerr << "Client error: " << err.message() << "bytes transferred: " << trans  << ", exiting" << std::endl;
         std::exit( 1 );
     }
 }
 
-void UdpServer::emplaceClient(udp::endpoint endpoint, size_t trans) {
+void Server::emplaceClient(udp::endpoint endpoint, size_t trans) {
     if (m_clientNr >= ServerGameConstants::kMaxNumberOfPlayers) {
         respond(endpoint, {"full\n"});
         return;
@@ -128,13 +128,13 @@ void UdpServer::emplaceClient(udp::endpoint endpoint, size_t trans) {
     }
 }
 
-void UdpServer::abandonClient(size_t client_index) {
+void Server::abandonClient(size_t client_index) {
     m_clients[client_index] = nullptr;
     --m_clientNr;
     std::cout << "client " << client_index << " has disconnected\n";
 }
 
-void UdpServer::parseInput(const std::string &message, size_t length) {
+void Server::parseInput(const std::string &message, size_t length) {
     enum class state {
         init,
         new_pl,
@@ -201,7 +201,7 @@ void UdpServer::parseInput(const std::string &message, size_t length) {
     }
 }
 
-void UdpServer::parseMessage(Id index, const std::string &message) {
+void Server::parseMessage(Id index, const std::string &message) {
     std::lock_guard<std::mutex> lock(m_mutex);
     MovementInputHolder newMovement;
     for (auto i : message) {
@@ -231,11 +231,11 @@ void UdpServer::parseMessage(Id index, const std::string &message) {
     m_message.addNetworkId(NetworkId(index));
 }
 
-bool UdpServer::endpointEq(const udp::endpoint &a, const udp::endpoint &b) const {
+bool Server::endpointEq(const udp::endpoint &a, const udp::endpoint &b) const {
     return a.address() == b.address();
 }
 
-std::vector<Player> UdpServer::getPlayers() const {
+std::vector<Player> Server::getPlayers() const {
     std::vector<Player> result;
     for (const auto &i : m_clients) {
         result.push_back(i->baseInfo);
@@ -243,16 +243,16 @@ std::vector<Player> UdpServer::getPlayers() const {
     return result;
 }
 
-Message<MovementInputHolder> &UdpServer::getMessage() {
+Message<MovementInputHolder> &Server::getMessage() {
     m_lock.lock();
     return m_message;
 }
 
-void UdpServer::releaseMessage() {
+void Server::releaseMessage() {
     m_message.setValid(false);
     m_lock.unlock();
 }
 
-bool UdpServer::hasStarted() const {
+bool Server::hasStarted() const {
     return m_gameStarted.load();
 }

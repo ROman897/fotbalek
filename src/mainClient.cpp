@@ -14,7 +14,7 @@ int main() {
     // define full settings of the engine
 
 
-    PlayerClient client;
+    Client client;
     client.connect(ClientGameConstants::kServerAddress, ClientGameConstants::kServerPort);
 
     EngineType_Client gameEngine;
