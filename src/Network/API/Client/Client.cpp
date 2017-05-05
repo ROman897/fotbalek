@@ -2,6 +2,7 @@
 
 Client::Client() /*: m_myCounter(0), m_serverCounter(0)*/ {
 	m_gameStarted.store(false);
+	m_gameEnded.store(false);
 	std::cout << "Enter your name:" << std::endl;
 	std::string input;
 	getline(std::cin, input);
@@ -175,10 +176,10 @@ void Client::parseMessage(std::string &input) {
 					break;
 				}
 				case state::end2 : {
-					if (input[i] != ':')
-						continue;
 					falseTeam = static_cast<unsigned>(std::stoul(input.substr(index_start, i - index_start)));
-					//print results
+					std::lock_guard<std::mutex> scoreLock (m_scoreMutex);
+					m_score = Score(trueTeam, falseTeam);
+					m_gameEnded.store(true);
 					break;
 				}
 			}
@@ -269,4 +270,12 @@ Message<Transform> &Client::getMessage() {
 
 bool Client::hasStarted() const {
 	return m_gameStarted.load();
+}
+
+const Score &Client::getScore() const {
+	return m_score;
+}
+
+bool Client::hasEnded() const {
+	return m_gameEnded.load();
 }

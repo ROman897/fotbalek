@@ -28,7 +28,7 @@ struct UdpBase {
 		}
 		catch ( const std::exception &ex ) {
 			std::cerr << "udpbase je v pici" << std::endl;
-			std::cerr << ex.what() << "\n";
+			std::cerr << ex.what() << std::endl;
 			std::exit( 1 );
 		}
 	}
