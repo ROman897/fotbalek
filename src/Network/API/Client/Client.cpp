@@ -60,8 +60,7 @@ void Client::handleData(ErrorCode &err, size_t trans) {
 	startReceiving();
 }
 
-//void Client::parseMessage(std::string &input) {
-void Client::parseMessage(std::string input) {
+void Client::parseMessage(std::string &input) {
 	Message<Transform> newMessage;
 	enum class state {
 		init,
@@ -74,7 +73,7 @@ void Client::parseMessage(std::string input) {
 		end1,
 		end2
 	};
-
+	std::cout << input << std::endl;
 	size_t index_start = 0;
 	float x;
 	float y;
@@ -85,7 +84,8 @@ void Client::parseMessage(std::string input) {
 	bool team;
 	unsigned trueTeam = 0;
 	unsigned falseTeam = 0;
-	//try {
+	bool started = false;
+	try {
 		for (size_t i = 0; i < input.size(); ++i) {
 			switch (currSt) {
 				case state::init : {
@@ -95,7 +95,6 @@ void Client::parseMessage(std::string input) {
 					} else if (input[i] == '.') {
 						continue;
 					} else if (input[i] == 's') {
-						m_gameStarted.store(true);
 						currSt = state::starting;
 					} else if (input[i] == 'e') {
 						currSt = state::end1;
@@ -140,6 +139,7 @@ void Client::parseMessage(std::string input) {
 					if (input[i] == ';' || input[i] == '.') {
 						continue;
 					}
+					started = true;
 					std::cout << "starting:msg: " << input << std::endl;
 					if (std::isdigit(input[i]))
 						index_start = i;
@@ -182,9 +182,10 @@ void Client::parseMessage(std::string input) {
 				}
 			}
 		}
-	/*} catch (std::exception &ex) {
+		m_gameStarted.store(started);
+	} catch (std::exception &ex) {
 		std::cerr << ex.what() << std::endl;
-	}*/
+	}
 	newMessage.setValid(true);//vyriesit messageID
 	m_lastMessage = std::move(newMessage);
 }
