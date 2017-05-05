@@ -38,6 +38,9 @@ void Client::connect(const std::string &host, const std::string &port) {
 		std::cerr << "connection error: " << ex.what() << std::endl;
 		throw;
 	}
+	while (!hasId) {
+		sleep(1);
+	}
 	startReceiving();
 }
 
@@ -210,6 +213,7 @@ void Client::parseId(ErrorCode &err, size_t trans) {
 			std::cerr << "parseId failed : " << ex.what() << std::endl;
 		}
 		std::cout << "received id: " << m_me.m_id  << "team: " << m_me.m_team << std::endl;
+		hasId = true;
 	}
 	else
 	{

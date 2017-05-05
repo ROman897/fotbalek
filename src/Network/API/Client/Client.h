@@ -27,6 +27,7 @@ public:
 private:
 	std::vector<Player> m_players;
 	Score m_score;
+	bool hasId = false;
 	std::atomic_bool m_gameEnded;
 	/*uint64_t m_myCounter;
 	uint64_t m_serverCounter;*/
