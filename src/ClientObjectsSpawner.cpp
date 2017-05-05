@@ -36,7 +36,7 @@ Id spawnBall_Client(EngineType_Client& gameEngine){
     gameEngine.addComponent<Transform>(id);
     gameEngine.addComponent<NetworkId>(id, 0);
 
-    gameEngine.addComponent<Sprite>(id, ClientGameConstants::kBallSpriteOffset, ClientGameConstants::kBallSpriteLayer,
+    gameEngine.addComponent<Sprite>(id, ClientGameConstants::kBallSpriteOffset, ClientGameConstants::kBallSpritePath, ClientGameConstants::kBallSpriteLayer,
                                     ClientGameConstants::kBallEnabledAtStart);
     return id;
 }
