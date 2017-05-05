@@ -1,9 +1,9 @@
 #include "Client.h"
 
-Client::Client() : m_lock(m_mutex), m_playerLock(m_playerMutex)/*, m_myCounter(0), m_serverCounter(0)*/ {
+Client::Client() : /*m_lock(m_mutex), m_playerLock(m_playerMutex)*//*, m_myCounter(0), m_serverCounter(0)*/ {
 	m_gameStarted.store(false);
-	m_lock.unlock();
-	m_playerLock.unlock();
+	/*m_lock.unlock();
+	m_playerLock.unlock();*/
 	std::cout << "Enter your name:" << std::endl;
 	std::string input;
 	getline(std::cin, input);
@@ -163,6 +163,7 @@ void Client::parseMessage(std::string &input) {
 						continue;
 					name = input.substr(index_start, i - index_start);
 					team = input[i + 1];
+					std::lock_guard<std::mutex> players_lock (m_playersMutex);
 					m_players.push_back(Player(name, id, team));
 					currSt = state::starting;
 					break;
@@ -190,6 +191,7 @@ void Client::parseMessage(std::string &input) {
 		std::cout << "zparsoval som msg" << std::endl;
 	}
 	newMessage.setValid(true);//vyriesit messageID
+	std::lock_guard<std::mutex> message_lock (m_messageMutex);
 	m_lastMessage = std::move(newMessage);
 	std::cout << "move-ol som msg" << std::endl;
 }
@@ -251,28 +253,21 @@ void Client::disconnect() {
 }
 
 const std::vector<Player> &Client::getPlayers() {
-	m_playerLock.lock();
 	return m_players;
 }
-
-void Client::unlockPlayers() {
-	m_playerLock.unlock();
-}
-
 
 const Player &Client::getMe() const {
 	return m_me;
 }
 
 Message<Transform> &Client::getMessage() {
-	m_lock.lock();
 	return m_lastMessage;
 }
 
-void Client::releaseMessage() {
+/*void Client::releaseMessage() {
 	m_lastMessage.setValid(false);
-	m_lock.unlock();
-}
+	m_messageLock.unlock();
+}*/
 
 
 bool Client::hasStarted() const {
