@@ -84,7 +84,7 @@ void Client::parseMessage(std::string &input) {
 	bool team;
 	unsigned trueTeam = 0;
 	unsigned falseTeam = 0;
-	
+
 	for (size_t i = 0; i < input.size(); ++i) {
 		switch (currSt) {
 			case state::init : {
@@ -138,6 +138,7 @@ void Client::parseMessage(std::string &input) {
 				if (input[i] == ';' || input[i] == '.') {
 					continue;
 				}
+				std::cout << "starting" << std::endl;
 				if (std::isdigit(input[i]))
 					index_start = i;
 				break;
