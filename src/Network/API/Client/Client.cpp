@@ -119,7 +119,8 @@ void Client::parseMessage(std::string &input) {
 			case state::getX : {
 				size_t next;
 				x = std::stof(input.substr(index_start), &next);
-				input = input.substr(next);
+				//input = input.substr(next);
+				i = next;
 				currSt = state::getY;
 				break;
 			}
@@ -129,7 +130,8 @@ void Client::parseMessage(std::string &input) {
 				}
 				size_t next;
 				y = std::stof(input.substr(index_start), &next);
-				input = input.substr(next + 1);
+				//input = input.substr(next + 1);
+				i = next;
 				newMessage.addTransform(Transform (Vector_Float(x, y)));
 				currSt = state::init;
 				break;
@@ -189,6 +191,7 @@ void Client::parseId(ErrorCode &err, size_t trans) {
 		auto index = message.find(":");
 		m_me.m_id = static_cast<Id>(std::stoul(message));
 		m_me.m_team = static_cast<bool>(std::stoul(message.substr(index + 1)));
+		std::cout << "received id: " << m_me.m_id << std::endl;
 	}
 	else
 	{
