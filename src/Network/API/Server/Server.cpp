@@ -253,3 +253,9 @@ void Server::releaseMessage() {
 bool Server::hasStarted() const {
     return m_gameStarted.load();
 }
+
+void Server::gameOver(int team1, int team2) {
+	std::string message {"end:"};
+	message += std::to_string(team1) + ":" + std::to_string(team2);
+	respondAll(message);
+}

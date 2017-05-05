@@ -22,8 +22,8 @@ class Client : UdpBase {
 	mutable std::mutex m_mutex;
 	std::unique_lock<std::mutex> m_lock;
 	std::vector<Player> m_players;
-	uint64_t m_myCounter;
-	uint64_t m_serverCounter;
+	/*uint64_t m_myCounter;
+	uint64_t m_serverCounter;*/
 
 	void startReceiving();
 

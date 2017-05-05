@@ -1,6 +1,6 @@
 #include "Client.h"
 
-Client::Client() : m_lock(m_mutex), m_myCounter(0), m_serverCounter(0) {
+Client::Client() : m_lock(m_mutex)/*, m_myCounter(0), m_serverCounter(0)*/ {
 	m_gameStarted.store(false);
 	std::cout << "Enter your name:" << std::endl;
 	std::string input;
@@ -80,7 +80,7 @@ void Client::parseMessage(std::string &input) {
 	Id id = 0;
 	std::string name{};
 	bool team;
-
+	//add parsing for end:score1:score2
 	for (size_t i = 0; i < input.size(); ++i) {
 		switch (currSt) {
 			case state::init : {
