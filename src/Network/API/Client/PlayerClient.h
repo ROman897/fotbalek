@@ -1,11 +1,7 @@
 #ifndef PV264_PROJECT_PLAYER_CLIENT_H
 #define PV264_PROJECT_PLAYER_CLIENT_H
 
-#define MAX_OBJECTCOUNT 7
-
-#include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include <boost/array.hpp>
 #include <iostream>
 #include <cstdlib>
 #include <mutex>
@@ -18,10 +14,7 @@
 #include "../../../Components/Transform.h"
 
 class PlayerClient : UdpBase {
-	using udp = boost::asio::ip::udp;
-	using ErrorCode = const boost::system::error_code;
 
-	//std::function<navratovy typ(argumenty)
 	std::atomic_bool m_gameStarted;
 	udp::endpoint m_serverEnd;
 	Player m_me;

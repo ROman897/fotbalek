@@ -25,9 +25,6 @@ void PlayerClient::askForId() {
 																	 boost::asio::placeholders::bytes_transferred));
 }
 
-
-
-
 void PlayerClient::connect(const std::string &host, const std::string &port) {
 	udp::resolver resolver(io_service);
 	udp::resolver::query query(udp::v4(), host, port);
@@ -148,7 +145,7 @@ void PlayerClient::parseId(ErrorCode &err, size_t trans) {
 
 }
 
-void PlayerClient::sendData(const MovementInputHolder& inputHolder) {
+void PlayerClient::sendData(const MovementInputHolder &inputHolder) {
 	std::string message {};
 	if (inputHolder.moveHorizontal) {
 		if (inputHolder.moveRight) {
@@ -179,7 +176,7 @@ void PlayerClient::send(const std::string &input) {
 void PlayerClient::handleErrors( ErrorCode &error, std::size_t bytes_transferred )
 {
 	if ( error ) {
-		std::cerr << "Client error: " << error.message() << "bytes transferred: " << bytes_transferred  << ", exiting\n";
+		std::cerr << "Client error: " << error.message() << "bytes transferred: " << bytes_transferred  << ", exiting" << std::endl;
 		std::exit( 1 );
 	}
 }
@@ -206,6 +203,8 @@ void PlayerClient::releaseMessage() {
 	m_lock.unlock();
 }
 
+
 bool PlayerClient::hasStarted() const {
 	return m_gameStarted.load();
 }
+

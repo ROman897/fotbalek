@@ -11,7 +11,10 @@
 #include <thread>
 
 struct UdpBase {
-    UdpBase() : m_work( io_service ), m_socket( io_service, boost::asio::ip::udp::v4()), m_dispatcher( &UdpBase::dispatch, this )
+	using ErrorCode = const boost::system::error_code;
+	using udp = boost::asio::ip::udp;
+
+    UdpBase() : m_work( io_service ), m_socket( io_service, udp::v4()), m_dispatcher( &UdpBase::dispatch, this )
 	{ }
 
     void stop() {
@@ -23,7 +26,7 @@ struct UdpBase {
 		try {
 			io_service.run();
 		}
-		catch ( const std::exception& ex ) {
+		catch ( const std::exception &ex ) {
 			std::cerr << ex.what() << "\n";
 			std::exit( 1 );
 		}
@@ -32,7 +35,7 @@ struct UdpBase {
 protected:
 	boost::asio::io_service io_service;
 	boost::asio::io_service::work m_work;
-	boost::asio::ip::udp::socket m_socket;
+	udp::socket m_socket;
     std::thread m_dispatcher;
     boost::array<char, BUFFER_LEN> m_buffer;
 };

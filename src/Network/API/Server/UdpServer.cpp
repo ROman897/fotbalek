@@ -1,38 +1,43 @@
 #include "UdpServer.h"
-#include <boost/bind.hpp>
-#include <iostream> //potom prec
-#include <functional>
-#include <cmath>
+
+UdpServer::UdpServer() : m_lock(m_mutex){
+	m_clients.resize(ServerGameConstants::kMaxNumberOfPlayers);
+	m_socket.bind(udp::endpoint(udp::v4(), ServerGameConstants::portNumber));
+	m_lock.unlock();
+}
+UdpServer::~UdpServer() {
+	respondAll("disconnect");
+	stop();
+}
 
 void UdpServer::listen() {
     m_socket.async_receive_from(boost::asio::buffer(m_buffer),
-                               m_pending,
+                               m_pending, //je nutne specifikovat z akeho endpointu ?
                                boost::bind(&UdpServer::handleRequest,
                                            this,
                                            boost::asio::placeholders::error,
                                            boost::asio::placeholders::bytes_transferred));
 }
 
-void UdpServer::handleRequest(const boost::system::error_code& error, size_t transferred) {
-    if (transferred > BUFFER_LEN) { //je to nutne? co to ma robit?
+void UdpServer::handleRequest(ErrorCode &error, size_t transferred) {
+    /*if (transferred > BUFFER_LEN) { //je to nutne? co to ma robit?
         listen();
         return;
-    }
+    }*/
     if (error) {
         if (error == boost::asio::error::eof) {
             for (auto &i : m_clients) {
-                if (i && endptEq(m_pending, i->m_endpt)) {
+                if (i && endpointEq(m_pending, i->m_endpoint)) {
                     abandonClient(i->baseInfo.m_id);
                     return;
                 }
             }
         }
 		std::cerr << "UdpServer::handleRequest:" << error.message();
-        //std::cerr << "vyplo ta\n";
-        //std::exit(1); client sa pri chybe neukonci tak som to zakomentoval aj tu
     }
 	std::string message(m_buffer.data(), m_buffer.data() + transferred);
-	//debug
+
+	//test
     std::cout << "received: " << transferred << " msg: " << message << " from: " << m_pending.address() << std::endl;
 
     parseInput(message, transferred);
@@ -51,7 +56,7 @@ void UdpServer::sendData(const std::vector<NetworkId> &ids, const std::vector<Tr
 void UdpServer::respondAll(const std::string &response) {
 	for (auto &i : m_clients) {
 		if (i)
-			respond(i->m_endpt, response);
+			respond(i->m_endpoint, response);
 	}
 }
 
@@ -59,7 +64,7 @@ void UdpServer::respond(const udp::endpoint &cl, const std::string &response) {
     std::cout << "sending to " << cl.address() << ":" << cl.port() << '\n';
     m_socket.async_send_to(boost::asio::buffer(response),
                           cl,
-                          boost::bind(&UdpServer::responseHandler,
+						   boost::bind(&UdpServer::handleErrors,
                                       this,
                                       boost::asio::placeholders::error,
                                       boost::asio::placeholders::bytes_transferred));
@@ -67,71 +72,65 @@ void UdpServer::respond(const udp::endpoint &cl, const std::string &response) {
 
 void UdpServer::init() {
     listen();
-    //dispatch();
 }
 
-void UdpServer::responseHandler(const boost::system::error_code &err, size_t trans) {
+void UdpServer::handleErrors(ErrorCode &err, size_t trans) {
 	if ( err ) {
-		std::cerr << "Client error: " << err.message() << "bytes transferred: " << trans  << ", exiting\n";
+		std::cerr << "Client error: " << err.message() << "bytes transferred: " << trans  << ", exiting" << std::endl;
 		std::exit( 1 );
 	}
 }
 
-void UdpServer::emplaceClient(udp::endpoint endpt, size_t trans) {
-    //if (m_clientNr >= MAX_PLAYERCOUNT) {
+void UdpServer::emplaceClient(udp::endpoint endpoint, size_t trans) {
 	if (m_clientNr >= ServerGameConstants::kMaxNumberOfPlayers) {
-        respond(endpt, {"full\n"});
+        respond(endpoint, {"full\n"});
         return;
     }
 
-    //poslat mu jeho index a indexy vsetkych aj s menami + vsetkym ostatnym jeho meno a index
     std::string newName(&m_buffer[2], &m_buffer[trans]);
-    //unsigned short viable_index = MAX_PLAYERCOUNT - 1;
 	unsigned short viable_index = ServerGameConstants::kMaxNumberOfPlayers - 1;
-    //for (unsigned i = 0; i < MAX_PLAYERCOUNT; ++i) {
 	for (unsigned short i = 0; i < ServerGameConstants::kMaxNumberOfPlayers; ++i) {
-        //if (!m_clients[i] && viable_index == MAX_PLAYERCOUNT - 1)
 		if (!m_clients[i] && viable_index == ServerGameConstants::kMaxNumberOfPlayers - 1)
             viable_index = i;
-        if (m_clients[i] && endptEq(m_clients[i]->m_endpt, endpt)) {
-            respond(endpt, {"you've already logged in\n"});
+        if (m_clients[i] && endpointEq(m_clients[i]->m_endpoint, endpoint)) {
+            respond(endpoint, {"you've already logged in\n"});
             return;
         }
     }
 
     for (auto &i : m_clients) {
         if (i && i->baseInfo.m_name == newName) {
-            respond(endpt, "A player with that name is already present\n");
+            respond(endpoint, "A player with that name is already present\n");
             return;
         }
     }
-    m_clients[viable_index] = std::make_unique<Client>(std::move(endpt), std::move(newName), viable_index);
+    m_clients[viable_index] = std::make_unique<Client>(std::move(endpoint), std::move(newName), viable_index);
 	if (m_clientNr > ServerGameConstants::kMaxNumberOfPlayers / 2) {
 		m_clients[viable_index]->baseInfo.m_team = 1;
 	} else {
 		m_clients[viable_index]->baseInfo.m_team = 0;
 	}
+	//test
     std::cout << "new guy's name: " << m_clients[viable_index]->baseInfo.m_name << std::endl;
+
     ++m_clientNr;
 	int team = m_clients[viable_index]->baseInfo.m_team;
-    std::cout << "port: " << m_clients[viable_index]->m_endpt.port() << '\n'; //prerob aby to bolo id:[1/0] podla toho v akom je to teame zapisane ako 0 alebo 1
-    /*respond(m_clients[viable_index]->m_endpt, {std::string("you got a new index: ") +            ^
-                                              std::to_string(viable_index) +                       ^
-										  	  "\n"});											   ^*/
-	respond(m_clients[viable_index]->m_endpt, { std::to_string(viable_index) + ":" + std::to_string(team)}); //prerobit viz vyssie
+
+	//test
+    std::cout << "port: " << m_clients[viable_index]->m_endpoint.port() << '\n';
+
+	respond(m_clients[viable_index]->m_endpoint, { std::to_string(viable_index) + ":" + std::to_string(team)});
 	if (m_clientNr == ServerGameConstants::kMaxNumberOfPlayers) {
 		respondAll("starting");
 	}
 }
 
-//void UdpServer::abandonClient(unsigned short client_index) {
 void UdpServer::abandonClient(size_t client_index) {
     m_clients[client_index] = nullptr;
     --m_clientNr;
     std::cout << "client " << client_index << " has disconnected\n";
 }
 
-//void UdpServer::parseInput(size_t length) {
 void UdpServer::parseInput(const std::string &message, size_t length) {
     enum class state {
         init,
@@ -147,14 +146,11 @@ void UdpServer::parseInput(const std::string &message, size_t length) {
     for (size_t i = 0; i < length; ++i) {
         switch (currSt) {
         case state::init : {
-            //if (std::isdigit(m_buffer[i])) {
 			if (std::isdigit(message[i])) {
                 index_start = i;
                 currSt = state::ind;
-            //} else if (m_buffer[i] == 'i') {
 			} else if (message[i] == 'i') {
                 currSt = state::new_pl;
-            //} else if (m_buffer[i] == 'e') {
 			} else if (message[i] == 'e') {
                 currSt = state::discnct_1;
             } else {
@@ -163,7 +159,6 @@ void UdpServer::parseInput(const std::string &message, size_t length) {
             break;
         }
         case state::new_pl : {
-            //if (m_buffer[i] == '?' && length > 2)
 			if (message[i] == '?' && length > 2)
                 emplaceClient(m_pending, length);
             return;
@@ -172,20 +167,13 @@ void UdpServer::parseInput(const std::string &message, size_t length) {
             if (std::isdigit(message[i]))
                 continue;
             if (message[i] == '_') {
-                //index = indexFromBuffer(index_start, i - 1);
 				index = static_cast<size_t>(std::stol(message.substr(index_start, i - index_start)));
-                if (!m_clients[index] || !endptEq(m_pending, m_clients[index]->m_endpt))
+                if (!m_clients[index] || !endpointEq(m_pending, m_clients[index]->m_endpoint))
                     return;
-                //m_clients[index]->swapBuffers(m_buffer);
-                //m_clients[index]->setNewData(true);
-                //m_clients[index]->data()[length] = '\0'; // <<< mozno nebude treba, este zistit ako sa bude spravat
+				//test
                 std::cout << "client " << index << " sent " << message;
-				/*for (size_t j = 0; j < length; ++j) {
-					std::cout << m_clients[index]->data()[j];
-				}*/
-                std::cout << std::endl << "port: " << m_clients[index]->m_endpt.port() << '\n';
+                std::cout << std::endl << "port: " << m_clients[index]->m_endpoint.port() << '\n';
 				parseMessage(index, message.substr(2));
-                //respond(m_clients[index]->m_endpt, "jaaaaaaaaj ty kkt");
             }
             return;
         }
@@ -198,10 +186,8 @@ void UdpServer::parseInput(const std::string &message, size_t length) {
         case state::discnct_2 : {
             if (message[i] != 'd')
                 return;
-            //for (auto &i : m_clients) {
 			for (auto &client : m_clients) {
-                if (i && endptEq(client->m_endpt, m_pending)) {
-                    //abandonClient(i->m_index);
+                if (i && endpointEq(client->m_endpoint, m_pending)) {
 					abandonClient(client->baseInfo.m_id);
                     return;
                 }
@@ -242,18 +228,7 @@ void UdpServer::parseMessage(Id index, const std::string &message) {
 	m_message.addNetworkId(NetworkId(index));
 }
 
-/*size_t UdpServer::indexFromBuffer(int start, int end) {
-    unsigned pow = 0;
-    size_t res = 0;
-
-    for (int i = end; i >= start; --i) {
-        res += (m_buffer[i] - '0') * std::pow(10, pow);
-        ++pow;
-    }
-    return res;
-}*/
-
-bool UdpServer::endptEq(const udp::endpoint &a, const udp::endpoint &b) const {
+bool UdpServer::endpointEq(const udp::endpoint &a, const udp::endpoint &b) const {
     return a.address() == b.address();
 }
 
@@ -278,35 +253,3 @@ void UdpServer::releaseMessage() {
 bool UdpServer::hasStarted() const {
 	return m_gameStarted.load();
 }
-
-/*
-const boost::array<char, 128> &UdpServer::Client::data() const {
-    return m_buffer; // rozmyslet ako s tread-safety
-}
-
-boost::array<char, 128> &UdpServer::Client::data() {
-    return m_buffer; // rozmyslet ako s tread-safety
-}
-
-bool UdpServer::Client::newData() const {
-    std::unique_lock<std::mutex> lk(m_lk);
-    bool res = m_newData;
-    lk.unlock();
-    //m_alarm.notify_all();
-    return res;
-}
-
-void UdpServer::Client::setNewData(bool val) {
-    std::unique_lock<std::mutex> lk(m_lk);
-    m_newData = val;
-    lk.unlock();
-    m_alarm.notify_all();
-}
-
-void UdpServer::Client::swapBuffers(boost::array<char, BUFFER_LEN> &other) {
-    std::unique_lock<std::mutex> lk(m_lk);
-    std::swap(m_buffer, other);
-    lk.unlock();
-    m_alarm.notify_all();
-}
-*/
