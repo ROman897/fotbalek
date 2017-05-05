@@ -69,7 +69,9 @@ void Client::parseMessage(std::string &input) {
 		index,
 		starting,
 		startIndex,
-		startName
+		startName,
+		end1,
+		end2
 	};
 
 	size_t index_start = 0;
@@ -80,6 +82,8 @@ void Client::parseMessage(std::string &input) {
 	Id id = 0;
 	std::string name{};
 	bool team;
+	unsigned trueTeam = 0;
+	unsigned falseTeam = 0;
 	//add parsing for end:score1:score2
 	for (size_t i = 0; i < input.size(); ++i) {
 		switch (currSt) {
@@ -91,6 +95,9 @@ void Client::parseMessage(std::string &input) {
 					continue;
 				} else if (input[i] == 's') {
 					currSt = state::starting;
+				} else if (input[i] == 'e') {
+					currSt = state::end1;
+					++i;
 				} else {
 					std::cerr << "wrong message was received" << std::endl;
 					return;
@@ -152,6 +159,21 @@ void Client::parseMessage(std::string &input) {
 				team = input[i + 1];
 				m_players.push_back(Player(name, id, team));
 				currSt = state::starting;
+				break;
+			}
+			case state::end1 : {
+				if (input[i] != ':')
+					continue;
+				trueTeam = static_cast<unsigned>(std::stoul(input.substr(2, i - 2)));
+				index_start = i + 1;
+				currSt = state::end2;
+				break;
+			}
+			case state::end2 : {
+				if (input[i] != ':')
+					continue;
+				falseTeam = static_cast<unsigned>(std::stoul(input.substr(index_start, i - index_start)));
+				//print results
 				break;
 			}
 		}

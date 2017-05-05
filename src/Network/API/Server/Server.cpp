@@ -255,7 +255,7 @@ bool Server::hasStarted() const {
 }
 
 void Server::gameOver(int team1, int team2) {
-	std::string message {"end:"};
+	std::string message {"e:"};
 	message += std::to_string(team1) + ":" + std::to_string(team2);
 	respondAll(message);
 }
