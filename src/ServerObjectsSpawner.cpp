@@ -33,7 +33,7 @@ Id spawnBarrier_Server(EngineType_Server &gameEngine, Vector_Float position,
     return id;
 }
 
-Id spawnGoalTrigger_Server(EngineType_Server &gameEngine, Vector_Float position, const std::string tag) {
+Id spawnGoalTrigger_Server(EngineType_Server &gameEngine, Vector_Float position, const std::string& tag) {
     Id id = gameEngine.spawnGameObject(tag);
     gameEngine.addComponent<Transform>(id, position);
     gameEngine.addComponent<RectangleCollider>(id, ServerGameConstants::kGoalBotRight);
