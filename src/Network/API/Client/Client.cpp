@@ -1,7 +1,9 @@
 #include "Client.h"
 
-Client::Client() : m_lock(m_mutex)/*, m_myCounter(0), m_serverCounter(0)*/ {
+Client::Client() : m_lock(m_mutex), m_playerLock(m_playerMutex)/*, m_myCounter(0), m_serverCounter(0)*/ {
 	m_gameStarted.store(false);
+	m_lock.unlock();
+	m_playerLock.unlock();
 	std::cout << "Enter your name:" << std::endl;
 	std::string input;
 	getline(std::cin, input);
@@ -248,9 +250,15 @@ void Client::disconnect() {
 	send("end");
 }
 
-const std::vector<Player> &Client::getPlayers() const {
+const std::vector<Player> &Client::getPlayers() {
+	m_playerLock.lock();
 	return m_players;
 }
+
+void Client::unlockPlayers() {
+	m_playerLock.unlock();
+}
+
 
 const Player &Client::getMe() const {
 	return m_me;
@@ -270,4 +278,3 @@ void Client::releaseMessage() {
 bool Client::hasStarted() const {
 	return m_gameStarted.load();
 }
-

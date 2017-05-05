@@ -27,6 +27,7 @@ struct UdpBase {
 			io_service.run();
 		}
 		catch ( const std::exception &ex ) {
+			std::cerr << "udpbase je v pici" << std::endl;
 			std::cerr << ex.what() << "\n";
 			std::exit( 1 );
 		}
