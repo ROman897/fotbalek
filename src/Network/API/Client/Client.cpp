@@ -94,6 +94,7 @@ void Client::parseMessage(std::string &input) {
 				} else if (input[i] == '.') {
 					continue;
 				} else if (input[i] == 's') {
+					m_gameStarted.store(true);
 					currSt = state::starting;
 				} else if (input[i] == 'e') {
 					currSt = state::end1;
@@ -138,9 +139,10 @@ void Client::parseMessage(std::string &input) {
 				if (input[i] == ';' || input[i] == '.') {
 					continue;
 				}
-				std::cout << "starting" << std::endl;
+				std::cout << "starting:msg: " << input << std::endl;
 				if (std::isdigit(input[i]))
 					index_start = i;
+				currSt = state::startIndex;
 				break;
 			}
 			case state::startIndex : {
