@@ -85,7 +85,7 @@ void Client::parseMessage(std::string input) {
 	bool team;
 	unsigned trueTeam = 0;
 	unsigned falseTeam = 0;
-	try {
+	//try {
 		for (size_t i = 0; i < input.size(); ++i) {
 			switch (currSt) {
 				case state::init : {
@@ -182,9 +182,9 @@ void Client::parseMessage(std::string input) {
 				}
 			}
 		}
-	} catch (std::exception &ex) {
+	/*} catch (std::exception &ex) {
 		std::cerr << ex.what() << std::endl;
-	}
+	}*/
 	newMessage.setValid(true);//vyriesit messageID
 	m_lastMessage = std::move(newMessage);
 }
