@@ -1,7 +1,8 @@
 #include "Client.h"
 
-Client::Client() : m_lock(m_mutex), m_myCounter(0), m_serverCounter(0) {
+Client::Client() /*: m_myCounter(0), m_serverCounter(0)*/ {
 	m_gameStarted.store(false);
+	m_gameEnded.store(false);
 	std::cout << "Enter your name:" << std::endl;
 	std::string input;
 	getline(std::cin, input);
@@ -37,6 +38,9 @@ void Client::connect(const std::string &host, const std::string &port) {
 		std::cerr << "connection error: " << ex.what() << std::endl;
 		throw;
 	}
+	while (!hasId) {
+		sleep(1);
+	}
 	startReceiving();
 }
 
@@ -50,7 +54,7 @@ void Client::startReceiving() {
 void Client::handleData(ErrorCode &err, size_t trans) {
 	if (!err)
 	{
-		std::string message(m_buffer.data(), m_buffer.data() + trans);
+		std::string message(m_buffer.begin(), trans);
 		parseMessage(message);
 	}
 	else
@@ -69,9 +73,11 @@ void Client::parseMessage(std::string &input) {
 		index,
 		starting,
 		startIndex,
-		startName
+		startName,
+		end1,
+		end2
 	};
-
+	std::cout << input << std::endl;
 	size_t index_start = 0;
 	float x;
 	float y;
@@ -80,93 +86,132 @@ void Client::parseMessage(std::string &input) {
 	Id id = 0;
 	std::string name{};
 	bool team;
-
-	for (size_t i = 0; i < input.size(); ++i) {
-		switch (currSt) {
-			case state::init : {
-				if (std::isdigit(input[i])) {
-					index_start = i;
-					currSt = state::index;
-				} else if (input[i] == '.') {
-					continue;
-				} else if (input[i] == 's') {
+	unsigned trueTeam = 0;
+	unsigned falseTeam = 0;
+	bool started = false;
+	try {
+		for (size_t i = 0; i < input.size(); ++i) {
+			switch (currSt) {
+				case state::init : {
+					if (std::isdigit(input[i])) {
+						index_start = i;
+						currSt = state::index;
+					} else if (input[i] == '.') {
+						continue;
+					} else if (input[i] == 's') {
+						currSt = state::starting;
+					} else if (input[i] == 'e') {
+						currSt = state::end1;
+						++i;
+					} else {
+						std::cerr << "wrong message was received" << std::endl;
+						return;
+					}
+					break;
+				}
+				case state::index : {
+					if (std::isdigit(input[i]))
+						continue;
+					if (input[i] == '_') {
+						NetworkId newId;
+						newId.id = std::stoul(input.substr(index_start, i - index_start));;
+						newMessage.addNetworkId(newId);
+						currSt = state::getX;
+						index_start = i + 1;
+					}
+					break;
+				}
+				case state::getX : {
+					size_t next;
+					x = std::stof(input.substr(index_start), &next);
+					i = next;
+					currSt = state::getY;
+					break;
+				}
+				case state::getY : {
+					if (input[i] == ';') {
+						continue;
+					}
+					size_t next;
+					y = std::stof(input.substr(index_start), &next);
+					i = next;
+					newMessage.addTransform(Transform(Vector_Float(x, y)));
+					currSt = state::init;
+					break;
+				}
+				case state::starting : {
+					if (input[i] == ';' || input[i] == '.') {
+						continue;
+					}
+					started = true;
+					std::cout << "starting:msg: " << input << std::endl;
+					if (std::isdigit(input[i]))
+						index_start = i;
+					currSt = state::startIndex;
+					break;
+				}
+				case state::startIndex : {
+					if (std::isdigit(input[i]))
+						continue;
+					if (input[i] == '_') {
+						id = std::stoul(input.substr(index_start, i - index_start));
+						index_start = i + 1;
+						currSt = state::startName;
+					}
+					break;
+				}
+				case state::startName : {
+					if (input[i] != '_')
+						continue;
+					name = input.substr(index_start, i - index_start);
+					team = input[i + 1];
+					std::lock_guard<std::mutex> players_lock (m_playersMutex);
+					m_players.push_back(Player(name, id, team));
 					currSt = state::starting;
-				} else {
-					std::cerr << "wrong message was received" << std::endl;
-					return;
+					break;
 				}
-				break;
-			}
-			case state::index : {
-				if (std::isdigit(input[i]))
-					continue;
-				if (input[i] == '_') {
-					NetworkId newId;
-					newId.id = std::stoul(input.substr(index_start, i - index_start));;
-					newMessage.addNetworkId(newId);
-					currSt = state::getX;
+				case state::end1 : {
+					if (input[i] != ':')
+						continue;
+					trueTeam = static_cast<unsigned>(std::stoul(input.substr(2, i - 2)));
 					index_start = i + 1;
+					currSt = state::end2;
+					break;
 				}
-				break;
-			}
-			case state::getX : {
-				size_t next;
-				x = std::stof(input.substr(index_start), &next);
-				input = input.substr(next);
-				currSt = state::getY;
-				break;
-			}
-			case state::getY : {
-				if (input[i] == ';') {
-					continue;
+				case state::end2 : {
+					falseTeam = static_cast<unsigned>(std::stoul(input.substr(index_start, i - index_start)));
+					std::lock_guard<std::mutex> scoreLock (m_scoreMutex);
+					m_score = Score(trueTeam, falseTeam);
+					m_gameEnded.store(true);
+					break;
 				}
-				size_t next;
-				y = std::stof(input.substr(index_start), &next);
-				input = input.substr(next + 1);
-				newMessage.addTransform(Transform (Vector_Float(x, y)));
-				currSt = state::init;
-				break;
-			}
-			case state::starting : {
-				if (input[i] == ';' || input[i] == '.') {
-					continue;
-				}
-				if (std::isdigit(input[i]))
-					index_start = i;
-				break;
-			}
-			case state::startIndex : {
-				if (std::isdigit(input[i]))
-					continue;
-				if (input[i] == '_') {
-					id = std::stoul(input.substr(index_start, i - index_start));
-					index_start = i + 1;
-					currSt = state::startName;
-				}
-				break;
-			}
-			case state::startName : {
-				if (input[i] != '_')
-					continue;
-				name = input.substr(index_start, i - index_start);
-				team = input[i + 1];
-				m_players.push_back(Player(name, id, team));
-				currSt = state::starting;
-				break;
 			}
 		}
+		m_gameStarted.store(started);
+	} catch (std::exception &ex) {
+		std::cerr << ex.what() << std::endl;
+		std::cout << "zparsoval som msg" << std::endl;
 	}
 	newMessage.setValid(true);//vyriesit messageID
+	std::lock_guard<std::mutex> message_lock (m_messageMutex);
 	m_lastMessage = std::move(newMessage);
+	std::cout << "move-ol som msg" << std::endl;
 }
 
 void Client::parseId(ErrorCode &err, size_t trans) {
 	if (!err)
 	{
-		std::string message(m_buffer.data(), m_buffer.data() + trans);
+		std::string message(m_buffer.begin(), trans);
 		auto index = message.find(":");
-		m_me.m_id = static_cast<Id>(std::stoul(message));
-		m_me.m_team = static_cast<bool>(std::stoul(message.substr(index + 1)));
+		std::cout << "msg: " << message << " index: " << index << std::endl;
+		try {
+			m_me.m_id = static_cast<Id>(std::stoul(message));
+			m_me.m_team = static_cast<bool>(std::stoul(message.substr(index + 1)));
+		}catch (std::exception &ex) {
+			std::cerr << "parseId failed : " << ex.what() << std::endl;
+		}
+		std::cout << "received id: " << m_me.m_id  << "team: " << m_me.m_team << std::endl;
+		hasId = true;
 	}
 	else
 	{
@@ -215,7 +260,7 @@ void Client::disconnect() {
 	send("end");
 }
 
-const std::vector<Player> &Client::getPlayers() const {
+const std::vector<Player> &Client::getPlayers() {
 	return m_players;
 }
 
@@ -224,17 +269,17 @@ const Player &Client::getMe() const {
 }
 
 Message<Transform> &Client::getMessage() {
-	m_lock.lock();
 	return m_lastMessage;
 }
-
-void Client::releaseMessage() {
-	m_lastMessage.setValid(false);
-	m_lock.unlock();
-}
-
 
 bool Client::hasStarted() const {
 	return m_gameStarted.load();
 }
 
+const Score &Client::getScore() const {
+	return m_score;
+}
+
+bool Client::hasEnded() const {
+	return m_gameEnded.load();
+}

@@ -31,7 +31,7 @@ void Server::handleRequest(ErrorCode &error, size_t transferred) {
         }
         std::cerr << "Server::handleRequest:" << error.message();
     }
-    std::string message(m_buffer.data(), m_buffer.data() + transferred);
+    std::string message(m_buffer.begin(), m_buffer.begin() + transferred);
 
     //test
     std::cout << "received: " << transferred << " msg: " << message << " from: " << m_pending.address() << std::endl;
@@ -44,7 +44,7 @@ void Server::sendData(const std::vector<NetworkId> &ids, const std::vector<Trans
     std::string message{};
     for (size_t i = 0; i < ids.size(); ++i) {
         const auto &position = transforms[i].m_position;
-        message += std::to_string(ids[i].id) + "_" + std::to_string(position.m_x) + ";" + std::to_string(position.m_y) + ".";
+        message += std::to_string(ids[i].id) + "_" + std::to_string(position.m_x) + ";" + std::to_string(position.m_y) + ",";
     }
     respondAll(message);
 }
@@ -57,9 +57,8 @@ void Server::respondAll(const std::string &response) {
 }
 
 void Server::respond(const udp::endpoint &cl, const std::string &response) {
-    std::cout << "sending to " << cl.address() << ":" << cl.port() << '\n';
-    m_socket.async_send_to(boost::asio::buffer(response),
-                          cl,
+    std::cout << "sending to " << cl.address() << ":" << cl.port() << "msg: " << response << '\n';
+    m_socket.async_send_to(boost::asio::buffer(response), cl,
                            boost::bind(&Server::handleErrors,
                                       this,
                                       boost::asio::placeholders::error,
@@ -94,16 +93,17 @@ void Server::emplaceClient(udp::endpoint endpoint, size_t trans) {
         }
     }
 
-    for (auto &i : m_clients) {
-        if (i && i->baseInfo.m_name == newName) {
+    for (auto &client : m_clients) {
+        if (client && client->baseInfo.m_name == newName) {
             respond(endpoint, "A player with that name is already present\n");
             return;
         }
     }
     m_clients[viable_index] = std::make_unique<Client>(std::move(endpoint), std::move(newName), viable_index + 1);
-	m_clients[viable_index]->baseInfo.m_team = m_clientNr > ServerGameConstants::kMaxNumberOfPlayers / 2;
+	m_clients[viable_index]->baseInfo.m_team = m_clientNr >= ServerGameConstants::kMaxNumberOfPlayers / 2;
+
     //test
-    std::cout << "new guy's name: " << m_clients[viable_index]->baseInfo.m_name << std::endl;
+    std::cout << "new guy's name: " << m_clients[viable_index]->baseInfo.m_name << " id: " << m_clients[viable_index]->baseInfo.m_id <<std::endl;
 
     ++m_clientNr;
     int team = m_clients[viable_index]->baseInfo.m_team;
@@ -113,13 +113,15 @@ void Server::emplaceClient(udp::endpoint endpoint, size_t trans) {
 
     respond(m_clients[viable_index]->m_endpoint, { std::to_string(viable_index + 1) + ":" + std::to_string(team)});
     if (m_clientNr == ServerGameConstants::kMaxNumberOfPlayers) {
+		std::cout << "starting game" << std::endl;
         std::string startMessage("s;");
-        for (auto &i : m_clients) {
-            startMessage += i ? std::to_string(i->baseInfo.m_id) +
-                                "_" + i->baseInfo.m_name +
-                                "_" + (i->baseInfo.m_team ? "1" : "0") + "."
+        for (auto &client : m_clients) {
+            startMessage += client ? std::to_string(client->baseInfo.m_id) +
+                                "_" + client->baseInfo.m_name +
+                                "_" + (client->baseInfo.m_team ? "1" : "0") + "."
                               : ""; // <<< should not happen
         }
+		m_gameStarted.store(true);
         respondAll(startMessage);
     }
 }
@@ -234,8 +236,8 @@ bool Server::endpointEq(const udp::endpoint &a, const udp::endpoint &b) const {
 
 std::vector<Player> Server::getPlayers() const {
     std::vector<Player> result;
-    for (const auto &i : m_clients) {
-        result.push_back(i->baseInfo);
+    for (const auto &client : m_clients) {
+        result.push_back(client->baseInfo);
     }
     return result;
 }
@@ -252,4 +254,10 @@ void Server::releaseMessage() {
 
 bool Server::hasStarted() const {
     return m_gameStarted.load();
+}
+
+void Server::gameOver(int team1, int team2) {
+	std::string message {"e;"};
+	message += std::to_string(team1) + ":" + std::to_string(team2);
+	respondAll(message);
 }

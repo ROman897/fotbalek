@@ -12,6 +12,7 @@
 #include "../../../Components/MovementInputHolder.h"
 #include "../../../Components/Network/NetworkId.h"
 #include "../../../Components/Transform.h"
+#include "Score.h"
 
 class Client : UdpBase {
 
@@ -19,11 +20,17 @@ class Client : UdpBase {
 	udp::endpoint m_serverEnd;
 	Player m_me;
 	Message<Transform> m_lastMessage;
-	mutable std::mutex m_mutex;
-	std::unique_lock<std::mutex> m_lock;
+public:
+	mutable std::mutex m_messageMutex;
+	mutable std::mutex m_playersMutex;
+	mutable std::mutex m_scoreMutex;
+private:
 	std::vector<Player> m_players;
-	uint64_t m_myCounter;
-	uint64_t m_serverCounter;
+	Score m_score;
+	bool hasId = false;
+	std::atomic_bool m_gameEnded;
+	/*uint64_t m_myCounter;
+	uint64_t m_serverCounter;*/
 
 	void startReceiving();
 
@@ -52,15 +59,17 @@ public:
 
 	void sendData(const MovementInputHolder& inputHolder);
 
-	const std::vector<Player> &getPlayers() const;
+	const std::vector<Player> &getPlayers();
 
 	const Player &getMe() const;
 
 	Message<Transform> &getMessage();
 
-	void releaseMessage();
-
 	bool hasStarted() const;
+
+	const Score &getScore() const;
+
+	bool hasEnded() const;
 
 };
 

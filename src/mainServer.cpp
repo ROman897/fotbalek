@@ -10,13 +10,6 @@ int main() {
 	namespace hana = boost::hana;
 	using namespace hana::literals;
 
-	// example usage of how this model works
-
-	//settings set;
-
-	// define which systems will the engine use
-
-	// define full settings of the engine
 
 	Server server;
 	server.init();
@@ -26,18 +19,19 @@ int main() {
 	auto& receiverSystem = gameEngine.getSystem<ServerNetworkSenderSystem<settings >>();
 	senderSystem.setServer(&server);
 	receiverSystem.setServer(&server);
-	//spawnBarrier(gameEngine)
+	for (int i =0; i < ServerGameConstants::kMaxNumberOfPlayers; ++i){
+		spawnPlayer_Server(gameEngine);
+	}
+	spawnBall_Server(gameEngine);
 
-	//auto& graphicSystem =  gameEngine.getSystem<GraphicSystem<settings >>();
-	//auto& physicSystem = gameEngine.getSystem<PhysicSystem<settings >>();
-	//graphicSystem.initialize();
+	spawnBarrier_Server(gameEngine, ServerGameConstants::kLeftBarrier_Pos, ServerGameConstants::kSideBarrier_BotRight);
+	spawnBarrier_Server(gameEngine, ServerGameConstants::kTopBarrier_Pos, ServerGameConstants::kUpDownBarrier_BotRight);
+	spawnBarrier_Server(gameEngine, ServerGameConstants::kBotBarrier_Pos, ServerGameConstants::kUpDownBarrier_BotRight);
+	spawnBarrier_Server(gameEngine, ServerGameConstants::kRightBarrier_Pos, ServerGameConstants::kSideBarrier_BotRight);
 
+	spawnGoalTrigger_Server(gameEngine, ServerGameConstants::kLeftGoalPos, ServerGameConstants::kLeftGoalTag);
+	spawnGoalTrigger_Server(gameEngine, ServerGameConstants::kRightGoalPos, ServerGameConstants::kRightGoalTag);
 
-	/*while (true) {
-		graphicSystem.draw();
-		physicSystem.runPhysicUpdate(0.1f);
-
-	}*/
 	gameEngine.start();
 
 

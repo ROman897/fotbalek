@@ -16,20 +16,29 @@ Id spawnButton(EngineType_Client& gameEngine, const std::string& tag, const std:
     return id;
 }
 
-Id spawnPlayer(EngineType_Client& gameEngine){
-    /*Id id = gameEngine.spawnGameObject("player");
-    gameEngine.addComponent<Transform>(id, ClientGameConstants::kMenuPanelPosition);
+Id spawnPlayer_Client(EngineType_Client& gameEngine){
+    Id id = gameEngine.spawnGameObject("player");
+    gameEngine.addComponent<Transform>(id);
     gameEngine.addComponent<NetworkId>(id);
 
+    gameEngine.addComponent<Sprite>(id, ClientGameConstants::kPlayerSpriteOffset, ClientGameConstants::kPlayerSpriteLayer,
+    ClientGameConstants::kPlayerEnabledAtStart);
 
-    gameEngine.addComponent<RectangleShape>(id, ClientGameConstants::kMenuPanelXOffset, ClientGameConstants::kMenuPanelYOffset,
-                                            ClientGameConstants::kMenuPanelWidth, ClientGameConstants::kMenuPanelHeight, ClientGameConstants::kMenuPanelColor,
-                                            ClientGameConstants::kMenuPanelLayer, ClientGameConstants::kMenuEnabledAtStart);
-    return id;*/
+    gameEngine.addComponent<Label>(id, ClientGameConstants::kPlayerLabelOffset, ClientGameConstants::kPlayerLabelFontPath,
+    ClientGameConstants::kPlayerLabelFontColor, ClientGameConstants::kPlayerLabelFontSize, ClientGameConstants::kPlayerLabelLayer,
+    ClientGameConstants::kPlayerEnabledAtStart);
+
+    return id;
 }
 
-Id spawnBall(EngineType_Client& gameEngine){
+Id spawnBall_Client(EngineType_Client& gameEngine){
+    Id id = gameEngine.spawnGameObject("ball");
+    gameEngine.addComponent<Transform>(id);
+    gameEngine.addComponent<NetworkId>(id, 0);
 
+    gameEngine.addComponent<Sprite>(id, ClientGameConstants::kBallSpriteOffset, ClientGameConstants::kBallSpritePath, ClientGameConstants::kBallSpriteLayer,
+                                    ClientGameConstants::kBallEnabledAtStart);
+    return id;
 }
 
 Id spawnBarrier(EngineType_Client& gameEngine, Vector_Float position, const Vector_Float &m_topLeft, const Vector_Float &m_bottomRight){
@@ -45,6 +54,22 @@ Id spawnMenuPanel(EngineType_Client &gameEngine) {
     gameEngine.addComponent<RectangleShape>(id, ClientGameConstants::kMenuPanelXOffset, ClientGameConstants::kMenuPanelYOffset,
     ClientGameConstants::kMenuPanelWidth, ClientGameConstants::kMenuPanelHeight, ClientGameConstants::kMenuPanelColor,
     ClientGameConstants::kMenuPanelLayer, ClientGameConstants::kMenuEnabledAtStart);
+    return id;
+}
+
+Id spawnSelectionArrow(EngineType_Client &gameEngine) {
+    Id id = gameEngine.spawnGameObject("arrow");
+    gameEngine.addComponent<Transform>(id);
+    gameEngine.addComponent<Sprite>(id, ClientGameConstants::kArrowSpriteOffset, ClientGameConstants::kArrowSpritePath, ClientGameConstants::kArrowSpriteLayer,
+    ClientGameConstants::kArrowEnabledAtStart);
+    return id;
+}
+
+Id spawnPitch(EngineType_Client &gameEngine) {
+    Id id = gameEngine.spawnGameObject("pitch");
+    gameEngine.addComponent<Transform>(id, ClientGameConstants::kPitchPos);
+    gameEngine.addComponent<Sprite>(id, ClientGameConstants::kPitchSpriteOffset, ClientGameConstants::kPitchSpritePath, ClientGameConstants::kPitchSpriteLayer,
+                                    ClientGameConstants::kPitchEnabledAtStart);
     return id;
 }
 

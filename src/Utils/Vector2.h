@@ -41,6 +41,10 @@ public:
         return lhs.multiply(rhs);
     }
 
+    friend Vector2 operator*= (Vector2& lhs, float rhs){
+        return lhs.multiply(rhs);
+    }
+
     friend T DotProduct(Vector2 lhs, Vector2 rhs){
         return lhs.m_x * rhs.m_x + rhs.m_y * rhs.m_y;
     }

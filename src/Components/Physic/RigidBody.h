@@ -25,6 +25,12 @@ struct RigidBody {
                                                                             m_activeForce(m_activeForce),
                                                                             m_speedDecrement(m_speedDecrement) {}
 
+    RigidBody(float m_inverseMass, float m_restitution, float m_speedDecrement) : m_inverseMass(m_inverseMass),
+                                                                                  m_restitution(m_restitution),
+                                                                                  m_velocity({0,0}),
+                                                                                  m_activeForce({0,0}),
+                                                                                  m_speedDecrement(m_speedDecrement) {}
+
     //Material material;
     //MassData mass_data;
     float m_inverseMass;

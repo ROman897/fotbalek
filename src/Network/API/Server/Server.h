@@ -67,6 +67,8 @@ public:
 
 	void releaseMessage();
 
+	void gameOver(int team1, int team2);
+
 	bool hasStarted() const;
 };
 

@@ -16,10 +16,12 @@
 #include "Components/MovementInputHolder.h"
 #include "Components/Graphic/Label.h"
 #include "Components/Network/NetworkId.h"
+#include "Components/PlayerComp.h"
+#include "Components/Physic/ColliderTrigger.h"
 
 
 using compSettings = ComponentSettings <Transform, RectangleShape, RigidBody, CircleCollider, RectangleCollider, Sprite,
-        MovementInputHolder, Button, Label, NetworkId>;
+        MovementInputHolder, Button, Label, NetworkId, PlayerComp, ColliderTrigger>;
 
 
 using SystemSignature_RectangleGraphic = Signature <RectangleShape, Transform>;
@@ -37,6 +39,7 @@ using SystemSignature_Network_Input = Signature<MovementInputHolder>;
 using SystemSignature_Network = Signature<NetworkId, Transform>;
 using SystemSignature_Network_Graphic = Signature<NetworkId, Sprite, Label>;
 using SystemSignature_Network_Rigid = Signature<NetworkId, RigidBody>;
+using SystemSignature_Network_Player = Signature<NetworkId, Transform, PlayerComp>;
 
 // define which signatures will the engine use
 using sigSettings = SignatureSettings <SystemSignature_SpriteGraphic,
@@ -44,7 +47,7 @@ using sigSettings = SignatureSettings <SystemSignature_SpriteGraphic,
         SystemSignature_Input, SystemSignature_Button, SystemSignature_LabelGraphic ,
         SystemSignature_RectangleGraphic , SystemSignature_Network_Input, SystemSignature_Network,
         SystemSignature_Network_Graphic, SystemSignature_Rectangle_Collider, SystemSignature_Circle_Collider,
-        SystemSignature_Network_Rigid
+        SystemSignature_Network_Rigid, SystemSignature_Network_Player
 >;
 
 using settings = EngineSettings<compSettings , sigSettings>;

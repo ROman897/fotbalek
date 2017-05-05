@@ -27,7 +27,7 @@ private:
      * @param transforms
      */
     void updatePositions(const std::vector<NetworkId>& ids, const std::vector<Transform>& transforms){
-        m_componentManager->forEntitiesMatching<SystemSignature_Network>([&ids, &transforms](NetworkId* id, Transform* transform){
+        m_componentManager->template forEntitiesMatching<SystemSignature_Network>([&ids, &transforms](NetworkId* id, Transform* transform){
             for (int i =0; i < ids.size(); ++i){
                 if (ids[i].id == id->id)
                     *transform = transforms[i];
@@ -37,16 +37,23 @@ private:
 
     void gameStarted(){
         // here we need to set all ids and set player visuals to match their respective teams
+        std::lock_guard<std::mutex> playersGuard(m_playerClient->m_playersMutex);
        const std::vector<Player> & players = m_playerClient->getPlayers();
         Id i = 0;
-        m_componentManager->forEntitiesMatching<SystemSignature_Network_Graphic>([&players, &i](NetworkId* id, Sprite* sprite, Label* label){
+        m_componentManager->template forEntitiesMatching<SystemSignature_Network_Graphic>([&players, &i](NetworkId* id, Sprite* sprite, Label* label){
             id->id = players[i].m_id;
-            sprite->enabled = true;
+            sprite->m_enabled = true;
             sprite->m_texturePath = players[i].m_team ? ClientGameConstants::kPlayerSpritePath_Team1 : ClientGameConstants::kPlayerSpritePath_Team2;
             // need to set sprite based on which team the client is in
             label->enabled = true;
             label->m_text = players[i].m_name;
         });
+        Id ballId = m_componentManager->findGameObjectByTag("ball");
+        m_componentManager->template forEntityMatching<SystemSignature_SpriteGraphic >(ballId, [](Sprite *sprite, Transform* transform){
+            sprite->m_enabled = true;
+
+        });
+
         m_initialized = true;
     }
 
@@ -57,16 +64,21 @@ private:
         if (! m_initialized){
             gameStarted();
         }
+        std::lock_guard<std::mutex> messageGuard(m_playerClient->m_messageMutex);
         auto& message = m_playerClient->getMessage();
         if (!message.isValid())
             return;
         auto& ids = message.getIds();
         auto& transforms = message.getMovements();
+        std::cout << "received number of positions: " << transforms.size() << std::endl;
         updatePositions(ids, transforms);
-        m_playerClient->releaseMessage();
     }
 
 public:
+
+    void setManager(ComponentManager<TSettings>* manager){
+        m_componentManager = manager;
+    }
 
     void setPlayerClient(Client* playerClient){
         m_playerClient = playerClient;
