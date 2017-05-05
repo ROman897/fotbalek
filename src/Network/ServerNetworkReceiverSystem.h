@@ -15,7 +15,7 @@
 #include "../SettingsDefines.h"
 #include "../Utils/Timer.h"
 
-void applyInputForce(RigidBody& body, const MovementInputHolder& inputHolder, float coef){
+inline void applyInputForce(RigidBody& body, const MovementInputHolder& inputHolder, float coef){
     if (inputHolder.moveVertical){
         int dir = inputHolder.moveUp ? 1 : -1;
         body.m_velocity.m_y += dir * coef;
