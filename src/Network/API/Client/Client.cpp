@@ -1,6 +1,6 @@
 #include "Client.h"
 
-Client::Client() : /*m_lock(m_mutex), m_playerLock(m_playerMutex)*//*, m_myCounter(0), m_serverCounter(0)*/ {
+Client::Client() /*: m_lock(m_mutex), m_playerLock(m_playerMutex)*//*, m_myCounter(0), m_serverCounter(0)*/ {
 	m_gameStarted.store(false);
 	/*m_lock.unlock();
 	m_playerLock.unlock();*/
