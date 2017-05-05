@@ -192,7 +192,7 @@ private:
         m_escape = !m_escape;
         m_manager->template forEntitiesMatching<SystemSignature_Button>(
                 [this](const Button *button, Sprite *sprite, Label *label, Transform* transform) {
-                    sprite->enabled = m_escape;
+                    sprite->m_enabled = m_escape;
                     label->enabled = m_escape;
                 });
         m_manager->template forEntityMatching<SystemSignature_RectangleGraphic>(menuPanelId, [this](RectangleShape* rect, Transform* trans){

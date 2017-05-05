@@ -11,7 +11,7 @@
 #include "API/Client/PlayerClient.h"
 
 template <typename TSettings>
-class PlaynerNetworkSenderSystem{
+class PlayerNetworkSenderSystem{
 
 
 private:

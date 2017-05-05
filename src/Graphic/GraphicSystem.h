@@ -139,7 +139,7 @@ class GraphicSystem {
         m_componentManager->template forEntitiesMatching<SystemSignature_SpriteGraphic >([this, layer](Sprite* sprite, const Transform* transform){
             if (sprite->m_graphicLayer != layer)
                 return;
-            if (! sprite->enabled)
+            if (! sprite->m_enabled)
                 return;
             if (! sprite->m_Texture){
                 auto surface = this->getSurface(sprite->m_texturePath);

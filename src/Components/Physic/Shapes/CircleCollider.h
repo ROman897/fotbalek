@@ -10,6 +10,9 @@
 struct CircleCollider{
     Vector_Float m_center;
     float m_radius;
+
+    CircleCollider(const Vector_Float &m_center, float m_radius) : m_center(m_center), m_radius(m_radius) {}
+    CircleCollider() = default;
 };
 
 #endif //PV264_PROJECT_CIRCLE_H

@@ -2,6 +2,10 @@
 
 //-------------------------Football pitch
 const std::string ClientGameConstants::kPitchSpritePath = "../Resources/Sprites/Pitch.png";
+const Vector_Float ClientGameConstants::kPitchPos = {50,50};
+const Vector_Float ClientGameConstants::kPitchSpriteOffset = {0,0};
+const GraphicLayers ClientGameConstants::kPitchSpriteLayer = BACKGROUND;
+const bool ClientGameConstants::kPitchEnabledAtStart = true;
 //--------------------------//Football pitch
 
 //----------------------Button
@@ -15,11 +19,6 @@ const int ClientGameConstants::kButtonFontSize = 22;
 const GraphicLayers ClientGameConstants::kButtonLayer = FRONTUI;
 //---------------------//Button
 
-
-//------------------------Player Sprite
-const std::string ClientGameConstants::kPlayerSpritePath_Team1 = "../Resources/Sprites/Player1.png";
-const std::string ClientGameConstants::kPlayerSpritePath_Team2 = "../Resources/Sprites/Player2.png";
-//-----------------------//Player Sprite
 
 //---------------------Menu
 const bool ClientGameConstants::kMenuEnabledAtStart = false;
@@ -35,8 +34,52 @@ const SDL_Color ClientGameConstants::kMenuPanelColor = {0,0,0,255};
 const GraphicLayers ClientGameConstants::kMenuPanelLayer = BACKUI;
 //------------------------//Menu Panel
 
-//-------------------------Client constants
-const std::string ClientGameConstants::kServerPort = "13000"; //modify also ServerGameConstants.h
-const std::string ClientGameConstants::kServerAddress = "localhost";//"147.251.47.243";
+//---------------------Player Sprite
+const Vector_Float ClientGameConstants::kPlayerSpriteOffset = {32,32};
+const GraphicLayers ClientGameConstants::kPlayerSpriteLayer = FOREGROUND;
+const bool ClientGameConstants::kPlayerEnabledAtStart = false;
+const std::string ClientGameConstants::kPlayerSpritePath_Team1 = "../Resources/Sprites/Player1.png";
+const std::string ClientGameConstants::kPlayerSpritePath_Team2 = "../Resources/Sprites/Player2.png";
+//----------------------//Player Sprite
 
-//-------------------------//Client constants
+
+//------------------------Player Label
+const Vector_Float ClientGameConstants::kPlayerLabelOffset = {0,40};
+const std::string ClientGameConstants::kPlayerLabelFontPath = "../Resources/Fonts/BasicFont.ttf";
+const SDL_Color ClientGameConstants::kPlayerLabelFontColor = {0,0,0,255};
+const int ClientGameConstants::kPlayerLabelFontSize = 16;
+const GraphicLayers ClientGameConstants::kPlayerLabelLayer = FOREGROUND;
+
+//-------------------------//Player Label
+
+
+//-----------------------Selection Arrow
+const Vector_Float ClientGameConstants::kArrowSpriteOffset = {0,0};
+const GraphicLayers ClientGameConstants::kArrowSpriteLayer = FRONTUI;
+const bool ClientGameConstants::kArrowEnabledAtStart = false;
+const std::string ClientGameConstants::kArrowSpritePath = "../Resources/Sprites/Selection.png";
+//------------------------Selection Arrow
+
+
+//----------------------Ball
+const Vector_Float ClientGameConstants::kBallSpriteOffset = {32,32};
+const GraphicLayers ClientGameConstants::kBallSpriteLayer = FOREGROUND;
+const bool ClientGameConstants::kBallEnabledAtStart = false;
+const std::string ClientGameConstants::kBallSpritePath = "../Resources/Sprites/Ball.png";
+//-----------------------//Ball
+
+
+
+//------------------------Buttons
+const Vector_Float ClientGameConstants::kContinueButtonPos = {400, 100};
+const std::string ClientGameConstants::kContinueButtonText = "CONTINUE";
+const std::string ClientGameConstants::kContinueButtonTag = "continue";
+
+const Vector_Float ClientGameConstants::kOptionsButtonPos = {400, 200};
+const std::string ClientGameConstants::kOptionsButtonText = "OPTIONS";
+const std::string ClientGameConstants::kOptionsButtonTag = "options";
+
+const Vector_Float ClientGameConstants::kQuitButtonPos = {400, 300};
+const std::string ClientGameConstants::kQuitButtonText = "QUIT GAME";
+const std::string ClientGameConstants::kQuitButtonTag = "quit";
+//------------------------//Buttons

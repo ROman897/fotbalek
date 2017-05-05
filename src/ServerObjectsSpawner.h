@@ -23,4 +23,17 @@ using externalSysSettings_Server = SystemSettings<PhysicSystem<settings >, Serve
 
 using EngineType_Server = GameEngine<settings, sysSettings_Server, externalSysSettings_Server >;
 
+Id spawnPlayer_Server(EngineType_Server& gameEngine);
+
+
+Id spawnBall_Server(EngineType_Server& gameEngine);
+
+Id spawnBarrier_Server(EngineType_Server& gameEngine, Vector_Float position, const Vector_Float &m_bottomRight);
+
+Id spawnGoalTrigger_Server(EngineType_Server& gameEngine, Vector_Float position, const std::string& tag);
+
+
+
+
+
 #endif //PV264_PROJECT_SERVEROBJECTSSPAWNER_H
