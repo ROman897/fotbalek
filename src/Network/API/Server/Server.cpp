@@ -31,7 +31,7 @@ void Server::handleRequest(ErrorCode &error, size_t transferred) {
         }
         std::cerr << "Server::handleRequest:" << error.message();
     }
-    std::string message(m_buffer.data(), m_buffer.data() + transferred);
+    std::string message(m_buffer.begin(), m_buffer.begin() + transferred);
 
     //test
     std::cout << "received: " << transferred << " msg: " << message << " from: " << m_pending.address() << std::endl;
