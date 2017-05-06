@@ -27,14 +27,8 @@ class Server : UdpBase {
     std::vector<std::unique_ptr<Client>> m_clients;
     unsigned short m_clientNr = 0;
 	Message<MovementInputHolder> m_message;
-<<<<<<< HEAD
     mutable std::mutex m_mutex, m_sktMtx;
     std::unique_lock<std::mutex> m_lock;
-=======
-    //mutable std::mutex m_mutex;
-	//std::unique_lock<std::mutex> m_lock;
-
->>>>>>> c8cd539ebe9d4619a7e0508b78fb13a064580918
 
     void listen();
 
