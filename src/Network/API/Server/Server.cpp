@@ -211,6 +211,7 @@ void Server::parseMessage(Id index, const std::string &message) {
     for (auto i : message) {
         switch (i) {
             case 'u': {
+                std::cout << "received movement up" << std::endl;
                 newMovement.moveUp = true;
                 newMovement.moveVertical = true;
             }
