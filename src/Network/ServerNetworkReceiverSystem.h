@@ -134,7 +134,7 @@ public:
     }
 
     void start(){
-        m_GameStateId = m_componentManager->findEntityMatching<SystemSignature_GameState>();
+        m_GameStateId = m_componentManager->template findEntityMatching<SystemSignature_GameState>();
 
         run();
     }
