@@ -16,6 +16,7 @@ Client::~Client() {
 }
 
 void Client::askForId() {
+    std::cout << "askForId()\n";
 	m_socket.async_send(boost::asio::buffer("i?" + m_me.m_name), boost::bind(&Client::handleErrors,
 																  this,
 																  boost::asio::placeholders::error,

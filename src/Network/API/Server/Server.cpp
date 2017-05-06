@@ -11,6 +11,7 @@ Server::~Server() {
 }
 
 void Server::listen() {
+    std::cout << "listen()\n";
     m_socket.async_receive_from(boost::asio::buffer(m_buffer),
                                m_pending,
                                boost::bind(&Server::handleRequest,
@@ -57,6 +58,7 @@ void Server::respondAll(const std::string &response) {
 }
 
 void Server::respond(const udp::endpoint &cl, const std::string &response) {
+    std::lock_guard<std::mutex> lk(m_sktMtx);
     std::cout << "sending to " << cl.address() << ":" << cl.port() << "msg: " << response << '\n';
     m_socket.async_send_to(boost::asio::buffer(response), cl,
                            boost::bind(&Server::handleErrors,
@@ -121,8 +123,9 @@ void Server::emplaceClient(udp::endpoint endpoint, size_t trans) {
                                 "_" + (client->baseInfo.m_team ? "1" : "0") + "."
                               : ""; // <<< should not happen
         }
-		m_gameStarted.store(true);
+        std::cout << "startMessage: " << startMessage << std::endl;
         respondAll(startMessage);
+        m_gameStarted.store(true);
     }
 }
 
@@ -237,7 +240,8 @@ bool Server::endpointEq(const udp::endpoint &a, const udp::endpoint &b) const {
 std::vector<Player> Server::getPlayers() const {
     std::vector<Player> result;
     for (const auto &client : m_clients) {
-        result.push_back(client->baseInfo);
+        if (client)
+            result.push_back(client->baseInfo);
     }
     return result;
 }

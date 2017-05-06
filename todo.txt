@@ -9,3 +9,4 @@ Finish implementation of server methods used by ServerNetwork Receiver and Sende
 6. Get Menu to work
 7. Send message that game has ended and who won
     a) add this to client
+8. Add recognition of error responses to the Client

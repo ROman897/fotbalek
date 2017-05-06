@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.6)
 project(pv264_project)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g")
 set(SOURCE_FILES src/Physic/PhysicSystem.h src/Components/Physic/RigidBody.h src/Utils/Vector2.h
         src/Utils/Timer.cpp src/Utils/Timer.h src/Physic/Collision.cpp src/Physic/Collision.h
         src/Components/Physic/Shapes/CircleCollider.h src/Components/Physic/Shapes/RectangleCollider.h
