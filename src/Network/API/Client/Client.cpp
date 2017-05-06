@@ -78,7 +78,7 @@ void Client::parseMessage(std::string &input) {
 		end1,
 		end2
 	};
-	std::cout << input << std::endl;
+	std::cout << "received: " << input << std::endl;
 	size_t index_start = 0;
 	float x;
 	float y;

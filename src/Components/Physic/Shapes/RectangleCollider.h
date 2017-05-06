@@ -14,10 +14,12 @@ struct RectangleCollider  {
                                                                                                   bottomRight) {}
     RectangleCollider() = default;
 
-    RectangleCollider(const Vector_Float &bottomRight) : m_topLeft({0,0}), m_bottomRight(bottomRight) {}
+    RectangleCollider(const Vector_Float &bottomRight, CollisionLayers layer) : m_topLeft({0,0}), m_bottomRight(bottomRight),
+    m_CollisionLayer(layer){}
 
     Vector_Float m_topLeft;
     Vector_Float m_bottomRight;
+    CollisionLayers m_CollisionLayer;
 
 };
 

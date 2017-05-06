@@ -1,9 +1,10 @@
 #include "Server.h"
 
-Server::Server() : m_lock(m_mutex){
+Server::Server() {
+    std::lock_guard<std::mutex> playersLock(m_playersMutex);
     m_clients.resize(ServerGameConstants::kMaxNumberOfPlayers);
     m_socket.bind(udp::endpoint(udp::v4(), ServerGameConstants::portNumber));
-    m_lock.unlock();
+
 }
 Server::~Server() {
     respondAll("disconnect");
@@ -204,7 +205,8 @@ void Server::parseInput(const std::string &message, size_t length) {
 }
 
 void Server::parseMessage(Id index, const std::string &message) {
-    std::lock_guard<std::mutex> lock(m_mutex);
+    //std::lock_guard<std::mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> messageGuard(m_messageMutex);
     MovementInputHolder newMovement;
     for (auto i : message) {
         switch (i) {
@@ -247,14 +249,9 @@ std::vector<Player> Server::getPlayers() const {
 }
 
 Message<MovementInputHolder> &Server::getMessage() {
-    m_lock.lock();
     return m_message;
 }
 
-void Server::releaseMessage() {
-    m_message.setValid(false);
-    m_lock.unlock();
-}
 
 bool Server::hasStarted() const {
     return m_gameStarted.load();

@@ -6,7 +6,7 @@
 #define PV264_PROJECT_INPUTMANAGER_H
 
 #include <SDL_events.h>
-#include "../Components/MovementInputHolder.h"
+#include "../Components/Logic/MovementInputHolder.h"
 #include "../Utils/declarations.h"
 #include "../Core/ComponentManager.h"
 #include "../Constants/GameConstants.h"
@@ -18,12 +18,18 @@
 #include "../SettingsDefines.h"
 
 template <typename TSettings>
-class InputSystem{
+class PlayerLogicSystem{
     ComponentManager<TSettings>* m_manager;
 
 
     bool m_escape;
     float time = 0;
+    int m_Team1Score;
+    int m_Team2Score;
+    Id m_StateChangeId;
+    Id m_ScoreLabel1Id;
+    Id m_ScoreLabel2Id;
+    Id m_GameOverLabelId;
 
 public:
     void run(float dt) {
@@ -89,7 +95,7 @@ public:
                     switch (event.key.keysym.sym) {
                         case SDLK_w:
                         case SDLK_UP:
-                            m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
+                            m_manager->template forEntityMatching_S<SystemSignature_Button>(activeButtonId,
                                                                                [this](Button *button, Sprite *sprite,
                                                                                       Label *label,
                                                                                       const Transform *transform) {
@@ -101,7 +107,7 @@ public:
                             break;
                         case SDLK_s:
                         case SDLK_DOWN:
-                            m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
+                            m_manager->template forEntityMatching_S<SystemSignature_Button>(activeButtonId,
                                                                                [this](Button *button, Sprite *sprite,
                                                                                       Label *label,
                                                                                       const Transform *transform) {
@@ -129,7 +135,7 @@ public:
             bool moveHorizontal = (moveRight || moveLeft);
 
             if (moveHorizontal || moveVertical || shoot) {
-                m_manager->template forEntityMatching<SystemSignature_Input >(movementInputId,
+                m_manager->template forEntityMatching_S<SystemSignature_Input >(movementInputId,
                                            [moveHorizontal, moveVertical, moveUp, moveRight, shoot](MovementInputHolder *inputHolder) {
                                                inputHolder->moveUp = moveUp;
                                                inputHolder->moveRight = moveRight;
@@ -168,6 +174,49 @@ public:
     }
 
 private:
+    void updateState(){
+        std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
+        m_manager->template forEntityMatching_S<SystemSignature_GameStateChange>(m_StateChangeId, [this](GameStateChange* stateChange){
+            if (stateChange->m_Team1Scored) {
+                team1Scored();
+                stateChange->m_Team1Scored = false;
+                return;
+            }
+            if (stateChange->m_Team2Scored){
+                team2Scored();
+                stateChange->m_Team2Scored = false;
+                return;
+            }
+            if (stateChange->m_GameOver){
+                gameOver();
+                stateChange->m_GameOver = false;
+                return;
+            }
+
+        });
+    }
+    void team1Scored(){
+        ++m_Team1Score;
+        m_manager->template forEntityMatching<SystemSignature_Label>(m_ScoreLabel1Id, [this](Label* label){
+
+        });
+    }
+
+    void team2Scored(){
+        ++m_Team2Score;
+        m_manager->template forEntityMatching<SystemSignature_Label>(m_ScoreLabel2Id, [this](Label* label){
+
+        });
+    }
+
+    void gameOver(){
+        m_manager->template forEntityMatching<SystemSignature_Label>(m_GameOverLabelId, [this](Label* label){
+
+        });
+    }
+
+
+
     Timer inputTimer;
 // id of gameobject with movementinputholder component
     Id movementInputId;
@@ -180,6 +229,7 @@ private:
 
     void setArrowPosition(){
 
+        std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
         Transform t;
         m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
                                                                       [&t](Button *button, Sprite *sprite,
@@ -199,12 +249,12 @@ private:
     }
 
     void escPressed(){
-        std::cout << "esc: " << m_escape << std::endl;
+        std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
         m_escape = !m_escape;
         m_manager->template forEntitiesMatching<SystemSignature_Button>(
                 [this](const Button *button, Sprite *sprite, Label *label, Transform* transform) {
                     sprite->m_enabled = m_escape;
-                    label->enabled = m_escape;
+                    label->m_Enabled = m_escape;
                 });
         m_manager->template forEntityMatching<SystemSignature_RectangleGraphic>(menuPanelId, [this](RectangleShape* rect, Transform* trans){
             rect->m_enabled = m_escape;

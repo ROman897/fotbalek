@@ -9,11 +9,11 @@ set(SOURCE_FILES src/Physic/PhysicSystem.h src/Components/Physic/RigidBody.h src
         src/Core/GameObject.h src/Core/GameEngine.h src/Core/ComponentManager.h src/Components/Graphic/Shapes/RectangleShape.h
         src/Components/Graphic/Shapes/CircleShape.h src/Core/EngineSettings.h src/Core/ComponentStorage.h src/Utils/declarations.h
         src/Components/Transform.h src/Graphic/GraphicSystem.h src/Components/Graphic/Sprite.h src/Core/SignatureManager.h
-        src/Core/EngineStructures.h src/Components/Graphic/Label.h src/Components/Network/NetworkId.h src/Game_Logic/InputSystem.h
-        src/Components/MovementInputHolder.h src/Network/API/Client/UdpBase.h src/SettingsDefines.h
+        src/Core/EngineStructures.h src/Components/Graphic/Label.h src/Components/Network/NetworkId.h src/Game_Logic/PlayerLogicSystem.h
+        src/Components/Logic/MovementInputHolder.h src/Network/API/Client/UdpBase.h src/SettingsDefines.h
         src/Components/UI/Button.h src/Constants/NetworkConstants.h src/Constants/NetworkConstants.cpp
         src/Components/Physic/ColliderTrigger.h src/Network/API/Client/Message.h src/Network/API/Client/Player.h
-        src/Components/PlayerComp.h src/Components/BallComp.h)
+        src/Components/Logic/PlayerComp.h src/Components/Logic/BallComp.h src/Components/Network/GameStateChange.h)
 
 SET(CONSTANTS src/Constants/ClientGameConstants.h src/Constants/ClientGameConstants.cpp
         src/Constants/ServerGameConstants.h src/Constants/ServerGameConstants.cpp
@@ -21,7 +21,7 @@ SET(CONSTANTS src/Constants/ClientGameConstants.h src/Constants/ClientGameConsta
 
 set(SERVER_FILES src/Network/ServerNetworkSenderSystem.h src/Network/ServerNetworkReceiverSystem.h
         src/Game_Logic/ServerLogicSystem.h src/ServerObjectsSpawner.cpp src/Network/API/Server/Server.cpp
-        src/Network/API/Server/Server.h src/ServerObjectsSpawner.h)
+        src/Network/API/Server/Server.h src/ServerObjectsSpawner.h src/Components/Logic/GameState.h)
 
 set(CLIENT_FILES src/Network/PlayerNetworkReceiverSystem.h src/Network/PlayerNetworkSenderSystem.h
         src/Network/API/Client/Client.cpp src/Network/API/Client/Client.h src/ClientObjectsSpawner.h

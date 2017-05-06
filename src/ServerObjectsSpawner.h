@@ -14,7 +14,7 @@
 #include "Components/Physic/RigidBody.h"
 #include "Physic/PhysicSystem.h"
 #include "SettingsDefines.h"
-#include "Game_Logic/InputSystem.h"
+#include "Game_Logic/PlayerLogicSystem.h"
 #include "Network/ServerNetworkSenderSystem.h"
 #include "Network/ServerNetworkReceiverSystem.h"
 
@@ -31,6 +31,8 @@ Id spawnBall_Server(EngineType_Server& gameEngine);
 Id spawnBarrier_Server(EngineType_Server& gameEngine, Vector_Float position, const Vector_Float &m_bottomRight);
 
 Id spawnGoalTrigger_Server(EngineType_Server& gameEngine, Vector_Float position, const std::string& tag);
+
+Id spawnManager_Server(EngineType_Server& gameEngine);
 
 
 

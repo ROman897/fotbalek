@@ -73,3 +73,9 @@ Id spawnPitch(EngineType_Client &gameEngine) {
     return id;
 }
 
+Id spawnManager_Client(EngineType_Client &gameEngine) {
+    Id id = gameEngine.spawnGameObject();
+    gameEngine.addComponent<MovementInputHolder>(id);
+    return id;
+}
+

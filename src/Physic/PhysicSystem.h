@@ -240,42 +240,43 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
 
 inline void processTriggerCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, ColliderTrigger* trigger,
                                                     const CircleCollider* shape2, const Transform* transform2){
-
+    if (! ServerGameConstants::kCollisionMatrix[shape1->m_CollisionLayer][shape2->m_CollisionLayer])
+        return;
     if (! checkForCollisionRectangle_Circle(shape1, transform1, shape2,
                                          transform2, nullptr, true))
         return;
-    for (auto& func : trigger->m_callbacks){
-        func();
-    }
+    trigger->m_Triggered = true;
 
 }
 
 inline void processTriggerCollisionRectangle_Rectangle(const RectangleCollider* shape1, const Transform* transform1, ColliderTrigger* trigger,
                                                     const RectangleCollider* shape2, const Transform* transform2){
-
+    if (! ServerGameConstants::kCollisionMatrix[shape1->m_CollisionLayer][shape2->m_CollisionLayer])
+        return;
     if (! checkForCollisionRectangle_Rectangle(shape1, transform1, shape2,
                                          transform2, nullptr, true))
         return;
-    for (auto& func : trigger->m_callbacks){
-        func();
-    }
+
+    trigger->m_Triggered = true;
 
 }
 
 inline void processTriggerCollisionCircle_Circle(const CircleCollider* shape1, const Transform* transform1, ColliderTrigger* trigger,
                                                     const CircleCollider* shape2, const Transform* transform2){
+    if (! ServerGameConstants::kCollisionMatrix[shape1->m_CollisionLayer][shape2->m_CollisionLayer])
+        return;
     if (! checkForCollisionCircle_Circle(shape1, transform1, shape2,
                                           transform2, nullptr, true))
         return;
-    for (auto& func : trigger->m_callbacks){
-        func();
-    }
+    trigger->m_Triggered = true;
 
 }
 
 
 inline void processCollisionRectangle_Circle(const RectangleCollider* shape1, RigidBody* body1, const Transform* transform1, const CircleCollider* shape2,
                                               RigidBody* body2, const Transform* transform2){
+    if (! ServerGameConstants::kCollisionMatrix[shape1->m_CollisionLayer][shape2->m_CollisionLayer])
+        return;
     Collision collision(*body1, *body2);
     if (checkForCollisionRectangle_Circle(shape1, transform1, shape2,
     transform2, &collision, false))
@@ -286,6 +287,8 @@ inline void processCollisionRectangle_Circle(const RectangleCollider* shape1, Ri
 
 inline void processCollisionRectangle_Rectangle(const RectangleCollider* shape1, RigidBody* body1, const Transform* transform1, const RectangleCollider* shape2,
                                                              RigidBody* body2, const Transform* transform2){
+    if (! ServerGameConstants::kCollisionMatrix[shape1->m_CollisionLayer][shape2->m_CollisionLayer])
+        return;
     Collision collision(*body1, *body2);
     if (checkForCollisionRectangle_Rectangle(shape1, transform1, shape2,
                                           transform2, &collision, false))
@@ -296,6 +299,8 @@ inline void processCollisionRectangle_Rectangle(const RectangleCollider* shape1,
 
 inline void processCollisionCircle_Circle(const CircleCollider* shape1, RigidBody* body1,
                                            const Transform* transform1, const CircleCollider* shape2, RigidBody* body2, const Transform* transform2) {
+    if (! ServerGameConstants::kCollisionMatrix[shape1->m_CollisionLayer][shape2->m_CollisionLayer])
+        return;
 
     Collision collision(*body1, *body2);
     if (checkForCollisionCircle_Circle(shape1, transform1, shape2,
@@ -317,12 +322,12 @@ inline void processCollisionCircle_Circle(const CircleCollider* shape1, RigidBod
 template <typename TSettings>
 class PhysicSystem {
 private:
-    ComponentManager<TSettings>* componentManager;
+    ComponentManager<TSettings>* m_ComponentManager;
 
 public:
 
     void setManager(ComponentManager<TSettings>* manager){
-        componentManager = manager;
+        m_ComponentManager = manager;
     }
 
 
@@ -333,14 +338,17 @@ public:
 
     void runPhysicUpdate(float dt) {
 
-        componentManager->template forEntitiesMatching<SystemSignature_Movable>([dt](RigidBody* rigidBody, Transform* transform){
+        std::lock_guard<std::mutex> lock (m_ComponentManager->componentsMutex);
+
+
+        m_ComponentManager->template forEntitiesMatching<SystemSignature_Movable>([dt](RigidBody* rigidBody, Transform* transform){
             transform->m_position += rigidBody->m_velocity * dt;
             rigidBody->m_velocity *= rigidBody->m_speedDecrement;
         });
 
-        componentManager->template forEntitiesMatchingPairs<SystemSignature_Circle_Collider_Body, SystemSignature_Circle_Collider_Body>(processCollisionCircle_Circle);
-        componentManager->template forEntitiesMatchingPairs<SystemSignature_Rectangle_Collider_Body, SystemSignature_Rectangle_Collider_Body>(processCollisionRectangle_Rectangle);
-        componentManager->template forEntitiesMatchingPairs<SystemSignature_Rectangle_Collider_Body, SystemSignature_Circle_Collider_Body>(processCollisionRectangle_Circle);
+        m_ComponentManager->template forEntitiesMatchingPairs<SystemSignature_Circle_Collider_Body, SystemSignature_Circle_Collider_Body>(processCollisionCircle_Circle);
+        m_ComponentManager->template forEntitiesMatchingPairs<SystemSignature_Rectangle_Collider_Body, SystemSignature_Rectangle_Collider_Body>(processCollisionRectangle_Rectangle);
+        m_ComponentManager->template forEntitiesMatchingPairs<SystemSignature_Rectangle_Collider_Body, SystemSignature_Circle_Collider_Body>(processCollisionRectangle_Circle);
     }
 
     void start() {
@@ -355,7 +363,7 @@ public:
 
 
         while( true ) {
-            if (componentManager->shouldQuit())
+            if (m_ComponentManager->shouldQuit())
                 return;
             accumulator += timer.getTime() - frameStart;
 

@@ -9,7 +9,7 @@
 #include "UdpBase.h"
 #include "Player.h"
 #include "Message.h"
-#include "../../../Components/MovementInputHolder.h"
+#include "../../../Components/Logic/MovementInputHolder.h"
 #include "../../../Components/Network/NetworkId.h"
 #include "../../../Components/Transform.h"
 #include "Score.h"

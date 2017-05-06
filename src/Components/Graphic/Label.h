@@ -18,17 +18,20 @@ struct Label{
     SDL_Color m_fontColor;
     int m_size;
     GraphicLayers m_graphicLayer;
-    bool enabled;
+    bool m_Enabled;
+    bool m_ChangedText;
 
     Label(const Vector_Float &m_positionOffset, const std::string &m_text, const std::string &m_fontPath,
           const SDL_Color &m_fontColor, int m_size, GraphicLayers layer, bool enabled) : m_positionOffset(m_positionOffset), m_text(m_text),
                                                                     m_fontPath(m_fontPath), m_fontColor(m_fontColor),
-                                                                    m_size(m_size), m_graphicLayer(layer), enabled(enabled) {}
+                                                                    m_size(m_size), m_graphicLayer(layer), m_Enabled(enabled),
+    m_ChangedText(false) {}
 
     Label(const Vector_Float &m_positionOffset, const std::string &m_fontPath, const SDL_Color &m_fontColor, int m_size,
           GraphicLayers m_graphicLayer, bool enabled) : m_positionOffset(m_positionOffset), m_fontPath(m_fontPath),
                                                         m_fontColor(m_fontColor), m_size(m_size),
-                                                        m_graphicLayer(m_graphicLayer), enabled(enabled) {}
+                                                        m_graphicLayer(m_graphicLayer), m_Enabled(enabled),
+                                                        m_ChangedText(false){}
 
     Label() = default;
 };

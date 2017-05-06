@@ -17,7 +17,7 @@
 #include "Components/Physic/RigidBody.h"
 #include "Physic/PhysicSystem.h"
 #include "SettingsDefines.h"
-#include "Game_Logic/InputSystem.h"
+#include "Game_Logic/PlayerLogicSystem.h"
 #include "Network/PlayerNetworkSenderSystem.h"
 #include "Network/PlayerNetworkReceiverSystem.h"
 
@@ -27,7 +27,7 @@ template<typename... Sigs> constexpr decltype(hana::make_tuple(hana::type_c<Sigs
 //template<typename Settings> constexpr decltype(hana::replicate<hana::tuple_tag>(SignatureManager<Settings>::b,
                                                                                 //hana::length(Settings::signatureSettings::signatureList))) SignatureManager<Settings>::m_signatures;
 
-using sysSettings = SystemSettings <GraphicSystem<settings >, InputSystem<settings >, PlayerNetworkSenderSystem<settings>>;
+using sysSettings = SystemSettings <GraphicSystem<settings >, PlayerLogicSystem<settings >, PlayerNetworkSenderSystem<settings>>;
 using externalSysSettings = SystemSettings<PlayerNetworkReceiverSystem<settings>>;
 
 using EngineType_Client = GameEngine<settings, sysSettings, externalSysSettings >;
@@ -47,6 +47,8 @@ Id spawnSelectionArrow(EngineType_Client& gameEngine);
 Id spawnBall_Client(EngineType_Client& gameEngine);
 
 Id spawnBarrier(EngineType_Client& gameEngine, Vector_Float position, const Vector_Float &m_topLeft, const Vector_Float &m_bottomRight);
+
+Id spawnManager_Client(EngineType_Client &gameEngine);
 
 
 

@@ -7,7 +7,7 @@
 #include "../Client/UdpBase.h"
 #include "../Client/Player.h"
 #include "../../../Utils/declarations.h"
-#include "../../../Components/MovementInputHolder.h"
+#include "../../../Components/Logic/MovementInputHolder.h"
 #include "../Client/Message.h"
 #include "../../../Constants/ServerGameConstants.h"
 #include "../../../Components/Transform.h"
@@ -27,8 +27,14 @@ class Server : UdpBase {
     std::vector<std::unique_ptr<Client>> m_clients;
     unsigned short m_clientNr = 0;
 	Message<MovementInputHolder> m_message;
+<<<<<<< HEAD
     mutable std::mutex m_mutex, m_sktMtx;
     std::unique_lock<std::mutex> m_lock;
+=======
+    //mutable std::mutex m_mutex;
+	//std::unique_lock<std::mutex> m_lock;
+
+>>>>>>> c8cd539ebe9d4619a7e0508b78fb13a064580918
 
     void listen();
 
@@ -52,6 +58,9 @@ class Server : UdpBase {
     bool endpointEq(const udp::endpoint &a, const udp::endpoint &b) const;
 
 public:
+
+    mutable std::mutex m_messageMutex;
+    mutable std::mutex m_playersMutex;
 
 	Server();
 

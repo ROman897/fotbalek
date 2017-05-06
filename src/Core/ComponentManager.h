@@ -77,11 +77,6 @@ public:
     void forEntitiesMatching(TF&& mFunction)
 
     {
-        //std::cout << "thread id entities single : " << std::this_thread::get_id() << std::endl;
-        //std::cout << "for entities matching" << std::endl;
-        //T t;
-        //int x = t;
-        std::lock_guard<std::mutex> guard(componentsMutex);
 
         static_assert(TSettings::template isSignature<T>(), "requested signature is not in the list of signatures");
 
@@ -92,10 +87,33 @@ public:
                     });
     }
 
+
+    template<typename T, typename TF>
+    void forEntitiesMatching_S(TF&& mFunction)
+
+    {
+        std::lock_guard<std::mutex> guard(componentsMutex);
+        forEntitiesMatching<T, TF>(std::forward<TF>(mFunction));
+    }
+
+    template<typename T, typename U, typename TF>
+    void forEntitiesMatchingPairs_S(TF&& mFunction) {
+
+        std::lock_guard<std::mutex> guard(componentsMutex);
+        forEntitiesMatchingPairs<T, U, TF>(std::forward<TF>(mFunction));
+    }
+
+    template<typename T, typename TF>
+    void forEntityMatching_S(Id id, TF&& mFunction){
+        std::lock_guard<std::mutex> guard(componentsMutex);
+        forEntityMatching<T, TF>(id, std::forward<TF>(mFunction));
+    }
+
+
     template<typename T, typename U, typename TF>
     void forEntitiesMatchingPairs(TF&& mFunction)
     {
-        std::lock_guard<std::mutex> guard(componentsMutex);
+        //std::lock_guard<std::mutex> guard(componentsMutex);
         //std::cout << "thread id entities pairs : " << std::this_thread::get_id() << std::endl;
         static_assert(TSettings::template isSignature<T>(), "");
 
@@ -114,7 +132,7 @@ public:
 
     template<typename T, typename TF>
     void forEntityMatching(Id id, TF&& mFunction){
-        std::lock_guard<std::mutex> guard(componentsMutex);
+        //std::lock_guard<std::mutex> guard(componentsMutex);
         if (matchesSignature<T>(id)){
             signatureCallFunction<T, TF>(id, std::forward<TF>(mFunction));
         }

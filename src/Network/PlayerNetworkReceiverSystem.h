@@ -20,6 +20,7 @@ private:
     Client* m_playerClient;
     Timer m_timer;
     bool m_initialized;
+    Id m_StateChangeId;
 
     /**
      * call this when received positions from the server
@@ -27,7 +28,7 @@ private:
      * @param transforms
      */
     void updatePositions(const std::vector<NetworkId>& ids, const std::vector<Transform>& transforms){
-        m_componentManager->template forEntitiesMatching<SystemSignature_Network>([&ids, &transforms](NetworkId* id, Transform* transform){
+        m_componentManager->template forEntitiesMatching_S<SystemSignature_Network>([&ids, &transforms](NetworkId* id, Transform* transform){
             for (int i =0; i < ids.size(); ++i){
                 if (ids[i].id == id->id)
                     *transform = transforms[i];
@@ -36,18 +37,22 @@ private:
     }
 
     void gameStarted(){
+        std::cout << "game started" << std::endl;
         // here we need to set all ids and set player visuals to match their respective teams
         std::lock_guard<std::mutex> playersGuard(m_playerClient->m_playersMutex);
        const std::vector<Player> & players = m_playerClient->getPlayers();
         Id i = 0;
+        std::lock_guard<std::mutex> lock(m_componentManager->componentsMutex);
+        std::cout << "receiving players" << std::endl;
         m_componentManager->template forEntitiesMatching<SystemSignature_Network_Graphic>([&players, &i](NetworkId* id, Sprite* sprite, Label* label){
             id->id = players[i].m_id;
             sprite->m_enabled = true;
             sprite->m_texturePath = players[i].m_team ? ClientGameConstants::kPlayerSpritePath_Team1 : ClientGameConstants::kPlayerSpritePath_Team2;
             // need to set sprite based on which team the client is in
-            label->enabled = true;
+            label->m_Enabled = true;
             label->m_text = players[i].m_name;
             std::cout << "player: " << players[i].m_name << " id: " << players[i].m_id << " team: " << players[i].m_team << std::endl;
+            ++i;
         });
         Id ballId = m_componentManager->findGameObjectByTag("ball");
         m_componentManager->template forEntityMatching<SystemSignature_SpriteGraphic >(ballId, [](Sprite *sprite, Transform* transform){
@@ -60,11 +65,13 @@ private:
 
 
     void runUpdate(){
-        if (! m_playerClient->hasStarted())
-            return;
-        if (! m_initialized){
-            gameStarted();
-        }
+        /*if (m_playerClient.hasStateChanged()){
+            GameStateChange change = m_playerClient->getState();
+            m_componentManager->forEntityMatching_S(m_StateChangeId, [change](GameStateChange* _change){
+                *_change = change;
+            });
+        }*/
+
         std::lock_guard<std::mutex> messageGuard(m_playerClient->m_messageMutex);
         auto& message = m_playerClient->getMessage();
         if (!message.isValid())
@@ -96,29 +103,30 @@ void start(){
 }
 
     void run(){
-        Uint32 accumulator = 0;
         Timer timer;
         timer.start();
 
-        Uint32 frameStart = timer.getTime();
-        timer.resetTime();
-
         while (true){
-            accumulator += timer.getTime() - frameStart;
-
-            frameStart = timer.getTime();
-
-            if (accumulator > GameConstants::kEngineAccumulatorLimit)
-                accumulator = GameConstants::kEngineAccumulatorLimit;
-
-            while (accumulator > ClientGameConstants::kClientNetworkReceiverDt) {
-                runUpdate();
-                accumulator -= GameConstants::kEngineDeltaTime;
-            }
-
+            if (timer.getTime() < ClientGameConstants::kClientNetworkReceiverDt)
+                continue;
             if (m_componentManager->shouldQuit()){
                 break;
             }
+            timer.resetTime();
+
+            if (! m_playerClient->hasStarted())
+                return;
+            if (! m_initialized){
+                timer.resetTime();
+                gameStarted();
+                continue;
+            }
+
+            runUpdate();
+
+
+
+
         }
     }
 
