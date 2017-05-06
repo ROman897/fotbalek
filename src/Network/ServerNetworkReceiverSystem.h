@@ -17,11 +17,13 @@
 
 inline void applyInputForce(RigidBody& body, const MovementInputHolder& inputHolder, float coef){
     if (inputHolder.moveVertical){
+        std::cout << "moving vertical" << std::endl;
         int dir = inputHolder.moveUp ? 1 : -1;
         body.m_velocity.m_y += dir * coef;
     }
 
     if (inputHolder.moveHorizontal){
+        std::cout << "moving horizontal" << std::endl;
         int dir = inputHolder.moveRight ? 1 : -1;
         body.m_velocity.m_x += dir * coef;
     }
@@ -87,6 +89,12 @@ private:
                 break;
             }
 
+            bool accept;
+            m_componentManager->template forEntityMatching_S<SystemSignature_GameState>(m_GameStateId, [&accept](GameState* state){
+                accept = state->m_ReceiveInput;
+            });
+            if (! accept)
+                continue;
 
             if (!m_initialized && ! m_UdpServer->hasStarted())
                 continue;
@@ -97,25 +105,24 @@ private:
             }
 
 
-            std::cout << "before message lock" << std::endl;
+            //std::cout << "before message lock" << std::endl;
             std::lock_guard<std::mutex> messageMutex(m_UdpServer->m_messageMutex);
-            std::cout << "after message lock" << std::endl;
+            //std::cout << "after message lock" << std::endl;
             auto& data = m_UdpServer->getMessage();
             if (! data.isValid())
                 continue;
 
-            std::cout << "after data validation" << std::endl;
-            bool accept;
-            m_componentManager->template forEntityMatching_S<SystemSignature_GameState>(m_GameStateId, [&accept](GameState* state){
-                accept = state->m_ReceiveInput;
-            });
-            std::cout << "after input validation" << std::endl;
+            //std::cout << "after data validation" << std::endl;
+
+            //std::cout << "after input validation" << std::endl;
             auto& ids = data.getIds();
             auto& inputs = data.getMovements();
-            if (! ids.empty()){
-                std::cout << "received movement from id: " << ids[0].id << std::endl;
-            }
             updateInputs(ids, inputs);
+            ids.clear();
+            inputs.clear();
+            data.setValid(false);
+
+
 
 
 

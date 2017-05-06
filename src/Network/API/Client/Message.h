@@ -17,7 +17,7 @@ class Message {
 	bool m_valid;
 
 public:
-	Message() {}
+	Message() : m_valid(false) {}
 
 	Id getMessageId() const {
 		return m_messageId;
@@ -35,11 +35,11 @@ public:
 		m_playerMovement.push_back(newMovement);
 	}
 
-	const std::vector<NetworkId> &getIds() const {
+	std::vector<NetworkId> &getIds() {
 		return m_playerIds;
 	}
 
-	const std::vector<T> &getMovements() const {
+	std::vector<T> &getMovements() {
 		return m_playerMovement;
 	}
 
