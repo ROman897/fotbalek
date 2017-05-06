@@ -97,9 +97,10 @@ void Client::parseMessage(std::string &input) {
 					if (std::isdigit(input[i])) {
 						index_start = i;
 						currSt = state::index;
-					} else if (input[i] == '.') {
+                    } else if (input[i] == '.' || input[i] == ',') {
 						continue;
 					} else if (input[i] == 's') {
+                        started = true;
 						currSt = state::starting;
 					} else if (input[i] == 'e') {
 						currSt = state::end1;
@@ -125,7 +126,7 @@ void Client::parseMessage(std::string &input) {
 				case state::getX : {
 					size_t next;
 					x = std::stof(input.substr(index_start), &next);
-					i = next;
+                    i += next;
 					currSt = state::getY;
 					break;
 				}
@@ -135,7 +136,7 @@ void Client::parseMessage(std::string &input) {
 					}
 					size_t next;
 					y = std::stof(input.substr(index_start), &next);
-					i = next;
+                    i += next;
 					newMessage.addTransform(Transform(Vector_Float(x, y)));
 					currSt = state::init;
 					break;
@@ -144,7 +145,6 @@ void Client::parseMessage(std::string &input) {
 					if (input[i] == ';' || input[i] == '.') {
 						continue;
 					}
-					started = true;
 					std::cout << "starting:msg: " << input << std::endl;
 					if (std::isdigit(input[i]))
 						index_start = i;
@@ -165,7 +165,7 @@ void Client::parseMessage(std::string &input) {
 					if (input[i] != '_')
 						continue;
 					name = input.substr(index_start, i - index_start);
-					team = input[i + 1];
+                    team = input[i + 1] == '1';
 					std::lock_guard<std::mutex> players_lock (m_playersMutex);
 					m_players.push_back(Player(name, id, team));
 					currSt = state::starting;
