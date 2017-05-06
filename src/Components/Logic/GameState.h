@@ -8,7 +8,7 @@ struct GameState{
 bool m_ReceiveInput;
 
     GameState(bool m_ReceiveInput) : m_ReceiveInput(m_ReceiveInput) {}
-    GameState() = default;
+    GameState() : m_ReceiveInput(true) {};
 };
 
 #endif //PV264_PROJECT_GAMESTATE_H

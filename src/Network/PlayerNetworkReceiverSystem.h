@@ -20,6 +20,7 @@ private:
     Client* m_playerClient;
     Timer m_timer;
     bool m_initialized;
+    Id m_StateChangeId;
 
     /**
      * call this when received positions from the server
@@ -46,7 +47,7 @@ private:
             sprite->m_enabled = true;
             sprite->m_texturePath = players[i].m_team ? ClientGameConstants::kPlayerSpritePath_Team1 : ClientGameConstants::kPlayerSpritePath_Team2;
             // need to set sprite based on which team the client is in
-            label->enabled = true;
+            label->m_Enabled = true;
             label->m_text = players[i].m_name;
             std::cout << "player: " << players[i].m_name << " id: " << players[i].m_id << " team: " << players[i].m_team << std::endl;
         });
@@ -61,6 +62,13 @@ private:
 
 
     void runUpdate(){
+        /*if (m_playerClient.hasStateChanged()){
+            GameStateChange change = m_playerClient->getState();
+            m_componentManager->forEntityMatching_S(m_StateChangeId, [change](GameStateChange* _change){
+                *_change = change;
+            });
+        }*/
+
         std::lock_guard<std::mutex> messageGuard(m_playerClient->m_messageMutex);
         auto& message = m_playerClient->getMessage();
         if (!message.isValid())
@@ -96,11 +104,11 @@ void start(){
         timer.start();
 
         while (true){
+            if (timer.getTime() < ClientGameConstants::kClientNetworkReceiverDt)
+                continue;
             if (m_componentManager->shouldQuit()){
                 break;
             }
-            if (timer.getTime() < ClientGameConstants::kClientNetworkReceiverDt)
-                continue;
             timer.resetTime();
 
             if (! m_playerClient->hasStarted())

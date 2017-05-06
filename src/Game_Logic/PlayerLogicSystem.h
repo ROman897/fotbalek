@@ -24,6 +24,12 @@ class PlayerLogicSystem{
 
     bool m_escape;
     float time = 0;
+    int m_Team1Score;
+    int m_Team2Score;
+    Id m_StateChangeId;
+    Id m_ScoreLabel1Id;
+    Id m_ScoreLabel2Id;
+    Id m_GameOverLabelId;
 
 public:
     void run(float dt) {
@@ -168,6 +174,49 @@ public:
     }
 
 private:
+    void updateState(){
+        std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
+        m_manager->template forEntityMatching_S<SystemSignature_GameStateChange>(m_StateChangeId, [this](GameStateChange* stateChange){
+            if (stateChange->m_Team1Scored) {
+                team1Scored();
+                stateChange->m_Team1Scored = false;
+                return;
+            }
+            if (stateChange->m_Team2Scored){
+                team2Scored();
+                stateChange->m_Team2Scored = false;
+                return;
+            }
+            if (stateChange->m_GameOver){
+                gameOver();
+                stateChange->m_GameOver = false;
+                return;
+            }
+
+        });
+    }
+    void team1Scored(){
+        ++m_Team1Score;
+        m_manager->template forEntityMatching<SystemSignature_Label>(m_ScoreLabel1Id, [this](Label* label){
+
+        });
+    }
+
+    void team2Scored(){
+        ++m_Team2Score;
+        m_manager->template forEntityMatching<SystemSignature_Label>(m_ScoreLabel2Id, [this](Label* label){
+
+        });
+    }
+
+    void gameOver(){
+        m_manager->template forEntityMatching<SystemSignature_Label>(m_GameOverLabelId, [this](Label* label){
+
+        });
+    }
+
+
+
     Timer inputTimer;
 // id of gameobject with movementinputholder component
     Id movementInputId;
@@ -205,7 +254,7 @@ private:
         m_manager->template forEntitiesMatching<SystemSignature_Button>(
                 [this](const Button *button, Sprite *sprite, Label *label, Transform* transform) {
                     sprite->m_enabled = m_escape;
-                    label->enabled = m_escape;
+                    label->m_Enabled = m_escape;
                 });
         m_manager->template forEntityMatching<SystemSignature_RectangleGraphic>(menuPanelId, [this](RectangleShape* rect, Transform* trans){
             rect->m_enabled = m_escape;

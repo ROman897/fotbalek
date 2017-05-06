@@ -32,6 +32,8 @@ Id spawnBarrier_Server(EngineType_Server& gameEngine, Vector_Float position, con
 
 Id spawnGoalTrigger_Server(EngineType_Server& gameEngine, Vector_Float position, const std::string& tag);
 
+Id spawnManager_Server(EngineType_Server& gameEngine);
+
 
 
 

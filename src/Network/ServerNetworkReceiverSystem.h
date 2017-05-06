@@ -52,6 +52,8 @@ private:
     }
 
     void gameStarted(){
+
+        std::lock_guard<std::mutex> messageMutex(m_UdpServer->m_playersMutex);
         const auto& players = m_UdpServer->getPlayers();
         Id i = 0;
         std::lock_guard<std::mutex> lock(m_componentManager->componentsMutex);
@@ -71,12 +73,14 @@ private:
         timer.start();
 
         while(true){
-            if (m_componentManager->shouldQuit()){
-                break;
-            }
+
 
             if (timer.getTime() < ClientGameConstants::kClientNetworkReceiverDt)
                 continue;
+
+            if (m_componentManager->shouldQuit()){
+                break;
+            }
             timer.resetTime();
 
             if (! m_UdpServer->hasStarted())
@@ -88,6 +92,7 @@ private:
             }
 
 
+            std::lock_guard<std::mutex> messageMutex(m_UdpServer->m_messageMutex);
             auto& data = m_UdpServer->getMessage();
             if (! data.isValid())
                 continue;
@@ -99,7 +104,6 @@ private:
             auto& ids = data.getIds();
             auto& inputs = data.getMovements();
             updateInputs(ids, inputs);
-            m_UdpServer->releaseMessage();
 
 
 

@@ -32,6 +32,8 @@ int main() {
 	spawnGoalTrigger_Server(gameEngine, ServerGameConstants::kLeftGoalPos, ServerGameConstants::kLeftGoalTag);
 	spawnGoalTrigger_Server(gameEngine, ServerGameConstants::kRightGoalPos, ServerGameConstants::kRightGoalTag);
 
+	spawnManager_Server(gameEngine);
+
 	gameEngine.start();
 
 

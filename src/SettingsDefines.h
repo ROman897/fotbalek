@@ -49,6 +49,7 @@ using SystemSignature_Ball = Signature<Transform, BallComp>;
 using SystemSignature_GameState = Signature<GameState>;
 using SystemSignature_GameStateChange = Signature<GameStateChange>;
 using SystemSignature_ColliderTrigger = Signature<ColliderTrigger>;
+using SystemSignature_Label = Signature<Label>;
 
 // define which signatures will the engine use
 using sigSettings = SignatureSettings <SystemSignature_SpriteGraphic,
@@ -58,7 +59,7 @@ using sigSettings = SignatureSettings <SystemSignature_SpriteGraphic,
         SystemSignature_Network_Graphic, SystemSignature_Rectangle_Collider, SystemSignature_Circle_Collider,
         SystemSignature_Network_Rigid, SystemSignature_Network_Player, SystemSignature_GameState,
         SystemSignature_ColliderTrigger, SystemSignature_GameStateChange, SystemSignature_Player_Rigid,
-        SystemSignature_Ball_Rigid, SystemSignature_Ball
+        SystemSignature_Ball_Rigid, SystemSignature_Ball, SystemSignature_Label
 >;
 
 using settings = EngineSettings<compSettings , sigSettings>;

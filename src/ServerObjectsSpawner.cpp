@@ -42,3 +42,10 @@ Id spawnGoalTrigger_Server(EngineType_Server &gameEngine, Vector_Float position,
     gameEngine.addComponent<ColliderTrigger>(id);
     return id;
 }
+
+Id spawnManager_Server(EngineType_Server &gameEngine) {
+    Id id = gameEngine.spawnGameObject();
+    gameEngine.addComponent<GameState>(id);
+    gameEngine.addComponent<GameStateChange>(id);
+    return id;
+}

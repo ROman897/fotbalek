@@ -166,7 +166,7 @@ class GraphicSystem {
         m_componentManager->template forEntitiesMatching<SystemSignature_LabelGraphic >([this, layer](Label* label, const Transform* transform){
            if (label->m_graphicLayer != layer)
                return;
-            if (!label->enabled)
+            if (!label->m_Enabled)
                 return;
             if (! label->m_Texture){
                 TTF_Font* font = getFont(label->m_fontPath, label->m_size);

@@ -42,6 +42,7 @@ int main() {
         spawnPlayer_Client(gameEngine);
     }
     spawnBall_Client(gameEngine);
+    spawnManager_Client(gameEngine);
 
 
     gameEngine.start();

@@ -48,6 +48,8 @@ Id spawnBall_Client(EngineType_Client& gameEngine);
 
 Id spawnBarrier(EngineType_Client& gameEngine, Vector_Float position, const Vector_Float &m_topLeft, const Vector_Float &m_bottomRight);
 
+Id spawnManager_Client(EngineType_Client &gameEngine);
+
 
 
 
