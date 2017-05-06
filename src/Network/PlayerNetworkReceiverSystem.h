@@ -37,11 +37,13 @@ private:
     }
 
     void gameStarted(){
+        std::cout << "game started" << std::endl;
         // here we need to set all ids and set player visuals to match their respective teams
         std::lock_guard<std::mutex> playersGuard(m_playerClient->m_playersMutex);
        const std::vector<Player> & players = m_playerClient->getPlayers();
         Id i = 0;
         std::lock_guard<std::mutex> lock(m_componentManager->componentsMutex);
+        std::cout << "receiving players" << std::endl;
         m_componentManager->template forEntitiesMatching<SystemSignature_Network_Graphic>([&players, &i](NetworkId* id, Sprite* sprite, Label* label){
             id->id = players[i].m_id;
             sprite->m_enabled = true;
@@ -50,6 +52,7 @@ private:
             label->m_Enabled = true;
             label->m_text = players[i].m_name;
             std::cout << "player: " << players[i].m_name << " id: " << players[i].m_id << " team: " << players[i].m_team << std::endl;
+            ++i;
         });
         Id ballId = m_componentManager->findGameObjectByTag("ball");
         m_componentManager->template forEntityMatching<SystemSignature_SpriteGraphic >(ballId, [](Sprite *sprite, Transform* transform){
