@@ -55,6 +55,9 @@ private:
 
         std::lock_guard<std::mutex> messageMutex(m_UdpServer->m_playersMutex);
         const auto& players = m_UdpServer->getPlayers();
+        std::cout << "received number of players: " << players.size() << std::endl;
+        std::cout << "first player: " << players[0].m_name << "id: " << players[0].m_id << std::endl;
+        std::cout << "second player: " << players[1].m_name << "id: " << players[1].m_id << std::endl;
         Id i = 0;
         std::lock_guard<std::mutex> lock(m_componentManager->componentsMutex);
         m_componentManager->template forEntitiesMatching<SystemSignature_Network_Player>([&players, &i](NetworkId* id, Transform* transform, PlayerComp* playerComp){
