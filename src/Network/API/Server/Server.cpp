@@ -58,7 +58,7 @@ void Server::respondAll(const std::string &response) {
 }
 
 void Server::respond(const udp::endpoint &cl, const std::string &response) {
-    std::cout << "sending to " << cl.address() << ":" << cl.port() << "msg: " << response << '\n';
+    //std::cout << "sending to " << cl.address() << ":" << cl.port() << "msg: " << response << '\n';
     m_socket.async_send_to(boost::asio::buffer(response), cl,
                            boost::bind(&Server::handleErrors,
                                       this,
