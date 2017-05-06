@@ -109,7 +109,7 @@ private:
             m_componentManager->template forEntityMatching_S<SystemSignature_GameState>(m_GameStateId, [&accept](GameState* state){
                 accept = state->m_ReceiveInput;
             });
-            std::cout "after input validation" << std::endl;
+            std::cout << "after input validation" << std::endl;
             auto& ids = data.getIds();
             auto& inputs = data.getMovements();
             if (! ids.empty()){
