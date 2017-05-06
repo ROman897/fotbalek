@@ -81,11 +81,12 @@ private:
 
             if (timer.getTime() < ClientGameConstants::kClientNetworkReceiverDt)
                 continue;
+            timer.resetTime();
 
             if (m_componentManager->shouldQuit()){
                 break;
             }
-            timer.resetTime();
+
 
             if (! m_UdpServer->hasStarted())
                 continue;

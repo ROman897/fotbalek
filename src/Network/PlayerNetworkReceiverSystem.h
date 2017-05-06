@@ -107,15 +107,20 @@ void start(){
         timer.start();
 
         while (true){
+
             if (timer.getTime() < ClientGameConstants::kClientNetworkReceiverDt)
                 continue;
+            timer.resetTime();
             if (m_componentManager->shouldQuit()){
                 break;
             }
-            timer.resetTime();
 
-            if (! m_playerClient->hasStarted())
-                return;
+
+            std::cout << "trying to receive message" << std::endl;
+            if (! m_playerClient->hasStarted()) {
+                continue;
+            }
+            std::cout << "has started!!!!!!!!!!!!!!!!" << std::endl;
             if (! m_initialized){
                 timer.resetTime();
                 gameStarted();

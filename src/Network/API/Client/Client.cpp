@@ -55,6 +55,7 @@ void Client::startReceiving() {
 void Client::handleData(ErrorCode &err, size_t trans) {
 	if (!err)
 	{
+        std::lock_guard<std::mutex> message_lock (m_messageMutex);
 		std::string message(m_buffer.begin(), trans);
 		parseMessage(message);
 	}
@@ -78,6 +79,7 @@ void Client::parseMessage(std::string &input) {
 		end1,
 		end2
 	};
+
 	std::cout << "received: " << input << std::endl;
 	size_t index_start = 0;
 	float x;
@@ -102,11 +104,13 @@ void Client::parseMessage(std::string &input) {
 					} else if (input[i] == 's') {
                         started = true;
 						currSt = state::starting;
+                        started = true;
 					} else if (input[i] == 'e') {
 						currSt = state::end1;
 						++i;
 					} else {
 						std::cerr << "wrong message was received" << std::endl;
+                        std::cerr << "message was: " << input << std::endl;
 						return;
 					}
 					break;
@@ -194,7 +198,7 @@ void Client::parseMessage(std::string &input) {
 		std::cout << "zparsoval som msg" << std::endl;
 	}
 	newMessage.setValid(true);//vyriesit messageID
-	std::lock_guard<std::mutex> message_lock (m_messageMutex);
+
 	m_lastMessage = std::move(newMessage);
 	std::cout << "move-ol som msg" << std::endl;
 }
