@@ -109,7 +109,7 @@ void Client::parseMessage(std::string &input) {
 						++i;
 					} else {
 						std::cerr << "wrong message was received" << std::endl;
-                        std::cerr << "message was: " << input << std::endl;
+                        std::cerr << "message was: " << input << " i = " << i << " char: " << input[i] << std::endl;
 						return;
 					}
 					break;
@@ -122,13 +122,13 @@ void Client::parseMessage(std::string &input) {
 						newId.id = std::stoul(input.substr(index_start, i - index_start));;
 						newMessage.addNetworkId(newId);
 						currSt = state::getX;
-						index_start = i + 1;
+                        //index_start = i + 1;
 					}
 					break;
 				}
 				case state::getX : {
 					size_t next;
-					x = std::stof(input.substr(index_start), &next);
+                    x = std::stof(input.substr(i), &next);
                     i += next;
 					currSt = state::getY;
 					break;
@@ -138,7 +138,7 @@ void Client::parseMessage(std::string &input) {
 						continue;
 					}
 					size_t next;
-					y = std::stof(input.substr(index_start), &next);
+                    y = std::stof(input.substr(i), &next);
                     i += next;
 					newMessage.addTransform(Transform(Vector_Float(x, y)));
 					currSt = state::init;
