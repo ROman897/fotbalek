@@ -214,18 +214,22 @@ void Server::parseMessage(Id index, const std::string &message) {
             case 'u': {
                 newMovement.moveUp = true;
                 newMovement.moveVertical = true;
+                break;
             }
             case 'd': {
                 newMovement.moveUp = false;
                 newMovement.moveVertical = true;
+                break;
             }
             case 'l': {
                 newMovement.moveRight = false;
                 newMovement.moveHorizontal = true;
+                break;
             }
             case 'r': {
                 newMovement.moveRight = true;
                 newMovement.moveHorizontal = true;
+                break;
             }
             default:
                 break;
