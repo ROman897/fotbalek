@@ -24,6 +24,7 @@ Id spawnBall_Server(EngineType_Server &gameEngine) {
     ServerGameConstants::kBallCollisionLayer);
     gameEngine.addComponent<RigidBody>(id, ServerGameConstants::kBallInverseMass, ServerGameConstants::kBallRestitution,
                                        ServerGameConstants::kBallSpeedDecrement);
+    gameEngine.addComponent<BallComp>(id);
     return id;
 }
 
