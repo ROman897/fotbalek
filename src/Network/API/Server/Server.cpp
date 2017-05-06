@@ -231,7 +231,8 @@ void Server::parseMessage(Id index, const std::string &message) {
                 break;
         }
     }
-    newMovement.valid = true;
+    //newMovement.valid = true;
+    m_message.setValid(true);
     m_message.addTransform(newMovement);
     m_message.addNetworkId(NetworkId(index));
 }
