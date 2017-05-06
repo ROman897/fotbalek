@@ -108,6 +108,9 @@ private:
             });
             auto& ids = data.getIds();
             auto& inputs = data.getMovements();
+            if (! ids.empty()){
+                std::cout << "received movement from id: " << ids[0].id << std::endl;
+            }
             updateInputs(ids, inputs);
 
 
@@ -131,6 +134,8 @@ public:
     }
 
     void start(){
+        m_GameStateId = m_componentManager->findEntityMatching<SystemSignature_GameState>();
+
         run();
     }
 };

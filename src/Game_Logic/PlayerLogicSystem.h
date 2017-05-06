@@ -48,11 +48,11 @@ public:
 
 
         while (SDL_PollEvent(&event) != 0) {
-            moveLeft = false;
-            moveRight = false;
-            moveUp = false;
-            moveDown = false;
-            shoot = false;
+            //moveLeft = false;
+            //moveRight = false;
+            //moveUp = false;
+            //moveDown = false;
+            //shoot = false;
             if (event.type == SDL_QUIT){
                 m_manager->setQuit(true);
             }
@@ -72,7 +72,6 @@ public:
                     case SDLK_w:
                     case SDLK_UP:
                         moveUp = true;
-                    std::cout << "key up pressed " << std::endl;
                         break;
                     case SDLK_s:
                     case SDLK_DOWN:
