@@ -80,7 +80,7 @@ void Client::parseMessage(std::string &input) {
 		end2
 	};
 
-	std::cout << "received: " << input << std::endl;
+	//std::cout << "received: " << input << std::endl;
 	size_t index_start = 0;
 	float x;
 	float y;
@@ -202,7 +202,7 @@ void Client::parseMessage(std::string &input) {
 	newMessage.setValid(true);//vyriesit messageID
 
 	m_lastMessage = std::move(newMessage);
-	std::cout << "move-ol som msg" << std::endl;
+	//std::cout << "move-ol som msg" << std::endl;
 }
 
 void Client::parseId(ErrorCode &err, size_t trans) {

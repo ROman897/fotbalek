@@ -60,7 +60,7 @@ void Server::respondAll(const std::string &response) {
 
 void Server::respond(const udp::endpoint &cl, const std::string &response) {
     std::lock_guard<std::mutex> lk(m_sktMtx);
-    std::cout << "sending to " << cl.address() << ":" << cl.port() << "msg: " << response << '\n';
+    //std::cout << "sending to " << cl.address() << ":" << cl.port() << "msg: " << response << '\n';
     m_socket.async_send_to(boost::asio::buffer(response), cl,
                            boost::bind(&Server::handleErrors,
                                       this,
@@ -208,10 +208,10 @@ void Server::parseMessage(Id index, const std::string &message) {
     //std::lock_guard<std::mutex> lock(m_mutex);
     std::lock_guard<std::mutex> messageGuard(m_messageMutex);
     MovementInputHolder newMovement;
+    std::cout << "received movement !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
     for (auto i : message) {
         switch (i) {
             case 'u': {
-                std::cout << "received movement up" << std::endl;
                 newMovement.moveUp = true;
                 newMovement.moveVertical = true;
             }
