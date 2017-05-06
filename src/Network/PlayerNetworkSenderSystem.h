@@ -37,7 +37,7 @@ private:
     }
 
     void sendData(){
-        if (!m_started || ! m_playerClient->hasStarted())
+        if (!m_started && ! m_playerClient->hasStarted())
             return;
         m_started = true;
         if (prepareData(m_inputHolder)) {

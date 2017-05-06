@@ -46,7 +46,7 @@ public:
 
     void run(float dt){
         //std::cout << "server sender run" << std::endl;
-        if (!m_started || ! m_playerServer->hasStarted())
+        if (!m_started && ! m_playerServer->hasStarted())
             return;
 
         m_started = true;

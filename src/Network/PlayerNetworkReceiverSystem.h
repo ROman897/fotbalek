@@ -116,11 +116,11 @@ void start(){
             if (m_componentManager->shouldQuit()){
                 break;
             }
-            std::cout << "before has started: " << std::endl;
+            //std::cout << "before has started: " << std::endl;
             if ( !m_initialized && ! m_playerClient->hasStarted()) {
                 continue;
             }
-            std::cout << "after has started" << std::endl;
+            //std::cout << "after has started" << std::endl;
             if (! m_initialized){
                 //timer.resetTime();
                 gameStarted();
