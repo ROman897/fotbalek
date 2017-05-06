@@ -102,7 +102,6 @@ void Client::parseMessage(std::string &input) {
                     } else if (input[i] == '.' || input[i] == ',') {
 						continue;
 					} else if (input[i] == 's') {
-                        started = true;
 						currSt = state::starting;
                         started = true;
 					} else if (input[i] == 'e') {
@@ -146,7 +145,10 @@ void Client::parseMessage(std::string &input) {
 					break;
 				}
 				case state::starting : {
-					if (input[i] == ';' || input[i] == '.') {
+                    if (i == input.size() - 1) {
+                        m_gameStarted.store(started);
+                    }
+                    if (input[i] == ';' || input[i] == '.') {
 						continue;
 					}
 					std::cout << "starting:msg: " << input << std::endl;
@@ -173,6 +175,7 @@ void Client::parseMessage(std::string &input) {
 					std::lock_guard<std::mutex> players_lock (m_playersMutex);
 					m_players.push_back(Player(name, id, team));
 					currSt = state::starting;
+                    ++i;
 					break;
 				}
 				case state::end1 : {
@@ -192,7 +195,6 @@ void Client::parseMessage(std::string &input) {
 				}
 			}
 		}
-		m_gameStarted.store(started);
 	} catch (std::exception &ex) {
 		std::cerr << ex.what() << std::endl;
 		std::cout << "zparsoval som msg" << std::endl;
