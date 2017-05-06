@@ -8,6 +8,13 @@
 #include <SDL_quit.h>
 #include "../Utils/declarations.h"
 
+enum CollisionLayers{
+    BOUNDARIES,
+    BALL,
+    PLAYERS,
+    GOALS
+};
+
 struct ServerGameConstants{
 
 //----------------------Physics
@@ -17,11 +24,19 @@ static constexpr float kPhysicDeltaTime = 1 / kPhysicFps;
 static constexpr float kInputMovementCoefficient = 10;
 //-------------------//Physics
 
+//-----------------------Collision Layers
+static constexpr int kNumberOfCollisionLayers = 4;
+static const bool kCollisionMatrix[kNumberOfCollisionLayers][kNumberOfCollisionLayers];
+//----------------------//Collision Layers
+
+
 //---------------------Colliders
 static const Vector_Float kPlayerColliderCenter;
 static const float kPlayerColliderRadius;
+static const CollisionLayers kPlayerCollisionLayer;
 static const Vector_Float kBallColliderCenter;
 static const float kBallColliderRadius;
+static const CollisionLayers kBallCollisionLayer;
 //---------------------//Colliders
 
 //----------------------Rigid bodies
@@ -42,6 +57,7 @@ static const float kBallColliderRadius;
     static const Vector_Float kUpDownBarrier_BotRight;
     static const Vector_Float kBotBarrier_Pos;
     static const Vector_Float kRightBarrier_Pos;
+    static const CollisionLayers kBarrierCollisionLayer;
 //------------------------//Barriers
 
 //------------------------Goals
@@ -50,13 +66,23 @@ static const float kBallColliderRadius;
     static const Vector_Float kGoalBotRight;
     static const std::string kLeftGoalTag;
     static const std::string kRightGoalTag;
+    static const CollisionLayers kGoalCollisionLayer;
 //--------------------------//Goals
 
 //--------------------Player constants
 static constexpr int kMaxNumberOfPlayers = 2;
 static constexpr int portNumber = 13000; //modify also ClientGameConstants.cpp
-static const Vector_Float startingPositions[kMaxNumberOfPlayers];
+
 //--------------------//Player Constants
+
+//---------------------Starting Positions
+static const Vector_Float kStartingPositions[kMaxNumberOfPlayers];
+    static const Vector_Float kBallStartingPosition;
+//---------------------//Starting Positions
+
+//----------------------Waiting Times
+static constexpr float kWaitingToResetPositionsTime = 1;
+static constexpr float kWaitingToResumeGameTime = 2;
 
 //---------------------Game Time
 static const float kGameTime;

@@ -6,7 +6,7 @@
 #define PV264_PROJECT_PLAYERNETWORKSENDERSYSTEM_H
 
 #include "../Components/Network/NetworkId.h"
-#include "../Components/MovementInputHolder.h"
+#include "../Components/Logic/MovementInputHolder.h"
 #include "../Core/ComponentManager.h"
 #include "API/Client/Client.h"
 
@@ -19,16 +19,16 @@ private:
     // id of a gameobject that has NetworkId and MovementInputHolder components
     Id id;
 
-    MovementInputHolder * m_inputHolder;
+    MovementInputHolder m_inputHolder;
 
     Client* m_playerClient;
 
-    bool prepareData(MovementInputHolder* inputHolder){
+    bool prepareData(MovementInputHolder& inputHolder){
         bool result = false;
-        m_componentManager->template forEntityMatching<SystemSignature_Network_Input>(id, [this, &result](MovementInputHolder* _inputHolder){
+        m_componentManager->template forEntityMatching_S<SystemSignature_Network_Input>(id, [this, &result](MovementInputHolder* _inputHolder){
             if (! _inputHolder->valid)
                 return;
-            m_inputHolder = _inputHolder;
+            m_inputHolder = *_inputHolder;
             _inputHolder->valid = false;
             result = true;
         });
@@ -39,7 +39,7 @@ private:
         if (! m_playerClient->hasStarted())
             return;
         if (prepareData(m_inputHolder)) {
-            m_playerClient->sendData(*m_inputHolder);
+            m_playerClient->sendData(m_inputHolder);
 
         }
 

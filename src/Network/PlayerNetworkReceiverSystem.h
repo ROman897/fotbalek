@@ -27,7 +27,7 @@ private:
      * @param transforms
      */
     void updatePositions(const std::vector<NetworkId>& ids, const std::vector<Transform>& transforms){
-        m_componentManager->template forEntitiesMatching<SystemSignature_Network>([&ids, &transforms](NetworkId* id, Transform* transform){
+        m_componentManager->template forEntitiesMatching_S<SystemSignature_Network>([&ids, &transforms](NetworkId* id, Transform* transform){
             for (int i =0; i < ids.size(); ++i){
                 if (ids[i].id == id->id)
                     *transform = transforms[i];
@@ -40,6 +40,7 @@ private:
         std::lock_guard<std::mutex> playersGuard(m_playerClient->m_playersMutex);
        const std::vector<Player> & players = m_playerClient->getPlayers();
         Id i = 0;
+        std::lock_guard<std::mutex> lock(m_componentManager->componentsMutex);
         m_componentManager->template forEntitiesMatching<SystemSignature_Network_Graphic>([&players, &i](NetworkId* id, Sprite* sprite, Label* label){
             id->id = players[i].m_id;
             sprite->m_enabled = true;
@@ -60,11 +61,6 @@ private:
 
 
     void runUpdate(){
-        if (! m_playerClient->hasStarted())
-            return;
-        if (! m_initialized){
-            gameStarted();
-        }
         std::lock_guard<std::mutex> messageGuard(m_playerClient->m_messageMutex);
         auto& message = m_playerClient->getMessage();
         if (!message.isValid())
@@ -96,29 +92,30 @@ void start(){
 }
 
     void run(){
-        Uint32 accumulator = 0;
         Timer timer;
         timer.start();
 
-        Uint32 frameStart = timer.getTime();
-        timer.resetTime();
-
         while (true){
-            accumulator += timer.getTime() - frameStart;
-
-            frameStart = timer.getTime();
-
-            if (accumulator > GameConstants::kEngineAccumulatorLimit)
-                accumulator = GameConstants::kEngineAccumulatorLimit;
-
-            while (accumulator > ClientGameConstants::kClientNetworkReceiverDt) {
-                runUpdate();
-                accumulator -= GameConstants::kEngineDeltaTime;
-            }
-
             if (m_componentManager->shouldQuit()){
                 break;
             }
+            if (timer.getTime() < ClientGameConstants::kClientNetworkReceiverDt)
+                continue;
+            timer.resetTime();
+
+            if (! m_playerClient->hasStarted())
+                return;
+            if (! m_initialized){
+                timer.resetTime();
+                gameStarted();
+                continue;
+            }
+
+            runUpdate();
+
+
+
+
         }
     }
 

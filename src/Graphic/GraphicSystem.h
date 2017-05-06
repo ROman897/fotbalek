@@ -210,12 +210,16 @@ public:
         SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0xFF, 0xFF);
         SDL_RenderClear(getRenderer());
 
+        // braces to reduce scope of lock, so it only exists while necessary
+        {
+            // this ensures that we draw all objects without being interrupted by other threads
+            std::lock_guard<std::mutex> lock(m_componentManager->componentsMutex);
+            for (int layer = 0; layer < ClientGameConstants::kNumberOfLayers; ++layer) {
+                renderRectangles(layer);
+                renderSprites(layer);
+                renderLabels(layer);
 
-        for (int layer = 0; layer < ClientGameConstants::kNumberOfLayers; ++layer){
-           renderRectangles(layer);
-            renderSprites(layer);
-            renderLabels(layer);
-
+            }
         }
 
 

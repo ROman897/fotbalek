@@ -6,7 +6,7 @@
 #define PV264_PROJECT_INPUTMANAGER_H
 
 #include <SDL_events.h>
-#include "../Components/MovementInputHolder.h"
+#include "../Components/Logic/MovementInputHolder.h"
 #include "../Utils/declarations.h"
 #include "../Core/ComponentManager.h"
 #include "../Constants/GameConstants.h"
@@ -18,7 +18,7 @@
 #include "../SettingsDefines.h"
 
 template <typename TSettings>
-class InputSystem{
+class PlayerLogicSystem{
     ComponentManager<TSettings>* m_manager;
 
 
@@ -89,7 +89,7 @@ public:
                     switch (event.key.keysym.sym) {
                         case SDLK_w:
                         case SDLK_UP:
-                            m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
+                            m_manager->template forEntityMatching_S<SystemSignature_Button>(activeButtonId,
                                                                                [this](Button *button, Sprite *sprite,
                                                                                       Label *label,
                                                                                       const Transform *transform) {
@@ -101,7 +101,7 @@ public:
                             break;
                         case SDLK_s:
                         case SDLK_DOWN:
-                            m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
+                            m_manager->template forEntityMatching_S<SystemSignature_Button>(activeButtonId,
                                                                                [this](Button *button, Sprite *sprite,
                                                                                       Label *label,
                                                                                       const Transform *transform) {
@@ -129,7 +129,7 @@ public:
             bool moveHorizontal = (moveRight || moveLeft);
 
             if (moveHorizontal || moveVertical || shoot) {
-                m_manager->template forEntityMatching<SystemSignature_Input >(movementInputId,
+                m_manager->template forEntityMatching_S<SystemSignature_Input >(movementInputId,
                                            [moveHorizontal, moveVertical, moveUp, moveRight, shoot](MovementInputHolder *inputHolder) {
                                                inputHolder->moveUp = moveUp;
                                                inputHolder->moveRight = moveRight;
@@ -180,6 +180,7 @@ private:
 
     void setArrowPosition(){
 
+        std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
         Transform t;
         m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
                                                                       [&t](Button *button, Sprite *sprite,
@@ -199,7 +200,7 @@ private:
     }
 
     void escPressed(){
-        std::cout << "esc: " << m_escape << std::endl;
+        std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
         m_escape = !m_escape;
         m_manager->template forEntitiesMatching<SystemSignature_Button>(
                 [this](const Button *button, Sprite *sprite, Label *label, Transform* transform) {

@@ -9,7 +9,10 @@
 #include <functional>
 
 struct ColliderTrigger{
-    std::vector<std::function<void(void)>> m_callbacks;
+    //std::vector<std::function<void(void)>> m_callbacks;
+    bool m_Triggered;
+
+    ColliderTrigger() : m_Triggered(false) {}
 };
 
 #endif //PV264_PROJECT_COLLIDERTRIGGER_H

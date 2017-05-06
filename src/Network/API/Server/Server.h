@@ -7,7 +7,7 @@
 #include "../Client/UdpBase.h"
 #include "../Client/Player.h"
 #include "../../../Utils/declarations.h"
-#include "../../../Components/MovementInputHolder.h"
+#include "../../../Components/Logic/MovementInputHolder.h"
 #include "../Client/Message.h"
 #include "../../../Constants/ServerGameConstants.h"
 #include "../../../Components/Transform.h"

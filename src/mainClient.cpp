@@ -35,7 +35,7 @@ int main() {
                                      ClientGameConstants::kQuitButtonPos, ClientGameConstants::kQuitButtonText);
     spawnMenuPanel(gameEngine);
     spawnSelectionArrow(gameEngine);
-    auto& inputSystem = gameEngine.template getSystem<InputSystem<settings >>();
+    auto& inputSystem = gameEngine.template getSystem<PlayerLogicSystem<settings >>();
     inputSystem.setActiveButton(activeButtonId);
 
     for (int i = 0; i < ServerGameConstants::kMaxNumberOfPlayers; ++i){
