@@ -79,8 +79,12 @@ private:
             return;
         auto& ids = message.getIds();
         auto& transforms = message.getMovements();
-        //std::cout << "received number of positions: " << transforms.size() << std::endl;
         updatePositions(ids, transforms);
+        ids.clear();
+        transforms.clear();
+        message.setValid(false);
+        //std::cout << "received number of positions: " << transforms.size() << std::endl;
+
     }
 
 public:
