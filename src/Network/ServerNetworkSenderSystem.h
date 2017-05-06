@@ -18,6 +18,7 @@ private:
     Server* m_playerServer;
     Id m_GameStateChangeId;
     GameStateChange m_StateChange;
+    bool m_started;
 
     void prepareData(std::vector<NetworkId>& ids, std::vector<Transform>& transforms){
         m_componentManager->template forEntitiesMatching_S<SystemSignature_Network>([&ids, &transforms](NetworkId* id, Transform* transform){
@@ -28,6 +29,9 @@ private:
     }
 
 public:
+
+    ServerNetworkSenderSystem() : m_started(false) {
+    }
 
     void setManager(ComponentManager<TSettings> *manager){
         m_componentManager = manager;
@@ -42,9 +46,10 @@ public:
 
     void run(float dt){
         //std::cout << "server sender run" << std::endl;
-        if (! m_playerServer->hasStarted())
+        if (!m_started || ! m_playerServer->hasStarted())
             return;
 
+        m_started = true;
         m_componentManager->template forEntityMatching_S<SystemSignature_GameStateChange>(m_GameStateChangeId, [this](GameStateChange* state){
             m_StateChange = *state;
         });

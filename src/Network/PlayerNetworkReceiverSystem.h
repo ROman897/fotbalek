@@ -21,6 +21,7 @@ private:
     Timer m_timer;
     bool m_initialized;
     Id m_StateChangeId;
+    bool m_started;
 
     /**
      * call this when received positions from the server
@@ -110,19 +111,18 @@ void start(){
 
             if (timer.getTime() < ClientGameConstants::kClientNetworkReceiverDt)
                 continue;
+
             timer.resetTime();
             if (m_componentManager->shouldQuit()){
                 break;
             }
-
-
-            std::cout << "trying to receive message" << std::endl;
-            if (! m_playerClient->hasStarted()) {
+            std::cout << "before has started: " << std::endl;
+            if ( !m_initialized && ! m_playerClient->hasStarted()) {
                 continue;
             }
-            std::cout << "has started!!!!!!!!!!!!!!!!" << std::endl;
+            std::cout << "after has started" << std::endl;
             if (! m_initialized){
-                timer.resetTime();
+                //timer.resetTime();
                 gameStarted();
                 continue;
             }

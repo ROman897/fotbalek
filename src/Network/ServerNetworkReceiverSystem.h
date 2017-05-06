@@ -88,7 +88,7 @@ private:
             }
 
 
-            if (! m_UdpServer->hasStarted())
+            if (!m_initialized && ! m_UdpServer->hasStarted())
                 continue;
             if (! m_initialized) {
                 gameStarted();

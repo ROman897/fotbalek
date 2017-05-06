@@ -18,6 +18,7 @@ private:
     ComponentManager<TSettings>* m_componentManager;
     // id of a gameobject that has NetworkId and MovementInputHolder components
     Id id;
+    bool m_started;
 
     MovementInputHolder m_inputHolder;
 
@@ -36,8 +37,9 @@ private:
     }
 
     void sendData(){
-        if (! m_playerClient->hasStarted())
+        if (!m_started || ! m_playerClient->hasStarted())
             return;
+        m_started = true;
         if (prepareData(m_inputHolder)) {
             m_playerClient->sendData(m_inputHolder);
 
@@ -48,6 +50,10 @@ private:
 
 
 public:
+
+    PlayerNetworkSenderSystem() : m_started(false){
+
+    }
     void setPlayerClient(Client* playerClient){
         m_playerClient = playerClient;
     }
