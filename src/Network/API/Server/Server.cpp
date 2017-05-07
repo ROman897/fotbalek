@@ -36,7 +36,7 @@ void Server::handleRequest(ErrorCode &error, size_t transferred) {
     std::string message(m_buffer.begin(), m_buffer.begin() + transferred);
 
     //test
-    std::cout << "received: " << transferred << " msg: " << message << " from: " << m_pending.address() << std::endl;
+    //std::cout << "received: " << transferred << " msg: " << message << " from: " << m_pending.address() << std::endl;
 
     parseInput(message, transferred);
     listen();
@@ -153,55 +153,55 @@ void Server::parseInput(const std::string &message, size_t length) {
     state currSt = state::init;
     for (size_t i = 0; i < length; ++i) {
         switch (currSt) {
-        case state::init : {
-            if (std::isdigit(message[i])) {
-                index_start = i;
-                currSt = state::ind;
-            } else if (message[i] == 'i') {
-                currSt = state::new_pl;
-            } else if (message[i] == 'e') {
-                currSt = state::discnct_1;
-            } else {
-                return;
-            }
-            break;
-        }
-        case state::new_pl : {
-            if (message[i] == '?' && length > 2)
-                emplaceClient(m_pending, length);
-            return;
-        }
-        case state::ind : {
-            if (std::isdigit(message[i]))
-                continue;
-            if (message[i] == '_') {
-                index = static_cast<size_t>(std::stol(message.substr(index_start, i - index_start)));
-                if (!m_clients[index - 1] || !endpointEq(m_pending, m_clients[index - 1]->m_endpoint))
-                    return;
-                //test
-                std::cout << "client " << index << " sent " << message;
-                std::cout << std::endl << "port: " << m_clients[index - 1]->m_endpoint.port() << '\n';
-                parseMessage(index, message.substr(2));
-            }
-            return;
-        }
-        case state::discnct_1 : {
-            if (message[i] != 'n')
-                return;
-            currSt = state::discnct_2;
-            break;
-        }
-        case state::discnct_2 : {
-            if (message[i] != 'd')
-                return;
-            for (auto &client : m_clients) {
-                if (client && endpointEq(client->m_endpoint, m_pending)) {
-                    abandonClient(client->baseInfo.m_id);
-                    return;
-                }
-            }
-            return;
-        }
+			case state::init : {
+				if (std::isdigit(message[i])) {
+					index_start = i;
+					currSt = state::ind;
+				} else if (message[i] == 'i') {
+					currSt = state::new_pl;
+				} else if (message[i] == 'e') {
+					currSt = state::discnct_1;
+				} else {
+					return;
+				}
+				break;
+			}
+			case state::new_pl : {
+				if (message[i] == '?' && length > 2)
+					emplaceClient(m_pending, length);
+				return;
+			}
+			case state::ind : {
+				if (std::isdigit(message[i]))
+					continue;
+				if (message[i] == '_') {
+					index = static_cast<size_t>(std::stol(message.substr(index_start, i - index_start)));
+					if (!m_clients[index - 1] || !endpointEq(m_pending, m_clients[index - 1]->m_endpoint))
+						return;
+					//test
+					//std::cout << "client " << index << " sent " << message;
+					//std::cout << std::endl << "port: " << m_clients[index - 1]->m_endpoint.port() << '\n';
+					parseMessage(index, message.substr(2));
+				}
+				return;
+			}
+			case state::discnct_1 : {
+				if (message[i] != 'n')
+					return;
+				currSt = state::discnct_2;
+				break;
+			}
+			case state::discnct_2 : {
+				if (message[i] != 'd')
+					return;
+				for (auto &client : m_clients) {
+					if (client && endpointEq(client->m_endpoint, m_pending)) {
+						abandonClient(client->baseInfo.m_id);
+						return;
+					}
+				}
+				return;
+			}
         }
     }
 }
