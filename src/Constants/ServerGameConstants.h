@@ -58,6 +58,11 @@ static const CollisionLayers kBallCollisionLayer;
     static const Vector_Float kBotBarrier_Pos;
     static const Vector_Float kRightBarrier_Pos;
     static const CollisionLayers kBarrierCollisionLayer;
+
+    static const float kLeftBoundary;
+    static const float kRightBoundary;
+    static const float kUpBoundary;
+    static const float kDownBoundary;
 //------------------------//Barriers
 
 //------------------------Goals

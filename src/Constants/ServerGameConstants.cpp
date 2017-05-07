@@ -35,6 +35,15 @@ const float ServerGameConstants::kPlayerMaxVelocity = 50.0f;
 const float ServerGameConstants::kBallMaxVelocity = 70.0f;
 //-----------------------//max velocities
 
+//------------------------Barriers
+const float ServerGameConstants::kLeftBoundary = 50.0f;
+const float ServerGameConstants::kRightBoundary = 1050.0f;
+const float ServerGameConstants::kUpBoundary = 850.0f;
+const float ServerGameConstants::kDownBoundary = 50.0f;
+//------------------------//Barriers
+
+
+
 
 //------------------------Goals
 const Vector_Float ServerGameConstants::kLeftGoalPos = {850,400};

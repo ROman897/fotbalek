@@ -265,11 +265,19 @@ template <typename TSettings>
 class PhysicSystem {
 private:
     ComponentManager<TSettings>* m_ComponentManager;
+    float m_left, m_right, m_up, m_down;
 
 public:
 
     void setManager(ComponentManager<TSettings>* manager){
         m_ComponentManager = manager;
+    }
+
+    void setBoundaries(float left, float right, float up, float down){
+        m_left = left;
+        m_right = right;
+        m_up = up;
+        m_down = down;
     }
 
 
@@ -283,13 +291,21 @@ public:
         std::lock_guard<std::mutex> lock (m_ComponentManager->componentsMutex);
 
 
-        m_ComponentManager->template forEntitiesMatching<SystemSignature_Movable>([dt](RigidBody* rigidBody, Transform* transform){
+        m_ComponentManager->template forEntitiesMatching<SystemSignature_Movable>([dt, this](RigidBody* rigidBody, Transform* transform){
             transform->m_position += rigidBody->m_velocity * dt;
             if (rigidBody->m_velocity.length() > 0.0005f) {
                 rigidBody->m_velocity *= rigidBody->m_speedDecrement;
             } else {
                 rigidBody->m_velocity = {0.0f, 0.0f};
             }
+            if (transform->m_position.m_x > m_right)
+                transform->m_position.m_x = m_right;
+            if (transform->m_position.m_x < m_left)
+                transform->m_position.m_x = m_left;
+            if (transform->m_position.m_y > m_up)
+                transform->m_position.m_y = m_up;
+            if (transform->m_position.m_y < m_down)
+                transform->m_position.m_y = m_down;
 
         });
 

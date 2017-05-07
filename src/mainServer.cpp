@@ -33,6 +33,9 @@ int main() {
 	spawnGoalTrigger_Server(gameEngine, ServerGameConstants::kRightGoalPos, ServerGameConstants::kRightGoalTag);
 
 	spawnManager_Server(gameEngine);
+	auto& physicSystem = gameEngine.getExternalSystem<PhysicSystem<settings >>();
+	physicSystem.setBoundaries(ServerGameConstants::kLeftBoundary, ServerGameConstants::kRightBoundary,
+	ServerGameConstants::kUpBoundary, ServerGameConstants::kDownBoundary);
 
 	gameEngine.start();
 
