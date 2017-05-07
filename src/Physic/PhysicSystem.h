@@ -60,9 +60,6 @@ inline float Clamp(float min, float max, float middle, float val) {
 }
 
 
-
-
-
 inline bool checkForCollisionCircle_Circle(const CircleCollider* shape1, const Transform* transform1,
                                            const CircleCollider* shape2, const Transform* transform2,
                                             Collision* collision, bool trigger){
