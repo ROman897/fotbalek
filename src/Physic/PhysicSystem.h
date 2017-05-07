@@ -53,6 +53,12 @@ inline float Clamp(float min, float max, float val) {
     return std::abs(min - val) < std::abs(max - val) ? min : max;
 }
 
+inline float Clamp(float min, float max, float middle, float val) {
+    float v = std::abs(min - val) < std::abs(max - val) ? min : max;
+    return std::abs(v - val) < std::abs(middle - val) ? v : middle;
+
+}
+
 
 
 
@@ -144,8 +150,8 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
     float x_extent = (shape1->m_topLeft.m_x - shape1->m_bottomRight.m_x ) / 2;
     float y_extent = (shape1->m_topLeft.m_y - shape1->m_bottomRight.m_y ) / 2;
 
-    closest.m_x = Clamp( -x_extent, x_extent, closest.m_x );
-    closest.m_y = Clamp( -y_extent, y_extent, closest.m_y );
+    closest.m_x = Clamp( -x_extent, x_extent, 0.0f, closest.m_x );
+    closest.m_y = Clamp( -y_extent, y_extent, 0.0f, closest.m_y );
 
     bool inside = false;
 
