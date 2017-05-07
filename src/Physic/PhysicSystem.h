@@ -141,8 +141,8 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
 
     Vector_Float n = transform2->m_position - transform1->m_position;
     Vector_Float closest = n;
-    float x_extent = (shape1->m_topLeft.m_x - shape1->m_bottomRight.m_x ) / 2;
-    float y_extent = (shape1->m_topLeft.m_y - shape1->m_bottomRight.m_y ) / 2;
+    float x_extent = (shape1->m_bottomRight.m_x - shape1->m_topLeft.m_x) / 2;
+    float y_extent = (shape1->m_bottomRight.m_y - shape1->m_topLeft.m_y) / 2;
 
     closest.m_x = Clamp( -x_extent, x_extent, closest.m_x );
     closest.m_y = Clamp( -y_extent, y_extent, closest.m_y );
