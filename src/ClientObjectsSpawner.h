@@ -50,6 +50,8 @@ Id spawnBarrier(EngineType_Client& gameEngine, Vector_Float position, const Vect
 
 Id spawnManager_Client(EngineType_Client &gameEngine);
 
+Id spawnLabel(EngineType_Client& gameEngine, const std::string& tag, const std::string& text);
+
 
 
 

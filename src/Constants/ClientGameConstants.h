@@ -111,6 +111,22 @@ struct ClientGameConstants {
 
     //-------------------------//Player Label
 
+    //-------------------------Labels
+    static const Vector_Float kLabelPosition;
+    static const Vector_Float kLabelOffset;
+    static const std::string kLabelFontPath;
+    static const SDL_Color kLabelFontColor;
+    static const int kLabelFontSize;
+    static const GraphicLayers kLabelLayer;
+    static const std::string kGameoverLabelText;
+    static const std::string kScored1LabelText;
+    static const std::string kScored2LabelText;
+    static const std::string kGameoverLabelTag;
+    static const std::string kScored1LabelTag;
+    static const std::string kScored2LabelTag;
+
+    //------------------------//Labels
+
 
 
 

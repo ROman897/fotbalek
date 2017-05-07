@@ -29,7 +29,6 @@ int main() {
     Id optionsButtonId = spawnButton(gameEngine, ClientGameConstants::kOptionsButtonTag,
                                     ClientGameConstants::kContinueButtonTag, ClientGameConstants::kQuitButtonTag,
                                     ClientGameConstants::kOptionsButtonPos, ClientGameConstants::kOptionsButtonText);
-
     Id QuitButtonId = spawnButton(gameEngine, ClientGameConstants::kQuitButtonTag,
                                      ClientGameConstants::kOptionsButtonTag, ClientGameConstants::kContinueButtonTag,
                                      ClientGameConstants::kQuitButtonPos, ClientGameConstants::kQuitButtonText);
@@ -43,6 +42,9 @@ int main() {
     }
     spawnBall_Client(gameEngine);
     spawnManager_Client(gameEngine);
+    spawnLabel(gameEngine, ClientGameConstants::kGameoverLabelTag, ClientGameConstants::kGameoverLabelText);
+    spawnLabel(gameEngine, ClientGameConstants::kScored1LabelTag, ClientGameConstants::kScored1LabelText);
+    spawnLabel(gameEngine, ClientGameConstants::kScored2LabelTag, ClientGameConstants::kScored2LabelText);
 
 
     gameEngine.start();

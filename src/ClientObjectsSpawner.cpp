@@ -79,3 +79,13 @@ Id spawnManager_Client(EngineType_Client &gameEngine) {
     return id;
 }
 
+
+
+Id spawnLabel(EngineType_Client &gameEngine, const std::string& tag, const std::string& text) {
+    Id id = gameEngine.spawnGameObject(tag);
+    gameEngine.addComponent<Transform>(id, ClientGameConstants::kLabelPosition);
+    gameEngine.addComponent<Label>(id, ClientGameConstants::kLabelOffset, text, ClientGameConstants::kLabelFontPath,
+    ClientGameConstants::kLabelFontColor, ClientGameConstants::kLabelFontSize, ClientGameConstants::kLabelLayer, false);
+    return id;
+}
+

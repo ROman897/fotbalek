@@ -52,6 +52,25 @@ const GraphicLayers ClientGameConstants::kPlayerLabelLayer = FOREGROUND;
 
 //-------------------------//Player Label
 
+//-------------------------Labels
+const Vector_Float ClientGameConstants::kLabelPosition = {400, 300};
+const Vector_Float ClientGameConstants::kLabelOffset = {0,0};
+const std::string ClientGameConstants::kLabelFontPath = "../Resources/Fonts/BasicFont.ttf";
+const SDL_Color ClientGameConstants::kLabelFontColor = {255,0,0,255};
+const int ClientGameConstants::kLabelFontSize = 40;
+const GraphicLayers ClientGameConstants::kLabelLayer = MISC;
+const std::string ClientGameConstants::kGameoverLabelText = "GAME OVER";
+const std::string ClientGameConstants::kScored1LabelText = "TEAM 1 SCORED";
+const std::string ClientGameConstants::kScored2LabelText = "TEAM 2 SCORED";
+const std::string ClientGameConstants::kGameoverLabelTag = "gameover";
+const std::string ClientGameConstants::kScored1LabelTag = "scored1";
+const std::string ClientGameConstants::kScored2LabelTag = "scored2";
+
+//------------------------//Labels
+
+
+
+
 
 //-----------------------Selection Arrow
 const Vector_Float ClientGameConstants::kArrowSpriteOffset = {0,50};
