@@ -31,8 +31,8 @@ static const bool kCollisionMatrix[kNumberOfCollisionLayers][kNumberOfCollisionL
 
 
 //---------------------Colliders
-static const Vector_Float kPlayerColliderCenter;
-static const float kPlayerColliderRadius;
+static const Vector_Float kPlayerColliderTopLeft;
+static const Vector_Float kPlayerColliderBottomRight;
 static const CollisionLayers kPlayerCollisionLayer;
 static const Vector_Float kBallColliderCenter;
 static const float kBallColliderRadius;

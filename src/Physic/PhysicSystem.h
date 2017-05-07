@@ -5,7 +5,6 @@
 #ifndef PV264_PROJECT_PHYSICENGINE_H
 #define PV264_PROJECT_PHYSICENGINE_H
 
-
 #include <vector>
 #include "../Components/Physic/RigidBody.h"
 #include "../Constants/GameConstants.h"
@@ -20,7 +19,6 @@
 #include "../SettingsDefines.h"
 #include "../Components/Physic/ColliderTrigger.h"
 #include "../Constants/ServerGameConstants.h"
-
 
 inline void resolveCollision(const Collision &collision) {
     Vector_Float vDiff = collision.second.m_velocity - collision.first.m_velocity;
@@ -46,7 +44,6 @@ inline void resolveCollision(const Collision &collision) {
     collision.second.m_velocity += impulse * collision.second.m_inverseMass;
     collision.first.m_velocity.limitLength(collision.first.m_maxSpeed);
     collision.second.m_velocity.limitLength(collision.second.m_maxSpeed);
-
 }
 
 inline float Clamp(float min, float max, float middle, float val) {
@@ -59,7 +56,6 @@ inline float Clamp(float min, float max, float middle, float val) {
 inline bool checkForCollisionCircle_Circle(const CircleCollider* shape1, const Transform* transform1,
                                            const CircleCollider* shape2, const Transform* transform2,
                                             Collision* collision, bool trigger){
-
     // Vector from A to B
     Vector_Float n = transform2->m_position - transform1->m_position;
 
@@ -91,7 +87,6 @@ inline bool checkForCollisionCircle_Circle(const CircleCollider* shape1, const T
 
     return true;
 }
-
 
 inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1, const Transform* transform1, const RectangleCollider* shape2,
                                           const Transform* transform2, Collision* collision, bool trigger){
@@ -130,7 +125,6 @@ inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
 
     return true;
 }
-
 
 inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, const CircleCollider* shape2,
                                        const Transform* transform2, Collision* collision, bool trigger){
@@ -183,9 +177,6 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
     return true;
 }
 
-
-
-
 inline void processTriggerCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, ColliderTrigger* trigger,
                                                     const CircleCollider* shape2, const Transform* transform2){
     if (! ServerGameConstants::kCollisionMatrix[shape1->m_CollisionLayer][shape2->m_CollisionLayer])
@@ -217,7 +208,6 @@ inline void processTriggerCollisionCircle_Circle(const CircleCollider* shape1, c
 
 }
 
-
 inline void processCollisionRectangle_Circle(const RectangleCollider* shape1, RigidBody* body1, const Transform* transform1, const CircleCollider* shape2,
                                               RigidBody* body2, const Transform* transform2){
     if (! ServerGameConstants::kCollisionMatrix[shape1->m_CollisionLayer][shape2->m_CollisionLayer])
@@ -228,7 +218,6 @@ inline void processCollisionRectangle_Circle(const RectangleCollider* shape1, Ri
 
 }
 
-
 inline void processCollisionRectangle_Rectangle(const RectangleCollider* shape1, RigidBody* body1, const Transform* transform1, const RectangleCollider* shape2,
                                                              RigidBody* body2, const Transform* transform2){
     if (! ServerGameConstants::kCollisionMatrix[shape1->m_CollisionLayer][shape2->m_CollisionLayer])
@@ -237,8 +226,6 @@ inline void processCollisionRectangle_Rectangle(const RectangleCollider* shape1,
     if (checkForCollisionRectangle_Rectangle(shape1, transform1, shape2, transform2, &collision, false))
         resolveCollision(collision);
 }
-
-
 
 inline void processCollisionCircle_Circle(const CircleCollider* shape1, RigidBody* body1,
                                            const Transform* transform1, const CircleCollider* shape2, RigidBody* body2, const Transform* transform2) {
@@ -249,15 +236,6 @@ inline void processCollisionCircle_Circle(const CircleCollider* shape1, RigidBod
     if (checkForCollisionCircle_Circle(shape1, transform1, shape2, transform2, &collision, false))
         resolveCollision(collision);
 }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -280,7 +258,6 @@ public:
         m_down = down;
     }
 
-
     // only if you wish to run physics as internal system, on the same thread as engine
     void run(float dt){
         runPhysicUpdate(dt);
@@ -289,7 +266,6 @@ public:
     void runPhysicUpdate(float dt) {
 
         std::lock_guard<std::mutex> lock (m_ComponentManager->componentsMutex);
-
 
         m_ComponentManager->template forEntitiesMatching<SystemSignature_Movable>([dt, this](RigidBody* rigidBody, Transform* transform){
             transform->m_position += rigidBody->m_velocity * dt;
@@ -324,10 +300,8 @@ public:
         Timer timer;
         timer.start();
 
-
         Uint32 frameStart = timer.getTime();
         timer.resetTime();
-
 
         while( true ) {
             if (m_ComponentManager->shouldQuit())
@@ -344,7 +318,6 @@ public:
                 accumulator -= ServerGameConstants::kPhysicDeltaTime;
             }
         }
-
     }
 };
 

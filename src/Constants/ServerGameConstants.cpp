@@ -6,14 +6,13 @@ const Vector_Float ServerGameConstants::kBallStartingPosition = {500, 500};
 //---------------------------//Starting Positions
 
 //---------------------Colliders
-const Vector_Float ServerGameConstants::kPlayerColliderCenter = {0, 0};
-const float ServerGameConstants::kPlayerColliderRadius = 28;
+const Vector_Float ServerGameConstants::kPlayerColliderTopLeft = {-28, -28};
+const Vector_Float ServerGameConstants::kPlayerColliderBottomRight = {28, 28};
 const CollisionLayers ServerGameConstants::kPlayerCollisionLayer = PLAYERS;
 const Vector_Float ServerGameConstants::kBallColliderCenter = {0,0};
 const float ServerGameConstants::kBallColliderRadius = 20;
 const CollisionLayers ServerGameConstants::kBallCollisionLayer = BALL;
 //---------------------//Colliders
-
 
 //-----------------------Collision Layers
 const bool ServerGameConstants::kCollisionMatrix[kNumberOfCollisionLayers][kNumberOfCollisionLayers] = {{false, true, true, false}, {true, false, true, true},
@@ -41,9 +40,6 @@ const float ServerGameConstants::kRightBoundary = 1050.0f;
 const float ServerGameConstants::kUpBoundary = 850.0f;
 const float ServerGameConstants::kDownBoundary = 50.0f;
 //------------------------//Barriers
-
-
-
 
 //------------------------Goals
 const Vector_Float ServerGameConstants::kLeftGoalPos = {850,400};
