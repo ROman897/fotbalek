@@ -54,7 +54,7 @@ public:
         });
 
         if (m_StateChange.m_GameOver || m_StateChange.m_Team1Scored || m_StateChange.m_Team2Scored){
-            //m_playerServer->sendStateChange(m_StateChange);
+            m_playerServer->sendStateChange(m_StateChange);
             m_StateChange.m_Team2Scored = false;
             m_StateChange.m_Team1Scored = false;
             m_StateChange.m_GameOver = false;

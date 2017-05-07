@@ -249,7 +249,7 @@ void Client::sendData(const MovementInputHolder &inputHolder) {
 
 void Client::send(const std::string &input) {
 	std::string message {std::to_string(m_me.m_id) + "_" + input};
-    std::cout << "client sending: " << message << std::endl;
+    //std::cout << "client sending: " << message << std::endl;
 	m_socket.async_send(boost::asio::buffer(message.data(), message.size()), boost::bind(&Client::handleErrors,
 															   this,
 															   boost::asio::placeholders::error,

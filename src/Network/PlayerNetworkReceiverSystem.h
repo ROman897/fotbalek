@@ -63,12 +63,12 @@ private:
 
 
     void runUpdate(){
-        /*if (m_playerClient.hasStateChanged()){
+        if (m_playerClient->hasStateChanged()){
             GameStateChange change = m_playerClient->getState();
             m_componentManager->forEntityMatching_S<SystemSignature_GameStateChange>(m_StateChangeId, [change](GameStateChange* _change){
                 *_change = change;
             });
-        }*/
+        }
 
         std::lock_guard<std::mutex> messageGuard(m_playerClient->m_messageMutex);
         auto& message = m_playerClient->getMessage();
