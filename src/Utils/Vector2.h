@@ -63,12 +63,16 @@ public:
 
     void normalize(){
         auto len = length();
+        if (len == 0)
+            return;
         m_x /= len;
         m_y /= len;
     }
 
     void setLength(T len){
         auto _len = length();
+        if (_len == 0)
+            return;
         m_x *= len / _len ;
         m_y *= len / _len;
     }
