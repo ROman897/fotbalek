@@ -9,9 +9,11 @@
 #include "../../../Utils/declarations.h"
 
 struct RectangleCollider  {
-    RectangleCollider(const Vector_Float &topLeft, const Vector_Float &bottomRight) : m_topLeft(topLeft),
+    RectangleCollider(const Vector_Float &topLeft, const Vector_Float &bottomRight, CollisionLayers layer) : m_topLeft(topLeft),
                                                                                           m_bottomRight(
-                                                                                                  bottomRight) {}
+                                                                                                  bottomRight),
+    m_CollisionLayer(layer){}
+
     RectangleCollider() = default;
 
     RectangleCollider(const Vector_Float &bottomRight, CollisionLayers layer) : m_topLeft({0,0}), m_bottomRight(bottomRight),
