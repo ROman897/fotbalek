@@ -129,7 +129,7 @@ inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
         return true;
 
     // for rectangles this means that we only solve collision in one axis, the one that has greater overlap
-    if(x_overlap > y_overlap)
+    if(y_overlap > x_overlap)
     {
         if(n.m_x
            < 0)
