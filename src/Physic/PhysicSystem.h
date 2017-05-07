@@ -92,6 +92,7 @@ inline bool checkForCollisionCircle_Circle(const CircleCollider* shape1, const T
         collision->penetration = shape1->m_radius;
         collision->normal = Vector_Float( 1, 0 );
     }
+    std::cout << "circle collision" << std::endl;
     return true;
 }
 

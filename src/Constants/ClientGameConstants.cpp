@@ -35,7 +35,7 @@ const GraphicLayers ClientGameConstants::kMenuPanelLayer = BACKUI;
 //------------------------//Menu Panel
 
 //---------------------Player Sprite
-const Vector_Float ClientGameConstants::kPlayerSpriteOffset = {32,32};
+const Vector_Float ClientGameConstants::kPlayerSpriteOffset = {-32,-32};
 const GraphicLayers ClientGameConstants::kPlayerSpriteLayer = FOREGROUND;
 const bool ClientGameConstants::kPlayerEnabledAtStart = false;
 const std::string ClientGameConstants::kPlayerSpritePath_Team1 = "../Resources/Sprites/Player1.png";
