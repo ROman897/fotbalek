@@ -61,6 +61,12 @@ public:
         return Vector2(-m_y,m_x);
     }
 
+    void normalize(){
+        auto len = length();
+        m_x /= len;
+        m_y /= len;
+    }
+
     bool operator==(const Vector2 &rhs) const {
         return m_x == rhs.m_x &&
                m_y == rhs.m_y;

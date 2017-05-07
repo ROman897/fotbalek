@@ -216,11 +216,13 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
     if(inside)
     {
         collision->normal = n * -1;
+        collision->normal.normalize();
         collision->penetration = r - d;
     }
     else
     {
         collision->normal = n;
+        collision->normal.normalize();
         collision->penetration = r - d;
     }
     return true;
