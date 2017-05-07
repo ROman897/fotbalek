@@ -82,7 +82,6 @@ void Client::parseMessage(std::string &input) {
 		stateChange
 	};
 
-	//std::cout << "received: " << input << std::endl;
 	size_t index_start = 0;
 	float x;
 	float y;
@@ -128,8 +127,7 @@ void Client::parseMessage(std::string &input) {
 					NetworkId newId;
 					newId.id = std::stoul(input.substr(index_start, i - index_start));;
 					newMessage.addNetworkId(newId);
-					currSt = state::getX;
-					//index_start = i + 1;
+					currSt = state::getX;;
 				}
 				break;
 			}
@@ -222,9 +220,7 @@ void Client::parseMessage(std::string &input) {
 		std::cout << "zparsoval som msg" << std::endl;
 	}*/
 	newMessage.setValid(true);//vyriesit messageID
-
 	m_lastMessage = std::move(newMessage);
-	//std::cout << "move-ol som msg" << std::endl;
 }
 
 void Client::parseId(ErrorCode &err, size_t trans) {
@@ -232,12 +228,11 @@ void Client::parseId(ErrorCode &err, size_t trans) {
 	{
 		std::string message(m_buffer.begin(), trans);
 		auto index = message.find(":");
-		std::cout << "msg: " << message << " index: " << index << std::endl;
 		try {
 			m_me.m_id = static_cast<Id>(std::stoul(message));
 			m_me.m_team = static_cast<bool>(std::stoul(message.substr(index + 1)));
 		}catch (std::exception &ex) {
-			std::cerr << "parseId failed : " << ex.what() << std::endl;
+			std::cerr << "parseId() failed: " << ex.what() << std::endl;
 		}
 		std::cout << "received id: " << m_me.m_id  << "team: " << m_me.m_team << std::endl;
 		hasId = true;
@@ -271,7 +266,6 @@ void Client::sendData(const MovementInputHolder &inputHolder) {
 
 void Client::send(const std::string &input) {
 	std::string message {std::to_string(m_me.m_id) + "_" + input};
-    //std::cout << "client sending: " << message << std::endl;
 	m_socket.async_send(boost::asio::buffer(message.data(), message.size()), boost::bind(&Client::handleErrors,
 															   this,
 															   boost::asio::placeholders::error,
