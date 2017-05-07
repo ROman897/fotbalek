@@ -21,7 +21,7 @@ const bool ServerGameConstants::kCollisionMatrix[kNumberOfCollisionLayers][kNumb
 //----------------------//Collision Layers
 
 //----------------------Rigid bodies
-const float ServerGameConstants::kPlayerInverseMass = 1000.0f;
+const float ServerGameConstants::kPlayerInverseMass = 1.0f;
 const float ServerGameConstants::kPlayerRestitution = 0.8f;
 const float ServerGameConstants::kPlayerSpeedDecrement = 0.98f;
 
