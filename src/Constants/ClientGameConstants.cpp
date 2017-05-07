@@ -81,7 +81,7 @@ const std::string ClientGameConstants::kArrowSpritePath = "../Resources/Sprites/
 
 
 //----------------------Ball
-const Vector_Float ClientGameConstants::kBallSpriteOffset = {32,32};
+const Vector_Float ClientGameConstants::kBallSpriteOffset = {-32,-32};
 const GraphicLayers ClientGameConstants::kBallSpriteLayer = FOREGROUND;
 const bool ClientGameConstants::kBallEnabledAtStart = false;
 const std::string ClientGameConstants::kBallSpritePath = "../Resources/Sprites/Ball.png";
