@@ -44,6 +44,8 @@ inline void resolveCollision(const Collision &collision) {
     // apply impulse, so add to velocities force relative to mass of the rigid body
     collision.first.m_velocity -= impulse * collision.first.m_inverseMass;
     collision.second.m_velocity += impulse * collision.second.m_inverseMass;
+    collision.first.m_velocity.limitLength(collision.first.m_maxSpeed);
+    collision.second.m_velocity.limitLength(collision.second.m_maxSpeed);
 
 }
 

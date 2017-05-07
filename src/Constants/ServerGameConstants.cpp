@@ -30,6 +30,11 @@ const float ServerGameConstants::kBallRestitution = 0.6f;
 const float ServerGameConstants::kBallSpeedDecrement = 0.99f;
 //----------------------//Rigid Bodies
 
+//-----------------------max Velocities
+const float ServerGameConstants::kPlayerMaxVelocity = 50.0f;
+const float ServerGameConstants::kBallMaxVelocity = 70.0f;
+//-----------------------//max velocities
+
 
 //------------------------Goals
 const Vector_Float ServerGameConstants::kLeftGoalPos = {850,400};

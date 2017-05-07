@@ -27,6 +27,7 @@ inline void applyInputForce(RigidBody& body, const MovementInputHolder& inputHol
         int dir = inputHolder.moveRight ? 1 : -1;
         body.m_velocity.m_x += dir * coef;
     }
+    body.m_velocity.limitLength(body.m_maxSpeed);
 
     if (inputHolder.shoot){
         // TODO not yet implemented

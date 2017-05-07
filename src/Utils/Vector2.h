@@ -67,6 +67,17 @@ public:
         m_y /= len;
     }
 
+    void setLength(T len){
+        auto _len = length();
+        m_x *= len / _len ;
+        m_y *= len / _len;
+    }
+
+    void limitLength(T len){
+        if (length() > len)
+            setLength(len);
+    }
+
     bool operator==(const Vector2 &rhs) const {
         return m_x == rhs.m_x &&
                m_y == rhs.m_y;

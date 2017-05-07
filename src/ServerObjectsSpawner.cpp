@@ -16,7 +16,7 @@ Id spawnPlayer_Server(EngineType_Server &gameEngine) {
     gameEngine.addComponent<RectangleCollider>(id, offset, offset2, ServerGameConstants::kPlayerCollisionLayer);
 
     gameEngine.addComponent<RigidBody>(id, ServerGameConstants::kPlayerInverseMass, ServerGameConstants::kPlayerRestitution,
-                                       ServerGameConstants::kPlayerSpeedDecrement);
+                                       ServerGameConstants::kPlayerSpeedDecrement, ServerGameConstants::kPlayerMaxVelocity);
     gameEngine.addComponent<PlayerComp>(id);
     return id;
 }
@@ -28,7 +28,7 @@ Id spawnBall_Server(EngineType_Server &gameEngine) {
     gameEngine.addComponent<CircleCollider>(id, ServerGameConstants::kBallColliderCenter, ServerGameConstants::kBallColliderRadius,
     ServerGameConstants::kBallCollisionLayer);
     gameEngine.addComponent<RigidBody>(id, ServerGameConstants::kBallInverseMass, ServerGameConstants::kBallRestitution,
-                                       ServerGameConstants::kBallSpeedDecrement);
+                                       ServerGameConstants::kBallSpeedDecrement, ServerGameConstants::kBallMaxVelocity);
     gameEngine.addComponent<BallComp>(id);
     return id;
 }
