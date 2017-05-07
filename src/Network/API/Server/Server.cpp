@@ -12,7 +12,6 @@ Server::~Server() {
 }
 
 void Server::listen() {
-    //std::cout << "listen()\n";
     m_socket.async_receive_from(boost::asio::buffer(m_buffer),
                                m_pending,
                                boost::bind(&Server::handleRequest,
@@ -35,9 +34,6 @@ void Server::handleRequest(ErrorCode &error, size_t transferred) {
     }
     std::string message(m_buffer.begin(), m_buffer.begin() + transferred);
 
-    //test
-    //std::cout << "received: " << transferred << " msg: " << message << " from: " << m_pending.address() << std::endl;
-
     parseInput(message, transferred);
     listen();
 }
@@ -59,8 +55,6 @@ void Server::respondAll(const std::string &response) {
 }
 
 void Server::respond(const udp::endpoint &cl, const std::string &response) {
-    //std::lock_guard<std::mutex> lk(m_sktMtx);  na co to tu je?
-    //std::cout << "sending to " << cl.address() << ":" << cl.port() << "msg: " << response << '\n';
     m_socket.async_send_to(boost::asio::buffer(response), cl,
                            boost::bind(&Server::handleErrors,
                                       this,
@@ -112,7 +106,7 @@ void Server::emplaceClient(udp::endpoint endpoint, size_t trans) {
     int team = m_clients[viable_index]->baseInfo.m_team;
 
     //test
-    std::cout << "port: " << m_clients[viable_index]->m_endpoint.port() << '\n';
+    std::cout << " port: " << m_clients[viable_index]->m_endpoint.port() << std::endl;
 
     respond(m_clients[viable_index]->m_endpoint, { std::to_string(viable_index + 1) + ":" + std::to_string(team)});
     if (m_clientNr == ServerGameConstants::kMaxNumberOfPlayers) {
@@ -124,7 +118,6 @@ void Server::emplaceClient(udp::endpoint endpoint, size_t trans) {
                                 "_" + (client->baseInfo.m_team ? "1" : "0") + "."
                               : ""; // <<< should not happen
         }
-        std::cout << "startMessage: " << startMessage << std::endl;
 		for (size_t j = 0; j < 10; ++j) {
 			respondAll(startMessage);
 		}
@@ -178,9 +171,6 @@ void Server::parseInput(const std::string &message, size_t length) {
 					index = static_cast<size_t>(std::stol(message.substr(index_start, i - index_start)));
 					if (!m_clients[index - 1] || !endpointEq(m_pending, m_clients[index - 1]->m_endpoint))
 						return;
-					//test
-					//std::cout << "client " << index << " sent " << message;
-					//std::cout << std::endl << "port: " << m_clients[index - 1]->m_endpoint.port() << '\n';
 					parseMessage(index, message.substr(2));
 				}
 				return;
@@ -207,10 +197,8 @@ void Server::parseInput(const std::string &message, size_t length) {
 }
 
 void Server::parseMessage(Id index, const std::string &message) {
-    //std::lock_guard<std::mutex> lock(m_mutex);
     std::lock_guard<std::mutex> messageGuard(m_messageMutex);
     MovementInputHolder newMovement;
-    //std::cout << "received movement !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
     for (auto i : message) {
         switch (i) {
             case 'u': {
