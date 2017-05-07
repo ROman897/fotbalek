@@ -11,8 +11,8 @@ Id spawnPlayer_Server(EngineType_Server &gameEngine) {
     //gameEngine.addComponent<CircleCollider>(id, ServerGameConstants::kPlayerColliderCenter, ServerGameConstants::kPlayerColliderRadius,
     //ServerGameConstants::kPlayerCollisionLayer);
 
-    Vector_Float offset{-25, -25};
-    Vector_Float offset2{25, 25};
+    Vector_Float offset{-32, -32};
+    Vector_Float offset2{32, 32};
     gameEngine.addComponent<RectangleCollider>(id, offset, offset2, ServerGameConstants::kPlayerCollisionLayer);
 
     gameEngine.addComponent<RigidBody>(id, ServerGameConstants::kPlayerInverseMass, ServerGameConstants::kPlayerRestitution,

@@ -123,7 +123,7 @@ inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
     );
 
     // this means that no collision occured
-    if (x_overlap <=0 && y_overlap <= 0)
+    if (x_overlap <= 0 || y_overlap <= 0)
         return false;
     if (trigger)
         return true;
