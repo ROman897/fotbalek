@@ -59,7 +59,7 @@ void Server::respondAll(const std::string &response) {
 }
 
 void Server::respond(const udp::endpoint &cl, const std::string &response) {
-    std::lock_guard<std::mutex> lk(m_sktMtx);
+    //std::lock_guard<std::mutex> lk(m_sktMtx);  na co to tu je?
     //std::cout << "sending to " << cl.address() << ":" << cl.port() << "msg: " << response << '\n';
     m_socket.async_send_to(boost::asio::buffer(response), cl,
                            boost::bind(&Server::handleErrors,
@@ -266,5 +266,19 @@ bool Server::hasStarted() const {
 void Server::gameOver(int team1, int team2) {
 	std::string message {"e;"};
 	message += std::to_string(team1) + ":" + std::to_string(team2);
+	respondAll(message);
+}
+
+void Server::sendStateChange(const GameStateChange &stateChange) {
+    std::string message{"c;"};
+	if (stateChange.m_GameOver) {
+		message += "g";
+	}
+	if (stateChange.m_Team1Scored) {
+		message += "1";
+	}
+	if (stateChange.m_Team2Scored) {
+		message += "2";
+	}
 	respondAll(message);
 }

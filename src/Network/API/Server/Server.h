@@ -11,6 +11,7 @@
 #include "../Client/Message.h"
 #include "../../../Constants/ServerGameConstants.h"
 #include "../../../Components/Transform.h"
+#include "../../../Components/Network/GameStateChange.h"
 
 class Server : UdpBase {
 
@@ -27,8 +28,8 @@ class Server : UdpBase {
     std::vector<std::unique_ptr<Client>> m_clients;
     unsigned short m_clientNr = 0;
 	Message<MovementInputHolder> m_message;
-    mutable std::mutex m_mutex, m_sktMtx;
-    std::unique_lock<std::mutex> m_lock;
+    //mutable std::mutex m_mutex, m_sktMtx; na co sa pouzivaju tieto veci?
+    //std::unique_lock<std::mutex> m_lock;
 
     void listen();
 
@@ -68,7 +69,7 @@ public:
 	
 	void sendData(const std::vector<NetworkId> &ids, const std::vector<Transform> &transforms);
 
-	void releaseMessage();
+	void sendStateChange(const GameStateChange &StateChange);
 
 	void gameOver(int team1, int team2);
 

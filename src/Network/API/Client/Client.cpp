@@ -3,6 +3,7 @@
 Client::Client() /*: m_myCounter(0), m_serverCounter(0)*/ {
 	m_gameStarted.store(false);
 	m_gameEnded.store(false);
+	m_stateChanged.store(false);
 	std::cout << "Enter your name:" << std::endl;
 	std::string input;
 	getline(std::cin, input);
@@ -77,7 +78,8 @@ void Client::parseMessage(std::string &input) {
 		startIndex,
 		startName,
 		end1,
-		end2
+		end2,
+		stateChange
 	};
 
 	//std::cout << "received: " << input << std::endl;
@@ -106,6 +108,9 @@ void Client::parseMessage(std::string &input) {
                         started = true;
 					} else if (input[i] == 'e') {
 						currSt = state::end1;
+						++i;
+					} else if (input[i] == 'c') {
+						currSt = state::stateChange;
 						++i;
 					} else {
 						std::cerr << "wrong message was received" << std::endl;
@@ -145,9 +150,6 @@ void Client::parseMessage(std::string &input) {
 					break;
 				}
 				case state::starting : {
-                    if (i == input.size() - 1) {
-                        m_gameStarted.store(started);
-                    }
                     if (input[i] == ';' || input[i] == '.') {
 						continue;
 					}
@@ -193,7 +195,25 @@ void Client::parseMessage(std::string &input) {
 					m_gameEnded.store(true);
 					break;
 				}
+				case state::stateChange : {
+					GameStateChange newState;
+					if (input[i] == 'g') {
+						newState.m_GameOver = true;
+					}
+					if (input[i] == '1') {
+						newState.m_Team1Scored = true;
+					}
+					if (input[i] == '2') {
+						newState.m_Team2Scored = true;
+					}
+					std::lock_guard<std::mutex> stateLock (m_stateChange);
+					m_stateChanged.store(true);
+					m_state = std::move(newState);
+				}
 			}
+		}
+		if (!m_gameStarted.load()) {
+			m_gameStarted.store(started);
 		}
 	} catch (std::exception &ex) {
 		std::cerr << ex.what() << std::endl;
@@ -290,4 +310,12 @@ const Score &Client::getScore() const {
 
 bool Client::hasEnded() const {
 	return m_gameEnded.load();
+}
+
+bool Client::hasStateChanged() const {
+	return m_stateChanged.load();
+}
+
+const GameStateChange &Client::getState() const {
+	return m_state;
 }

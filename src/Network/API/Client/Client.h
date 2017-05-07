@@ -11,12 +11,15 @@
 #include "Message.h"
 #include "../../../Components/Logic/MovementInputHolder.h"
 #include "../../../Components/Network/NetworkId.h"
+#include "../../../Components/Network/GameStateChange.h"
 #include "../../../Components/Transform.h"
 #include "Score.h"
 
 class Client : UdpBase {
 
 	std::atomic_bool m_gameStarted;
+	std::atomic_bool m_gameEnded;
+	std::atomic_bool m_stateChanged;
 	udp::endpoint m_serverEnd;
 	Player m_me;
 	Message<Transform> m_lastMessage;
@@ -24,11 +27,12 @@ public:
 	mutable std::mutex m_messageMutex;
 	mutable std::mutex m_playersMutex;
 	mutable std::mutex m_scoreMutex;
+	mutable std::mutex m_stateChange;
 private:
 	std::vector<Player> m_players;
 	Score m_score;
+	GameStateChange m_state;
 	bool hasId = false;
-	std::atomic_bool m_gameEnded;
 	/*uint64_t m_myCounter;
 	uint64_t m_serverCounter;*/
 
@@ -69,7 +73,11 @@ public:
 
 	const Score &getScore() const;
 
+	const GameStateChange &getState() const;
+
 	bool hasEnded() const;
+
+	bool hasStateChanged() const;
 
 };
 
