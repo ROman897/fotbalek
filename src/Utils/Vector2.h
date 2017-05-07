@@ -46,7 +46,7 @@ public:
     }
 
     friend T DotProduct(Vector2 lhs, Vector2 rhs){
-        return lhs.m_x * rhs.m_x + rhs.m_y * rhs.m_y;
+        return lhs.m_x * rhs.m_x + lhs.m_y * rhs.m_y;
     }
 
     T lengthSquared() {
