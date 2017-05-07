@@ -94,131 +94,133 @@ void Client::parseMessage(std::string &input) {
 	unsigned trueTeam = 0;
 	unsigned falseTeam = 0;
 	bool started = false;
-	try {
-		for (size_t i = 0; i < input.size(); ++i) {
-			switch (currSt) {
-				case state::init : {
-					if (std::isdigit(input[i])) {
-						index_start = i;
-						currSt = state::index;
-                    } else if (input[i] == '.' || input[i] == ',') {
-						continue;
-					} else if (input[i] == 's') {
-						currSt = state::starting;
-                        started = true;
-					} else if (input[i] == 'e') {
-						currSt = state::end1;
-						++i;
-					} else if (input[i] == 'c') {
-						currSt = state::stateChange;
-						++i;
-					} else {
-						std::cerr << "wrong message was received" << std::endl;
-                        std::cerr << "message was: " << input << " i = " << i << " char: " << input[i] << std::endl;
+	for (size_t i = 0; i < input.size(); ++i) {
+		switch (currSt) {
+			case state::init : {
+				if (std::isdigit(input[i])) {
+					index_start = i;
+					currSt = state::index;
+				} else if (input[i] == '.' || input[i] == ',') {
+					continue;
+				} else if (input[i] == 's') {
+					if (m_gameStarted.load()) {
 						return;
 					}
-					break;
-				}
-				case state::index : {
-					if (std::isdigit(input[i]))
-						continue;
-					if (input[i] == '_') {
-						NetworkId newId;
-						newId.id = std::stoul(input.substr(index_start, i - index_start));;
-						newMessage.addNetworkId(newId);
-						currSt = state::getX;
-                        //index_start = i + 1;
-					}
-					break;
-				}
-				case state::getX : {
-					size_t next;
-                    x = std::stof(input.substr(i), &next);
-                    i += next;
-					currSt = state::getY;
-					break;
-				}
-				case state::getY : {
-					if (input[i] == ';') {
-						continue;
-					}
-					size_t next;
-                    y = std::stof(input.substr(i), &next);
-                    i += next;
-					newMessage.addTransform(Transform(Vector_Float(x, y)));
-					currSt = state::init;
-					break;
-				}
-				case state::starting : {
-                    if (input[i] == ';' || input[i] == '.') {
-						continue;
-					}
-					std::cout << "starting:msg: " << input << std::endl;
-					if (std::isdigit(input[i]))
-						index_start = i;
-					currSt = state::startIndex;
-					break;
-				}
-				case state::startIndex : {
-					if (std::isdigit(input[i]))
-						continue;
-					if (input[i] == '_') {
-						id = std::stoul(input.substr(index_start, i - index_start));
-						index_start = i + 1;
-						currSt = state::startName;
-					}
-					break;
-				}
-				case state::startName : {
-					if (input[i] != '_')
-						continue;
-					name = input.substr(index_start, i - index_start);
-                    team = input[i + 1] == '1';
-					std::lock_guard<std::mutex> players_lock (m_playersMutex);
-					m_players.push_back(Player(name, id, team));
 					currSt = state::starting;
-                    ++i;
-					break;
+					started = true;
+				} else if (input[i] == 'e') {
+					currSt = state::end1;
+					++i;
+				} else if (input[i] == 'c') {
+					currSt = state::stateChange;
+					++i;
+				} else {
+					std::cerr << "wrong message was received" << std::endl;
+					std::cerr << "message was: " << input << " i = " << i << " char: " << input[i] << std::endl;
+					return;
 				}
-				case state::end1 : {
-					if (input[i] != ':')
-						continue;
-					trueTeam = static_cast<unsigned>(std::stoul(input.substr(2, i - 2)));
+				break;
+			}
+			case state::index : {
+				if (std::isdigit(input[i]))
+					continue;
+				if (input[i] == '_') {
+					NetworkId newId;
+					newId.id = std::stoul(input.substr(index_start, i - index_start));;
+					newMessage.addNetworkId(newId);
+					currSt = state::getX;
+					//index_start = i + 1;
+				}
+				break;
+			}
+			case state::getX : {
+				size_t next;
+				x = std::stof(input.substr(i), &next);
+				i += next;
+				currSt = state::getY;
+				break;
+			}
+			case state::getY : {
+				if (input[i] == ';') {
+					continue;
+				}
+				size_t next;
+				y = std::stof(input.substr(i), &next);
+				i += next;
+				newMessage.addTransform(Transform(Vector_Float(x, y)));
+				currSt = state::init;
+				break;
+			}
+			case state::starting : {
+				if (input[i] == ';' || input[i] == '.') {
+					continue;
+				}
+				std::cout << "starting:msg: " << input << std::endl;
+				if (std::isdigit(input[i]))
+					index_start = i;
+				currSt = state::startIndex;
+				break;
+			}
+			case state::startIndex : {
+				if (std::isdigit(input[i]))
+					continue;
+				if (input[i] == '_') {
+					id = std::stoul(input.substr(index_start, i - index_start));
 					index_start = i + 1;
-					currSt = state::end2;
-					break;
+					currSt = state::startName;
 				}
-				case state::end2 : {
-					falseTeam = static_cast<unsigned>(std::stoul(input.substr(index_start, i - index_start)));
-					std::lock_guard<std::mutex> scoreLock (m_scoreMutex);
-					m_score = Score(trueTeam, falseTeam);
-					m_gameEnded.store(true);
-					break;
+				break;
+			}
+			case state::startName : {
+				if (input[i] != '_')
+					continue;
+				name = input.substr(index_start, i - index_start);
+				team = input[i + 1] == '1';
+				std::lock_guard<std::mutex> players_lock (m_playersMutex);
+				m_players.push_back(Player(name, id, team));
+				currSt = state::starting;
+				++i;
+				break;
+			}
+			case state::end1 : {
+				if (input[i] != ':')
+					continue;
+				trueTeam = static_cast<unsigned>(std::stoul(input.substr(2, i - 2)));
+				index_start = i + 1;
+				currSt = state::end2;
+				break;
+			}
+			case state::end2 : {
+				falseTeam = static_cast<unsigned>(std::stoul(input.substr(index_start, i - index_start)));
+				std::lock_guard<std::mutex> scoreLock (m_scoreMutex);
+				m_score = Score(trueTeam, falseTeam);
+				m_gameEnded.store(true);
+				break;
+			}
+			case state::stateChange : {
+				GameStateChange newState;
+				if (input[i] == 'g') {
+					newState.m_GameOver = true;
 				}
-				case state::stateChange : {
-					GameStateChange newState;
-					if (input[i] == 'g') {
-						newState.m_GameOver = true;
-					}
-					if (input[i] == '1') {
-						newState.m_Team1Scored = true;
-					}
-					if (input[i] == '2') {
-						newState.m_Team2Scored = true;
-					}
-					std::lock_guard<std::mutex> stateLock (m_stateChange);
-					m_stateChanged.store(true);
-					m_state = std::move(newState);
+				if (input[i] == '1') {
+					newState.m_Team1Scored = true;
 				}
+				if (input[i] == '2') {
+					newState.m_Team2Scored = true;
+				}
+				std::lock_guard<std::mutex> stateLock (m_stateChange);
+				m_stateChanged.store(true);
+				m_state = std::move(newState);
 			}
 		}
-		if (!m_gameStarted.load()) {
-			m_gameStarted.store(started);
-		}
-	} catch (std::exception &ex) {
+	}
+	if (!m_gameStarted.load()) {
+		m_gameStarted.store(started);
+	}
+/*	} catch (std::exception &ex) {
 		std::cerr << ex.what() << std::endl;
 		std::cout << "zparsoval som msg" << std::endl;
-	}
+	}*/
 	newMessage.setValid(true);//vyriesit messageID
 
 	m_lastMessage = std::move(newMessage);

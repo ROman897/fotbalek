@@ -125,7 +125,9 @@ void Server::emplaceClient(udp::endpoint endpoint, size_t trans) {
                               : ""; // <<< should not happen
         }
         std::cout << "startMessage: " << startMessage << std::endl;
-        respondAll(startMessage);
+		for (size_t j = 0; j < 10; ++j) {
+			respondAll(startMessage);
+		}
         m_gameStarted.store(true);
     }
 }
