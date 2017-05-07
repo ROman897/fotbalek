@@ -23,7 +23,7 @@ class PlayerLogicSystem{
 
 
     bool m_escape;
-    float time = 0;
+    float m_time = 0;
     int m_Team1Score;
     int m_Team2Score;
     Id m_StateChangeId;
@@ -31,28 +31,46 @@ class PlayerLogicSystem{
     Id m_ScoreLabel2Id;
     Id m_GameOverLabelId;
 
+    Id m_Team1ScoredLabelId;
+    Id m_Team2ScoredLabelId;
+
+    Id m_ActiveLabelId;
+    bool m_labelActive;
+    float m_labelTime;
+
+
+    Timer inputTimer;
+// id of gameobject with movementinputholder component
+    Id movementInputId;
+    Id activeButtonId;
+    Id activeButtonArrowId;
+    Id menuPanelId;
+    Id m_continueButtonId;
+    Id m_OptionsButtonId;
+    Id m_QuitButtonId;
+
+
 public:
     void run(float dt) {
-        time += dt;
-        if (time < ClientGameConstants::kKeyCooldown)
+        if (m_labelActive){
+            m_labelTime += dt;
+            if (m_labelTime > ClientGameConstants::kLabelHideTime)
+                resetActiveLabel();
+        }
+
+        m_time += dt;
+        if (m_time < ClientGameConstants::kKeyCooldown)
             return;
-        time -= ClientGameConstants::kKeyCooldown;
+        m_time -= ClientGameConstants::kKeyCooldown;
         SDL_Event event;
         bool moveLeft = false;
         bool moveRight = false;
         bool moveUp = false;
         bool moveDown = false;
         bool shoot = false;
-        //int menuMoveUp = 0;
-        //int menuMoveDown = 0;
 
 
         while (SDL_PollEvent(&event) != 0) {
-            //moveLeft = false;
-            //moveRight = false;
-            //moveUp = false;
-            //moveDown = false;
-            //shoot = false;
             if (event.type == SDL_QUIT){
                 m_manager->setQuit(true);
             }
@@ -166,11 +184,18 @@ public:
         m_continueButtonId = m_manager->findGameObjectByTag(ClientGameConstants::kContinueButtonTag);
         m_OptionsButtonId = m_manager->findGameObjectByTag(ClientGameConstants::kOptionsButtonTag);
         m_QuitButtonId = m_manager->findGameObjectByTag(ClientGameConstants::kQuitButtonTag);
-        Transform t;
+
+        m_GameOverLabelId = m_manager->findGameObjectByTag(ClientGameConstants::kGameoverLabelTag);
+        m_Team1ScoredLabelId = m_manager->findGameObjectByTag(ClientGameConstants::kScored1LabelTag);
+        m_Team2ScoredLabelId = m_manager->findGameObjectByTag(ClientGameConstants::kScored2LabelTag);
+
+        m_StateChangeId = m_manager->template findEntityMatching<SystemSignature_GameStateChange>();
 
         setArrowPosition();
 
     }
+
+    PlayerLogicSystem() : m_Team1Score(0), m_Team2Score(0), m_labelActive(false), m_labelTime(false) {}
 
 private:
     void updateState(){
@@ -195,36 +220,55 @@ private:
         });
     }
     void team1Scored(){
+        resetActiveLabel();
         ++m_Team1Score;
         m_manager->template forEntityMatching<SystemSignature_Label>(m_ScoreLabel1Id, [this](Label* label){
 
         });
+
+        m_labelActive = true;
+        m_ActiveLabelId = m_Team1ScoredLabelId;
+
+        m_manager->template forEntityMatching<SystemSignature_Label>(m_Team1ScoredLabelId, [this](Label* label){
+            label->m_Enabled = true;
+        });
     }
 
     void team2Scored(){
+        resetActiveLabel();
         ++m_Team2Score;
         m_manager->template forEntityMatching<SystemSignature_Label>(m_ScoreLabel2Id, [this](Label* label){
 
         });
-    }
 
-    void gameOver(){
-        m_manager->template forEntityMatching<SystemSignature_Label>(m_GameOverLabelId, [this](Label* label){
+        m_labelActive = true;
+        m_ActiveLabelId = m_Team2ScoredLabelId;
 
+        m_manager->template forEntityMatching<SystemSignature_Label>(m_Team2ScoredLabelId, [this](Label* label){
+            label->m_Enabled = true;
         });
     }
 
+    void gameOver(){
+        resetActiveLabel();
+
+        m_labelActive = true;
+        m_ActiveLabelId = m_GameOverLabelId;
+        m_manager->template forEntityMatching<SystemSignature_Label>(m_GameOverLabelId, [this](Label* label){
+            label->m_Enabled = true;
+        });
+    }
+
+    void resetActiveLabel(){
+        m_labelTime = 0;
+        m_manager->template forEntityMatching<SystemSignature_Label>(m_ActiveLabelId, [this](Label* label){
+            label->m_Enabled = false;
+        });
+        m_labelActive = false;
+
+    }
 
 
-    Timer inputTimer;
-// id of gameobject with movementinputholder component
-    Id movementInputId;
-    Id activeButtonId;
-    Id activeButtonArrowId;
-    Id menuPanelId;
-    Id m_continueButtonId;
-    Id m_OptionsButtonId;
-    Id m_QuitButtonId;
 
     void setArrowPosition(){
 

@@ -145,7 +145,7 @@ class GraphicSystem {
                 auto surface = this->getSurface(sprite->m_texturePath);
                 sprite->m_Texture = TextureSmartPtr(SDL_CreateTextureFromSurface(this->getRenderer(), surface));
                 if (! sprite->m_Texture) {
-                    std::cout << "Unable to create texture, error: " << SDL_GetError() << std::endl;
+                    std::cerr << "Unable to create texture, error: " << SDL_GetError() << std::endl;
                     // here and exception should be thrown
                     return;
                 }
@@ -171,12 +171,12 @@ class GraphicSystem {
             if (! label->m_Texture){
                 TTF_Font* font = getFont(label->m_fontPath, label->m_size);
                 if (font == nullptr) {
-                    std::cout << "render labels could not load font" << std::endl;
+                    std::cerr << "render labels could not load font" << std::endl;
                 }
 
                 SurfaceSmartPtr textSurface = SurfaceSmartPtr(TTF_RenderText_Solid(font, label->m_text.c_str(), label->m_fontColor));
                 if (textSurface == nullptr) {
-                    std::cout << "Unable to create surface from font! error: " << TTF_GetError() << std::endl;
+                    std::cerr << "Unable to create surface from font! error: " << TTF_GetError() << std::endl;
                 }
 
                 label->m_Texture = TextureSmartPtr(SDL_CreateTextureFromSurface(getRenderer(), textSurface.get()));
@@ -193,11 +193,6 @@ class GraphicSystem {
     }
 
 public:
-
-    void initialize(){
-        std::cout << "initialized" << std::endl;
-    }
-
     void run(float dt){
         draw();
     }
@@ -318,24 +313,6 @@ private:
     FontHolder m_FontHolder;
 
     ComponentManager<TSettings>* m_componentManager;
-    Id cameraId;
-
-    /*using SystemSignature_Circle = Signature<CircleShape, Transform>;
-    using SystemSignature_Rectangle_Background = Signature <RectangleShape, Transform, RenderingLayer_Background>;
-    using SystemSignature_Rectangle_Foreground = Signature <RectangleShape, Transform, RenderingLayer_Foreground>;
-    using SystemSignature_Sprite_Background = Signature <Sprite, Transform, RenderingLayer_Background>;
-    using SystemSignature_Sprite_Foreground = Signature <Sprite, Transform, RenderingLayer_Foreground>;
-    using SystemSignature_Label = Signature <Label, Transform>;
-    */
-
-
-    void drawRectangles(){
-
-    }
-
-    void drawSprites(){
-
-    }
 
 };
 

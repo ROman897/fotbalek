@@ -34,9 +34,6 @@ private:
     using unpackedExternalSystems = typename decltype(hana::unpack(ExternalSystemSettings::systemList, hana::template_<hana::tuple >))::type;
     unpackedExternalSystems m_externalSystems;
     std::vector<std::thread> m_externalThreads;
-     //std::thread threads[hana::length(ExternalSystemSettings::systemList)];
-    // basically network id of this client
-    size_t networkId;
 
 
 public:
@@ -64,17 +61,8 @@ public:
         return m_componentManager.addEmptyGameObject(tag);
     }
 
-    /*template <typename System, typename ... Args>
-    void initSystem(Args&&... args){
-        auto& system = getSystem<System>();
-        system.initialize(std::forward<Args>(args)...);
-    }*/
-
     template <typename System>
     System& getSystem(){
-        //auto index = index_of(m_systems, hana::type_c<System>);
-        //return m_systems[index];
-
         auto size = decltype(hana::size(SystemSettings::systemList)){};
         auto dropped = decltype(hana::size(
                 hana::drop_while(SystemSettings::systemList, hana::not_equal.to(hana::type_c<System>))
@@ -84,9 +72,6 @@ public:
 
     template <typename System>
     System& getExternalSystem(){
-        //auto index = index_of(m_systems, hana::type_c<System>);
-        //return m_systems[index];
-
         auto size = decltype(hana::size(ExternalSystemSettings::systemList)){};
         auto dropped = decltype(hana::size(
                 hana::drop_while(ExternalSystemSettings::systemList, hana::not_equal.to(hana::type_c<System>))
@@ -111,17 +96,6 @@ public:
         return m_componentManager.template hasComponent<T>(id);
     }
 
-    void eraseDeadGameObjects() {
-
-        /*m_gameObjects.erase(
-                std::remove_if(std::begin(m_gameObjects), std::end(m_gameObjects),
-                               [](const std::unique_ptr<GameObject>& go)
-                               {
-                                   return !go->isAlive();
-                               }),
-                std::end(m_gameObjects));
-*/
-    }
 
     const ComponentManager<TSettings> *getComponentManager() const {
         return &m_componentManager;
@@ -130,10 +104,6 @@ public:
 
 
     void start(){
-        //PhysicSystem<TSettings> p;
-        //std::thread t([this](){
-          //  this->run();
-        //});
         hana::for_each(m_externalSystems, [this](auto& system){
             m_externalThreads.emplace_back([&system](){
                 system.start();
@@ -171,11 +141,9 @@ private:
             }
 
             if (m_componentManager.shouldQuit()){
-                std::cout << "gameengine should quit" << std::endl;
                 break;
             }
         }
-        std::cout << "out of main loop" << std::endl;
     }
 
     void runUpdate(float dt){

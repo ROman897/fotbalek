@@ -21,7 +21,6 @@ private:
     Timer m_timer;
     bool m_initialized;
     Id m_StateChangeId;
-    bool m_started;
 
     /**
      * call this when received positions from the server
@@ -44,7 +43,6 @@ private:
        const std::vector<Player> & players = m_playerClient->getPlayers();
         Id i = 0;
         std::lock_guard<std::mutex> lock(m_componentManager->componentsMutex);
-        std::cout << "receiving players" << std::endl;
         m_componentManager->template forEntitiesMatching<SystemSignature_Network_Graphic>([&players, &i](NetworkId* id, Sprite* sprite, Label* label){
             id->id = players[i].m_id;
             sprite->m_enabled = true;
@@ -52,7 +50,6 @@ private:
             // need to set sprite based on which team the client is in
             label->m_Enabled = true;
             label->m_text = players[i].m_name;
-            std::cout << "player: " << players[i].m_name << " id: " << players[i].m_id << " team: " << players[i].m_team << std::endl;
             ++i;
         });
         Id ballId = m_componentManager->findGameObjectByTag("ball");
@@ -68,7 +65,7 @@ private:
     void runUpdate(){
         /*if (m_playerClient.hasStateChanged()){
             GameStateChange change = m_playerClient->getState();
-            m_componentManager->forEntityMatching_S(m_StateChangeId, [change](GameStateChange* _change){
+            m_componentManager->forEntityMatching_S<SystemSignature_GameStateChange>(m_StateChangeId, [change](GameStateChange* _change){
                 *_change = change;
             });
         }*/
@@ -83,7 +80,6 @@ private:
         ids.clear();
         transforms.clear();
         message.setValid(false);
-        //std::cout << "received number of positions: " << transforms.size() << std::endl;
 
     }
 
@@ -103,6 +99,8 @@ public:
 
 
 void start(){
+
+    m_StateChangeId = m_componentManager->template findEntityMatching<SystemSignature_GameStateChange>();
     run();
 
 }
@@ -120,13 +118,10 @@ void start(){
             if (m_componentManager->shouldQuit()){
                 break;
             }
-            //std::cout << "before has started: " << std::endl;
             if ( !m_initialized && ! m_playerClient->hasStarted()) {
                 continue;
             }
-            //std::cout << "after has started" << std::endl;
             if (! m_initialized){
-                //timer.resetTime();
                 gameStarted();
                 continue;
             }

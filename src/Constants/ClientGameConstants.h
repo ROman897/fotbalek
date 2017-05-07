@@ -125,6 +125,8 @@ struct ClientGameConstants {
     static const std::string kScored1LabelTag;
     static const std::string kScored2LabelTag;
 
+    static constexpr float kLabelHideTime = 2;
+
     //------------------------//Labels
 
 

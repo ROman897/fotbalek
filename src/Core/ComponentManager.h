@@ -5,8 +5,6 @@
 #ifndef PV264_PROJECT_COMPONENTPOOL_H
 #define PV264_PROJECT_COMPONENTPOOL_H
 
-//BOOST_STRONG_TYPEDEF
-
 #include <assert.h>
 #include "SignatureManager.h"
 #include "ComponentStorage.h"
@@ -40,10 +38,8 @@ public:
     template<typename T>
     auto matchesSignature(Id id) const noexcept
     {
-        static_assert(TSettings::template isSignature<T>(), "");
+        static_assert(TSettings::template isSignature<T>(), "requested signature is not a valid signature");
         const auto& entityBitset(getGameObject(id).m_bitset);
-        //const auto& signatureBitset(signatureManager.
-                //template getSignatureBitset<T>());
         T t;
         bool matches = true;
         auto len = hana::length(t);
@@ -53,7 +49,6 @@ public:
         });
         return matches;
 
-        //return (signatureBitset & entityBitset) == signatureBitset;
     }
 
     template<typename TF>
@@ -113,9 +108,7 @@ public:
     template<typename T, typename U, typename TF>
     void forEntitiesMatchingPairs(TF&& mFunction)
     {
-        //std::lock_guard<std::mutex> guard(componentsMutex);
-        //std::cout << "thread id entities pairs : " << std::this_thread::get_id() << std::endl;
-        static_assert(TSettings::template isSignature<T>(), "");
+        static_assert(TSettings::template isSignature<T>(), "requested signature is not a valid signature");
 
         forEntityPairs([this, &mFunction](auto i, auto i2){
             // we have to look for signatures in order given and also reordered, as caller has information
@@ -132,7 +125,6 @@ public:
 
     template<typename T, typename TF>
     void forEntityMatching(Id id, TF&& mFunction){
-        //std::lock_guard<std::mutex> guard(componentsMutex);
         if (matchesSignature<T>(id)){
             signatureCallFunction<T, TF>(id, std::forward<TF>(mFunction));
         }
@@ -193,7 +185,6 @@ public:
 
 
     void changeSize(size_t newCapacity){
-        std::cout << "change size: " << newCapacity << std::endl;
         assert(newCapacity > m_capacity);
 
         componentStorage.grow(newCapacity);
@@ -241,7 +232,6 @@ public:
 
         GameObject<TSettings>& gameObject = getGameObject(id);
         gameObject.m_bitset[TSettings::template componentID<T>()] = true;
-        //std::cout << TSettings::template componentID<T>();
         auto& c = componentStorage.template getComponentVector<T>()[id];
         new (&c) T(std::forward<TArgs>(mXs)...);
 
@@ -297,7 +287,6 @@ public:
     }
 
     void setQuit(bool q){
-        std::cout << "set quit" << std::endl;
         quit.store(q);
     }
 

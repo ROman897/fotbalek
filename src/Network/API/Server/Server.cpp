@@ -1,6 +1,6 @@
 #include "Server.h"
 
-Server::Server() {
+Server::Server() : m_gameStarted(false) {
     std::lock_guard<std::mutex> playersLock(m_playersMutex);
     m_clients.resize(ServerGameConstants::kMaxNumberOfPlayers);
     m_socket.bind(udp::endpoint(udp::v4(), ServerGameConstants::portNumber));

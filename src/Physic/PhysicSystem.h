@@ -23,7 +23,6 @@
 
 
 inline void resolveCollision(const Collision &collision) {
-    //std::cout << "resolve collision" << std::endl;
     Vector_Float vDiff = collision.second.m_velocity - collision.first.m_velocity;
 
     float velNormal = DotProduct( vDiff, collision.normal);
@@ -100,13 +99,7 @@ inline bool checkForCollisionCircle_Circle(const CircleCollider* shape1, const T
 inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1, const Transform* transform1, const RectangleCollider* shape2,
                                           const Transform* transform2, Collision* collision, bool trigger){
 
-    //std::cout << "pos1 x: " << transform1->m_position.m_x << " y : " << transform1->m_position.m_y << std::endl;
-    //std::cout << "pos2 x: " << transform2->m_position.m_x << " y : " << transform2->m_position.m_y << std::endl;
-
-    //std::cout << "vel1 x: " << body1->m_velocity.m_x << " y : " << body1->m_velocity.m_y << std::endl;
-    //std::cout << "vel2 x: " << body2->m_velocity.m_x << " y : " << body2->m_velocity.m_y << std::endl;
     Vector_Float n = transform2->m_position - transform1->m_position;
-    //std::cout << "length: " << n.length() << std::endl;
 
     float collider1_X = (shape1->m_bottomRight.m_x
                           - shape1->m_topLeft.m_x
@@ -116,8 +109,6 @@ inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
                         ) / 2;
     float x_overlap = collider1_X + collider2X - std::abs( n.m_x
     );
-    //std::cout << "collider1 x: " << collider1_X << std::endl;
-    //std::cout << "x overlap: " << x_overlap << std::endl;
 
 
     float collider1_Y = (shape1->m_topLeft.m_y
@@ -134,8 +125,6 @@ inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
         return false;
     if (trigger)
         return true;
-
-    //std::cout << "overlap" << std::endl;
 
     // for rectangles this means that we only solve collision in one axis, the one that has greater overlap
     if(x_overlap > y_overlap)
@@ -349,6 +338,10 @@ public:
         m_ComponentManager->template forEntitiesMatchingPairs<SystemSignature_Circle_Collider_Body, SystemSignature_Circle_Collider_Body>(processCollisionCircle_Circle);
         m_ComponentManager->template forEntitiesMatchingPairs<SystemSignature_Rectangle_Collider_Body, SystemSignature_Rectangle_Collider_Body>(processCollisionRectangle_Rectangle);
         m_ComponentManager->template forEntitiesMatchingPairs<SystemSignature_Rectangle_Collider_Body, SystemSignature_Circle_Collider_Body>(processCollisionRectangle_Circle);
+
+        m_ComponentManager->template forEntitiesMatchingPairs<SystemSignature_TCollider_Circle, SystemSignature_Circle_Collider>(processTriggerCollisionCircle_Circle);
+        m_ComponentManager->template forEntitiesMatchingPairs<SystemSignature_TCollider_Rectangle, SystemSignature_Rectangle_Collider>(processTriggerCollisionRectangle_Rectangle);
+        m_ComponentManager->template forEntitiesMatchingPairs<SystemSignature_TCollider_Rectangle, SystemSignature_Circle_Collider>(processTriggerCollisionRectangle_Circle);
     }
 
     void start() {

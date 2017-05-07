@@ -18,7 +18,7 @@
 inline void applyInputForce(RigidBody& body, const MovementInputHolder& inputHolder, float coef){
     if (inputHolder.moveVertical){
         std::cout << "moving vertical" << std::endl;
-        int dir = inputHolder.moveUp ? 1 : -1;
+        int dir = inputHolder.moveUp ? -1 : 1;
         body.m_velocity.m_y += dir * coef;
     }
 
@@ -104,17 +104,11 @@ private:
                 continue;
             }
 
-
-            //std::cout << "before message lock" << std::endl;
             std::lock_guard<std::mutex> messageMutex(m_UdpServer->m_messageMutex);
-            //std::cout << "after message lock" << std::endl;
             auto& data = m_UdpServer->getMessage();
             if (! data.isValid())
                 continue;
 
-            //std::cout << "after data validation" << std::endl;
-
-            //std::cout << "after input validation" << std::endl;
             auto& ids = data.getIds();
             auto& inputs = data.getMovements();
             updateInputs(ids, inputs);

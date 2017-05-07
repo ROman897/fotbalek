@@ -35,8 +35,6 @@ template<typename TSettings>
         using UnpackedTuple = typename decltype(hana::unpack(componentSettings::componentList, hana::template_<TupleOfVectors >))::type;
         UnpackedTuple m_components;
 
-        std::mutex componentMutexes[hana::length(componentSettings::componentList)];
-
 
     public:
         void grow(std::size_t mNewCapacity) {
@@ -45,15 +43,12 @@ template<typename TSettings>
             {
                 v.resize(mNewCapacity);
             });
-            //std::cout << m_components;
         }
 
-        // should return reference !!!
         template <typename T>
         constexpr auto& getComponentVector()
         {
             return hana::at_c<TSettings::template componentID<T>()>(m_components);
-            //return hana::at(m_components, hana::size_c<0>);
         }
 
         auto& getComponentVector(DataIndex mI) noexcept

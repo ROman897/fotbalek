@@ -40,24 +40,11 @@ using namespace hana::literals;
 template < typename TSettings>
 class SignatureManager{
 public:
-    //using ComponentList = typename TSettings::ComponentList;
     using signatureSettings = typename TSettings::signatureSettings;
     using Bitset = typename TSettings::Bitset;
 
     static constexpr Bitset b = Bitset();
     static constexpr decltype(hana::replicate<hana::tuple_tag>(b, hana::length(signatureSettings::signatureList))) m_signatures = hana::replicate<hana::tuple_tag>(b, hana::length(signatureSettings::signatureList));
-    //static constexpr int x = m_signatures;
-
-    //static decltype(hana::replicate<hana::tuple_tag>(b, hana::length(signatureSettings::signatureList))) m_signatures = hana::replicate<hana::tuple_tag>(b, hana::length(signatureSettings::signatureList));
-    //static constexpr auto m_signatures = hana::transform(signaturesTuple, [this](auto bitset){
-
-    //})
-
-
-
-public:
-
-
 
 };
 

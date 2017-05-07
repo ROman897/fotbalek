@@ -41,7 +41,6 @@ private:
             return;
         m_started = true;
         if (prepareData(m_inputHolder)) {
-            //std::cout << "player sender send data" << std::endl;
             m_playerClient->sendData(m_inputHolder);
 
         }
