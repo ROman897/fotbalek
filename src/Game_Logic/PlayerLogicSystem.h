@@ -49,6 +49,12 @@ class PlayerLogicSystem{
     Id m_OptionsButtonId;
     Id m_QuitButtonId;
 
+    bool moveLeft = false;
+    bool moveRight = false;
+    bool moveUp = false;
+    bool moveDown = false;
+    bool shoot = false;
+
 
 public:
     void run(float dt) {
@@ -63,11 +69,7 @@ public:
             return;
         m_time -= ClientGameConstants::kKeyCooldown;
         SDL_Event event;
-        bool moveLeft = false;
-        bool moveRight = false;
-        bool moveUp = false;
-        bool moveDown = false;
-        bool shoot = false;
+
 
 
         while (SDL_PollEvent(&event) != 0) {
@@ -86,6 +88,7 @@ public:
                     case SDLK_d:
                     case SDLK_RIGHT:
                         moveRight = true;
+                    std::cout << "input right key pressed" << std::endl;
                         break;
                     case SDLK_w:
                     case SDLK_UP:
@@ -93,6 +96,7 @@ public:
                         break;
                     case SDLK_s:
                     case SDLK_DOWN:
+                        std::cout << "input down key pressed" << std::endl;
                         moveDown = true;
                         break;
                     default:
@@ -144,19 +148,44 @@ public:
                             break;
                     }
 
+                } else{
+
+                        switch (event.key.keysym.sym) {
+                            case SDLK_a:
+                            case SDLK_LEFT:
+                                moveLeft = false;
+                                break;
+                            case SDLK_d:
+                            case SDLK_RIGHT:
+                                moveRight = false;
+                                //std::cout << "input right key pressed" << std::endl;
+                                break;
+                            case SDLK_w:
+                            case SDLK_UP:
+                                moveUp = false;
+                                break;
+                            case SDLK_s:
+                            case SDLK_DOWN:
+                                //std::cout << "input down key pressed" << std::endl;
+                                moveDown = false;
+                                break;
+                            default:
+                                break;
+                        }
+
                 }
             }
         }
 
         bool moveVertical = (moveUp  || moveDown);
         bool moveHorizontal = (moveRight || moveLeft);
-        std::cout << "input move horizontal: " << moveHorizontal << std::endl;
-        std::cout << "input move vertical: " << moveVertical << std::endl;
+        //std::cout << "input move horizontal: " << moveHorizontal << std::endl;
+        //std::cout << "input move vertical: " << moveVertical << std::endl;
 
 
             if (moveHorizontal || moveVertical || shoot) {
                 m_manager->template forEntityMatching_S<SystemSignature_Input >(movementInputId,
-                                           [moveHorizontal, moveVertical, moveUp, moveRight, shoot](MovementInputHolder *inputHolder) {
+                                           [moveHorizontal, moveVertical, this](MovementInputHolder *inputHolder) {
                                                inputHolder->moveUp = moveUp;
                                                inputHolder->moveRight = moveRight;
                                                inputHolder->moveVertical = moveVertical || inputHolder->moveVertical;

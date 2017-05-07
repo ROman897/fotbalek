@@ -9,6 +9,7 @@
 #include "../Components/Logic/MovementInputHolder.h"
 #include "../Core/ComponentManager.h"
 #include "API/Client/Client.h"
+#include "../SettingsDefines.h"
 
 template <typename TSettings>
 class PlayerNetworkSenderSystem{
