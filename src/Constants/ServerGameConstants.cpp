@@ -42,8 +42,8 @@ const float ServerGameConstants::kDownBoundary = 50.0f;
 //------------------------//Barriers
 
 //------------------------Goals
-const Vector_Float ServerGameConstants::kLeftGoalPos = {850,400};
-const Vector_Float ServerGameConstants::kRightGoalPos = {50,400};
+const Vector_Float ServerGameConstants::kLeftGoalPos = {50,400};
+const Vector_Float ServerGameConstants::kRightGoalPos = {850,400};
 const Vector_Float ServerGameConstants::kGoalBotRight = {100,50};
 const std::string ServerGameConstants::kLeftGoalTag = "leftGoal";
 const std::string ServerGameConstants::kRightGoalTag = "rightGoal";

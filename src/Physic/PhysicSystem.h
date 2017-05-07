@@ -181,6 +181,7 @@ inline void processTriggerCollisionRectangle_Circle(const RectangleCollider* sha
                                                     const CircleCollider* shape2, const Transform* transform2){
     if (! ServerGameConstants::kCollisionMatrix[shape1->m_CollisionLayer][shape2->m_CollisionLayer])
         return;
+    std::cout << "checking trigger collision rectangle circle" << std::endl;
     if (! checkForCollisionRectangle_Circle(shape1, transform1, shape2, transform2, nullptr, true))
         return;
     trigger->m_Triggered = true;

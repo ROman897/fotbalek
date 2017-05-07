@@ -22,7 +22,7 @@ struct ClientGameConstants {
     //-------------------//graphic layers
 
     //--------------------window
-    constexpr static int kWindowHeight = 800;
+    constexpr static int kWindowHeight = 1000;
     constexpr static int kWindowWidth = 1200;
     //--------------------//window
 
