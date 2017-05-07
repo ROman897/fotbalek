@@ -67,5 +67,4 @@ using sigSettings = SignatureSettings <SystemSignature_SpriteGraphic,
 
 using settings = EngineSettings<compSettings , sigSettings>;
 
-//using sysSettings = SystemSettings <GraphicSystem<settings >, PhysicSystem<settings >>;
 #endif //PV264_PROJECT_SETTINGSDEFINES_H
