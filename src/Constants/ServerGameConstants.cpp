@@ -21,13 +21,13 @@ const bool ServerGameConstants::kCollisionMatrix[kNumberOfCollisionLayers][kNumb
 //----------------------//Collision Layers
 
 //----------------------Rigid bodies
-const float ServerGameConstants::kPlayerInverseMass = 1000;
-const float ServerGameConstants::kPlayerRestitution = 0.8;
-const float ServerGameConstants::kPlayerSpeedDecrement = 0.98;
+const float ServerGameConstants::kPlayerInverseMass = 1000.0f;
+const float ServerGameConstants::kPlayerRestitution = 0.8f;
+const float ServerGameConstants::kPlayerSpeedDecrement = 0.98f;
 
-const float ServerGameConstants::kBallInverseMass = 2;
-const float ServerGameConstants::kBallRestitution = 0.6;
-const float ServerGameConstants::kBallSpeedDecrement = 0.99;
+const float ServerGameConstants::kBallInverseMass = 2.0f;
+const float ServerGameConstants::kBallRestitution = 0.6f;
+const float ServerGameConstants::kBallSpeedDecrement = 0.99f;
 //----------------------//Rigid Bodies
 
 

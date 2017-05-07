@@ -336,7 +336,12 @@ public:
 
         m_ComponentManager->template forEntitiesMatching<SystemSignature_Movable>([dt](RigidBody* rigidBody, Transform* transform){
             transform->m_position += rigidBody->m_velocity * dt;
-            rigidBody->m_velocity *= rigidBody->m_speedDecrement;
+            if (rigidBody->m_velocity.length() > 0.0005f) {
+                rigidBody->m_velocity *= rigidBody->m_speedDecrement;
+            } else {
+                rigidBody->m_velocity = {0.0f, 0.0f};
+            }
+
         });
 
         m_ComponentManager->template forEntitiesMatchingPairs<SystemSignature_Circle_Collider_Body, SystemSignature_Circle_Collider_Body>(processCollisionCircle_Circle);
