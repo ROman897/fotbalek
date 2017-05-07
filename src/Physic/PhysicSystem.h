@@ -115,11 +115,9 @@ inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
     );
 
 
-    float collider1_Y = (shape1->m_topLeft.m_y
-                          - shape1->m_bottomRight.m_y
+    float collider1_Y = ( shape1->m_bottomRight.m_y - shape1->m_topLeft.m_y
                          ) / 2;
-    float collider2_Y = (shape2->m_topLeft.m_y
-                          - shape2->m_bottomRight.m_y
+    float collider2_Y = ( shape2->m_bottomRight.m_y - shape2->m_topLeft.m_y
                          ) / 2;
     float y_overlap = collider1_Y + collider2_Y - std::abs( n.m_y
     );
