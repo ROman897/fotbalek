@@ -12,7 +12,7 @@ Server::~Server() {
 }
 
 void Server::listen() {
-    std::cout << "listen()\n";
+    //std::cout << "listen()\n";
     m_socket.async_receive_from(boost::asio::buffer(m_buffer),
                                m_pending,
                                boost::bind(&Server::handleRequest,

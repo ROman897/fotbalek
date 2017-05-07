@@ -29,7 +29,7 @@ inline void resolveCollision(const Collision &collision) {
 
     if(velNormal > 0)
         return;
-
+    std::cout << "after collision return" << std::endl;
     // Calculate restitution, choose lower of the two restitutions
     float r = std::min( collision.first.m_restitution, collision.second.m_restitution);
 

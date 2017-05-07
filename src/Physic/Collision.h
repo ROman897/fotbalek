@@ -14,6 +14,7 @@ struct Collision {
     RigidBody& first;
     RigidBody& second;
     double penetration;
+	Vector_Float normal;
 
     Collision(RigidBody &first, RigidBody &second) : first(first), second(second) {};
 
@@ -22,7 +23,6 @@ struct Collision {
     penetration(penetration),
     normal(normal) {};
 
-    Vector_Float normal;
 };
 
 
