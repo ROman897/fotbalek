@@ -24,11 +24,6 @@ int main() {
 	}
 	spawnBall_Server(gameEngine);
 
-	spawnBarrier_Server(gameEngine, ServerGameConstants::kLeftBarrier_Pos, ServerGameConstants::kSideBarrier_BotRight);
-	spawnBarrier_Server(gameEngine, ServerGameConstants::kTopBarrier_Pos, ServerGameConstants::kUpDownBarrier_BotRight);
-	spawnBarrier_Server(gameEngine, ServerGameConstants::kBotBarrier_Pos, ServerGameConstants::kUpDownBarrier_BotRight);
-	spawnBarrier_Server(gameEngine, ServerGameConstants::kRightBarrier_Pos, ServerGameConstants::kSideBarrier_BotRight);
-
 	spawnGoalTrigger_Server(gameEngine, ServerGameConstants::kLeftGoalPos, ServerGameConstants::kLeftGoalTag);
 	spawnGoalTrigger_Server(gameEngine, ServerGameConstants::kRightGoalPos, ServerGameConstants::kRightGoalTag);
 
