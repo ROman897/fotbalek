@@ -30,6 +30,8 @@ private:
             if (! _inputHolder->valid)
                 return;
             m_inputHolder = *_inputHolder;
+            _inputHolder->moveHorizontal = false;
+            _inputHolder->moveVertical = false;
             _inputHolder->valid = false;
             result = true;
         });

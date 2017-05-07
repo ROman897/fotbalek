@@ -36,7 +36,7 @@ struct ClientGameConstants {
 
 
     //-----------------------Input System
-    static constexpr float kKeyCooldown = 0.02f;
+    static constexpr float kKeyCooldown = 0.008f;
     //-----------------------Input System
 
 

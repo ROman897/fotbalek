@@ -65,7 +65,7 @@ private:
     void runUpdate(){
         if (m_playerClient->hasStateChanged()){
             GameStateChange change = m_playerClient->getState();
-            m_componentManager->forEntityMatching_S<SystemSignature_GameStateChange>(m_StateChangeId, [change](GameStateChange* _change){
+            m_componentManager->template forEntityMatching_S<SystemSignature_GameStateChange>(m_StateChangeId, [change](GameStateChange* _change){
                 *_change = change;
             });
         }

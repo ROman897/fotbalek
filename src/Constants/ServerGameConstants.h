@@ -21,7 +21,7 @@ struct ServerGameConstants{
 static constexpr Uint32 kPhysicAccumulatorLimit = 20U;
 static constexpr float kPhysicFps = 60;
 static constexpr float kPhysicDeltaTime = 1 / kPhysicFps;
-static constexpr float kInputMovementCoefficient = 10;
+static constexpr float kInputMovementCoefficient = 50;
 //-------------------//Physics
 
 //-----------------------Collision Layers

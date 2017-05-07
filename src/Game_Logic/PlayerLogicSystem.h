@@ -148,16 +148,19 @@ public:
             }
         }
 
-            bool moveVertical = (moveUp  || moveDown);
-            bool moveHorizontal = (moveRight || moveLeft);
+        bool moveVertical = (moveUp  || moveDown);
+        bool moveHorizontal = (moveRight || moveLeft);
+        std::cout << "input move horizontal: " << moveHorizontal << std::endl;
+        std::cout << "input move vertical: " << moveVertical << std::endl;
+
 
             if (moveHorizontal || moveVertical || shoot) {
                 m_manager->template forEntityMatching_S<SystemSignature_Input >(movementInputId,
                                            [moveHorizontal, moveVertical, moveUp, moveRight, shoot](MovementInputHolder *inputHolder) {
                                                inputHolder->moveUp = moveUp;
                                                inputHolder->moveRight = moveRight;
-                                               inputHolder->moveVertical = moveVertical;
-                                               inputHolder->moveHorizontal = moveHorizontal;
+                                               inputHolder->moveVertical = moveVertical || inputHolder->moveVertical;
+                                               inputHolder->moveHorizontal = moveHorizontal || inputHolder->moveHorizontal;
                                                inputHolder->shoot = shoot;
                                                inputHolder->valid = true;
                                            });
