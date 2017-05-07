@@ -29,7 +29,7 @@ inline void resolveCollision(const Collision &collision) {
 
     if(velNormal > 0)
         return;
-    std::cout << "after collision return" << std::endl;
+    //std::cout << "after collision return" << std::endl;
     // Calculate restitution, choose lower of the two restitutions
     float r = std::min( collision.first.m_restitution, collision.second.m_restitution);
 
@@ -92,10 +92,10 @@ inline bool checkForCollisionCircle_Circle(const CircleCollider* shape1, const T
         collision->penetration = shape1->m_radius;
         collision->normal = Vector_Float( 1, 0 );
     }
-    std::cout << "collision occured: {" << std::endl;
+    /*std::cout << "collision occured: {" << std::endl;
     std::cout << "x1: " << transform1->m_position.m_x << " y1: " << transform1->m_position.m_y << std::endl;
     std::cout << "x2: " << transform2->m_position.m_x << " y2: " << transform2->m_position.m_y << std::endl;
-    std::cout << "}" << std::endl;
+    std::cout << "}" << std::endl;*/
     return true;
 }
 
