@@ -41,13 +41,6 @@ Id spawnBall_Client(EngineType_Client& gameEngine){
     return id;
 }
 
-Id spawnBarrier(EngineType_Client& gameEngine, Vector_Float position, const Vector_Float &m_topLeft, const Vector_Float &m_bottomRight){
-    Id id = gameEngine.spawnGameObject();
-    gameEngine.addComponent<Transform>(id, position);
-    gameEngine.addComponent<RectangleCollider>(id, m_topLeft, m_bottomRight);
-    return id;
-}
-
 Id spawnMenuPanel(EngineType_Client &gameEngine) {
     Id id = gameEngine.spawnGameObject("menuPanel");
     gameEngine.addComponent<Transform>(id, ClientGameConstants::kMenuPanelPosition);
