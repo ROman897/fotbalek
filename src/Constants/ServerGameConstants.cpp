@@ -7,7 +7,7 @@ const Vector_Float ServerGameConstants::kBallStartingPosition = {500, 500};
 
 //---------------------Colliders
 const Vector_Float ServerGameConstants::kPlayerColliderCenter = {0, 0};
-const float ServerGameConstants::kPlayerColliderRadius = 32;
+const float ServerGameConstants::kPlayerColliderRadius = 28;
 const CollisionLayers ServerGameConstants::kPlayerCollisionLayer = PLAYERS;
 const Vector_Float ServerGameConstants::kBallColliderCenter = {0,0};
 const float ServerGameConstants::kBallColliderRadius = 20;
