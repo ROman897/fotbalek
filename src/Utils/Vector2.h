@@ -22,11 +22,11 @@ public:
     }
 
     friend Vector2 operator- (Vector2 lhs, const Vector2& rhs){
-        return lhs.substract(rhs);
+        return lhs.subtract(rhs);
     }
 
     friend Vector2& operator-= (Vector2& lhs, const Vector2& rhs){
-        return lhs.substract(rhs);
+        return lhs.subtract(rhs);
     }
 
     friend Vector2 operator/ (Vector2 lhs, float rhs){
@@ -63,12 +63,16 @@ public:
 
     void normalize(){
         auto len = length();
+        if (len == 0)
+            return;
         m_x /= len;
         m_y /= len;
     }
 
     void setLength(T len){
         auto _len = length();
+        if (_len == 0)
+            return;
         m_x *= len / _len ;
         m_y *= len / _len;
     }
@@ -92,12 +96,12 @@ public:
 private:
     Vector2& add(const Vector2 &vec) {
         m_x += vec.m_x;
-        m_y+=vec.m_y;
+        m_y += vec.m_y;
         return *this;
     }
-    Vector2& substract(const Vector2 &vec) {
+    Vector2& subtract(const Vector2 &vec) {
         m_x -= vec.m_x;
-        m_y -=vec.m_y;
+        m_y -= vec.m_y;
         return *this;
     }
     Vector2& divide(T divider) {
@@ -105,7 +109,7 @@ private:
         m_y /= divider;
         return *this;
     }
-    Vector2 &multiply(T multiplier) {
+    Vector2& multiply(T multiplier) {
         m_x *= multiplier;
         m_y *= multiplier;
         return *this;

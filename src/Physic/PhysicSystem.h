@@ -29,7 +29,7 @@ inline void resolveCollision(const Collision &collision) {
 
     if(velNormal > 0)
         return;
-    //std::cout << "after collision return" << std::endl;
+
     // Calculate restitution, choose lower of the two restitutions
     float r = std::min( collision.first.m_restitution, collision.second.m_restitution);
 
@@ -49,10 +49,6 @@ inline void resolveCollision(const Collision &collision) {
 
 }
 
-inline float Clamp(float min, float max, float val) {
-    return std::abs(min - val) < std::abs(max - val) ? min : max;
-}
-
 inline float Clamp(float min, float max, float middle, float val) {
     float v = std::abs(min - val) < std::abs(max - val) ? min : max;
     return std::abs(v - val) < std::abs(middle - val) ? v : middle;
@@ -63,7 +59,6 @@ inline float Clamp(float min, float max, float middle, float val) {
 inline bool checkForCollisionCircle_Circle(const CircleCollider* shape1, const Transform* transform1,
                                            const CircleCollider* shape2, const Transform* transform2,
                                             Collision* collision, bool trigger){
-
 
     // Vector from A to B
     Vector_Float n = transform2->m_position - transform1->m_position;
@@ -87,15 +82,13 @@ inline bool checkForCollisionCircle_Circle(const CircleCollider* shape1, const T
         Vector_Float normal = n.getNormal();
         collision->normal = normal / d;
 
-    } else { // Circles are on same position
+    } else {
+        // Circles are on same position
         // this should not be really happening, but just in case when distance is 0 so we dont divide by 0
         collision->penetration = shape1->m_radius;
         collision->normal = Vector_Float( 1, 0 );
     }
-    /*std::cout << "collision occured: {" << std::endl;
-    std::cout << "x1: " << transform1->m_position.m_x << " y1: " << transform1->m_position.m_y << std::endl;
-    std::cout << "x2: " << transform2->m_position.m_x << " y2: " << transform2->m_position.m_y << std::endl;
-    std::cout << "}" << std::endl;*/
+
     return true;
 }
 
@@ -144,8 +137,8 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
 
     Vector_Float n = transform2->m_position - transform1->m_position;
     Vector_Float closest = n;
-    float x_extent = (shape1->m_topLeft.m_x - shape1->m_bottomRight.m_x ) / 2;
-    float y_extent = (shape1->m_topLeft.m_y - shape1->m_bottomRight.m_y ) / 2;
+    float x_extent = (shape1->m_bottomRight.m_x - shape1->m_topLeft.m_x) / 2;
+    float y_extent = (shape1->m_bottomRight.m_y - shape1->m_topLeft.m_y) / 2;
 
     closest.m_x = Clamp( -x_extent, x_extent, 0.0f, closest.m_x );
     closest.m_y = Clamp( -y_extent, y_extent, 0.0f, closest.m_y );
