@@ -50,14 +50,22 @@ static const CollisionLayers kBallCollisionLayer;
 //----------------------//Rigid Bodies
 
 //----------------------Barriers
-    static const Vector_Float kBarriersTopLeft;
-    static const Vector_Float kLeftBarrier_Pos;
+    static const Vector_Float kLeftTopBarrier_Pos;
+    static const Vector_Float kLeftBotBarrier_Pos;
     static const Vector_Float kSideBarrier_BotRight;
+    static const Vector_Float kSideBarrier_TopLeft;
     static const Vector_Float kTopBarrier_Pos;
     static const Vector_Float kUpDownBarrier_BotRight;
+    static const Vector_Float kUpDownBarrier_TopLeft;
     static const Vector_Float kBotBarrier_Pos;
-    static const Vector_Float kRightBarrier_Pos;
+    static const Vector_Float kRightTopBarrier_Pos;
+    static const Vector_Float kRightBotBarrier_Pos;
     static const CollisionLayers kBarrierCollisionLayer;
+
+    static const float kBarrierInverseMass;
+    static const float kBarrierRestitution;
+    static const float kBarrierMaxVelocity;
+    static const float kBarrierSpeedDecrement;
 
     static const float kLeftBoundary;
     static const float kRightBoundary;
@@ -80,7 +88,7 @@ static const CollisionLayers kBallCollisionLayer;
 //-----------------------//max velocities
 
 //--------------------Player constants
-static constexpr int kMaxNumberOfPlayers = 2;
+static constexpr int kMaxNumberOfPlayers = 1;
 static constexpr int portNumber = 13000; //modify also ClientGameConstants.cpp
 
 //--------------------//Player Constants

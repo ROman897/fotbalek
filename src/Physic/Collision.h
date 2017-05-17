@@ -13,12 +13,12 @@ struct Collision {
 
     RigidBody& first;
     RigidBody& second;
-    double penetration;
+    float penetration;
 	Vector_Float normal;
 
     Collision(RigidBody &first, RigidBody &second) : first(first), second(second) {};
 
-    Collision(RigidBody &first, RigidBody &second, double penetration, const Vector_Float &normal) : first(first),
+    Collision(RigidBody &first, RigidBody &second, float penetration, const Vector_Float &normal) : first(first),
     second(second),
     penetration(penetration),
     normal(normal) {};

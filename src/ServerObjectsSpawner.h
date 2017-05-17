@@ -17,8 +17,9 @@
 #include "Game_Logic/PlayerLogicSystem.h"
 #include "Network/ServerNetworkSenderSystem.h"
 #include "Network/ServerNetworkReceiverSystem.h"
+#include "Game_Logic/ServerLogicSystem.h"
 
-using sysSettings_Server = SystemSettings <ServerNetworkSenderSystem<settings>>;
+using sysSettings_Server = SystemSettings <ServerNetworkSenderSystem<settings>, ServerLogicSystem<settings>>;
 using externalSysSettings_Server = SystemSettings<PhysicSystem<settings >, ServerNetworkReceiverSystem<settings>>;
 
 using EngineType_Server = GameEngine<settings, sysSettings_Server, externalSysSettings_Server >;
@@ -28,7 +29,7 @@ Id spawnPlayer_Server(EngineType_Server& gameEngine);
 
 Id spawnBall_Server(EngineType_Server& gameEngine);
 
-Id spawnBarrier_Server(EngineType_Server& gameEngine, Vector_Float position, const Vector_Float &m_bottomRight);
+Id spawnBarrier_Server(EngineType_Server& gameEngine, Vector_Float position, const Vector_Float & topLeft, const Vector_Float &m_bottomRight);
 
 Id spawnGoalTrigger_Server(EngineType_Server& gameEngine, Vector_Float position, const std::string& tag);
 

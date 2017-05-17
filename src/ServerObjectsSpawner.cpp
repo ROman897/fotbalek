@@ -23,17 +23,22 @@ Id spawnBall_Server(EngineType_Server &gameEngine) {
     gameEngine.addComponent<NetworkId>(id, 0);
     gameEngine.addComponent<CircleCollider>(id, ServerGameConstants::kBallColliderCenter, ServerGameConstants::kBallColliderRadius,
     ServerGameConstants::kBallCollisionLayer);
+    //Vector_Float topleft = {-9,-9};
+    //Vector_Float botRIght = {9, 9};
+    //gameEngine.addComponent<RectangleCollider>(id, topleft, botRIght, ServerGameConstants::kBallCollisionLayer);
     gameEngine.addComponent<RigidBody>(id, ServerGameConstants::kBallInverseMass, ServerGameConstants::kBallRestitution,
                                        ServerGameConstants::kBallSpeedDecrement, ServerGameConstants::kBallMaxVelocity);
     gameEngine.addComponent<BallComp>(id);
     return id;
 }
 
-Id spawnBarrier_Server(EngineType_Server &gameEngine, Vector_Float position,
+Id spawnBarrier_Server(EngineType_Server &gameEngine, Vector_Float position, const Vector_Float & topLeft,
                        const Vector_Float &m_bottomRight) {
     Id id = gameEngine.spawnGameObject();
     gameEngine.addComponent<Transform>(id, position);
-    gameEngine.addComponent<RectangleCollider>(id, m_bottomRight, ServerGameConstants::kBarrierCollisionLayer);
+    gameEngine.addComponent<RectangleCollider>(id, topLeft, m_bottomRight, ServerGameConstants::kBarrierCollisionLayer);
+    gameEngine.addComponent<RigidBody>(id, ServerGameConstants::kBarrierInverseMass, ServerGameConstants::kBarrierRestitution,
+    ServerGameConstants::kBarrierMaxVelocity, ServerGameConstants::kBarrierSpeedDecrement);
     return id;
 }
 

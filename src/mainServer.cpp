@@ -27,6 +27,13 @@ int main() {
 	spawnGoalTrigger_Server(gameEngine, ServerGameConstants::kLeftGoalPos, ServerGameConstants::kLeftGoalTag);
 	spawnGoalTrigger_Server(gameEngine, ServerGameConstants::kRightGoalPos, ServerGameConstants::kRightGoalTag);
 
+    spawnBarrier_Server(gameEngine, ServerGameConstants::kLeftTopBarrier_Pos, ServerGameConstants::kSideBarrier_TopLeft, ServerGameConstants::kSideBarrier_BotRight);
+    spawnBarrier_Server(gameEngine, ServerGameConstants::kLeftBotBarrier_Pos, ServerGameConstants::kSideBarrier_TopLeft, ServerGameConstants::kSideBarrier_BotRight);
+    spawnBarrier_Server(gameEngine, ServerGameConstants::kRightTopBarrier_Pos, ServerGameConstants::kSideBarrier_TopLeft, ServerGameConstants::kSideBarrier_BotRight);
+    spawnBarrier_Server(gameEngine, ServerGameConstants::kRightBotBarrier_Pos, ServerGameConstants::kSideBarrier_TopLeft, ServerGameConstants::kSideBarrier_BotRight);
+    spawnBarrier_Server(gameEngine, ServerGameConstants::kTopBarrier_Pos, ServerGameConstants::kUpDownBarrier_TopLeft, ServerGameConstants::kUpDownBarrier_BotRight);
+    spawnBarrier_Server(gameEngine, ServerGameConstants::kBotBarrier_Pos, ServerGameConstants::kUpDownBarrier_TopLeft, ServerGameConstants::kUpDownBarrier_BotRight);
+
 	spawnManager_Server(gameEngine);
 	auto& physicSystem = gameEngine.getExternalSystem<PhysicSystem<settings >>();
 	physicSystem.setBoundaries(ServerGameConstants::kLeftBoundary, ServerGameConstants::kRightBoundary,

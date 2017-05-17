@@ -44,8 +44,8 @@ private:
             return;
         m_started = true;
         if (prepareData(m_inputHolder)) {
-            std::cout << "moving horizontal: " << m_inputHolder.moveHorizontal << std::endl;
-            std::cout << "moving vertical: " << m_inputHolder.moveVertical << std::endl;
+            //std::cout << "moving horizontal: " << m_inputHolder.moveHorizontal << std::endl;
+            //std::cout << "moving vertical: " << m_inputHolder.moveVertical << std::endl;
             m_playerClient->sendData(m_inputHolder);
 
         }

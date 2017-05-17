@@ -28,13 +28,13 @@ class ServerLogicSystem{
     void resetPositions(){
         std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
         int i;
-        m_manager->forEntitiesMatching<SystemSignature_Player_Rigid>([&i](RigidBody* body, Transform* transform, PlayerComp* playerComp){
+        m_manager->template forEntitiesMatching<SystemSignature_Player_Rigid>([&i](RigidBody* body, Transform* transform, PlayerComp* playerComp){
             transform->m_position = ServerGameConstants::kStartingPositions[i];
             body->m_velocity = {0,0};
             body->m_activeForce = {0,0};
         });
 
-        m_manager->forEntitiesMatching<SystemSignature_Ball_Rigid>([] (RigidBody* body, Transform* transform, BallComp* ballComp){
+        m_manager->template forEntitiesMatching<SystemSignature_Ball_Rigid>([] (RigidBody* body, Transform* transform, BallComp* ballComp){
             transform->m_position = ServerGameConstants::kBallStartingPosition;
             body->m_velocity = {0,0};
             body->m_activeForce = {0,0};
@@ -49,8 +49,8 @@ public:
     void start(){
         m_LeftGoalId = m_manager->findGameObjectByTag(ServerGameConstants::kLeftGoalTag);
         m_RightGoalId = m_manager->findGameObjectByTag(ServerGameConstants::kRightGoalTag);
-        m_stateHolderId = m_manager->findEntityMatching<SystemSignature_GameState>();
-        m_GameStateChangeId = m_manager->findEntityMatching<SystemSignature_GameStateChange>();
+        m_stateHolderId = m_manager->template findEntityMatching<SystemSignature_GameState>();
+        m_GameStateChangeId = m_manager->template findEntityMatching<SystemSignature_GameStateChange>();
     }
 
     void run(float dt){
@@ -58,12 +58,13 @@ public:
         std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
         m_time += dt;
         if (m_time > ServerGameConstants::kGameTime){
+            std::cout << "game over!!!!" << std::endl;
             // game is over, now we need to let the players know
-            m_manager->forEntityMatching<SystemSignature_GameState>(m_stateHolderId, [](GameState* state){
+            m_manager->template forEntityMatching<SystemSignature_GameState>(m_stateHolderId, [](GameState* state){
                 state->m_ReceiveInput = false;
             });
 
-            m_manager->forEntityMatching<SystemSignature_GameStateChange>(m_GameStateChangeId, [] (GameStateChange* change) {
+            m_manager->template forEntityMatching<SystemSignature_GameStateChange>(m_GameStateChangeId, [] (GameStateChange* change) {
                 change->m_GameOver = true;
             });
             // now we may want to call quit after we send game over message to other players
@@ -75,7 +76,7 @@ public:
             if (m_WaitingTime > ServerGameConstants::kWaitingToResetPositionsTime){
                 // here we reset positions and set receive input to false
                 resetPositions();
-                m_manager->forEntityMatching<SystemSignature_GameState>(m_stateHolderId, [](GameState* state){
+                m_manager->template forEntityMatching<SystemSignature_GameState>(m_stateHolderId, [](GameState* state){
                     state->m_ReceiveInput = false;
                 });
 
@@ -89,7 +90,7 @@ public:
             m_WaitingTime += dt;
             if (m_WaitingTime > ServerGameConstants::kWaitingToResumeGameTime){
 
-                m_manager->forEntityMatching<SystemSignature_GameState>(m_stateHolderId, [](GameState* state){
+                m_manager->template forEntityMatching<SystemSignature_GameState>(m_stateHolderId, [](GameState* state){
                     state->m_ReceiveInput = true;
                 });
                 // here we set receive input to true
@@ -101,21 +102,22 @@ public:
 
 
 
-        m_manager->forEntityMatching<SystemSignature_ColliderTrigger>(m_LeftGoalId, [this](ColliderTrigger* trigger){
+        m_manager->template forEntityMatching<SystemSignature_ColliderTrigger>(m_LeftGoalId, [this](ColliderTrigger* trigger){
             if (! trigger->m_Triggered)
                 return;
+            std::cout << "check triggered" << std::endl;
             trigger->m_Triggered = false;
-            m_manager->forEntityMatching<SystemSignature_GameStateChange>(m_GameStateChangeId, [] (GameStateChange* change) {
+            m_manager->template forEntityMatching<SystemSignature_GameStateChange>(m_GameStateChangeId, [] (GameStateChange* change) {
                 change->m_Team1Scored = true;
             });
             m_WaitingToResetPositions = true;
         } );
 
-        m_manager->forEntityMatching<SystemSignature_ColliderTrigger>(m_RightGoalId, [this](ColliderTrigger* trigger){
+        m_manager->template forEntityMatching<SystemSignature_ColliderTrigger>(m_RightGoalId, [this](ColliderTrigger* trigger){
             if (! trigger->m_Triggered)
                 return;
             trigger->m_Triggered = false;
-            m_manager->forEntityMatching<SystemSignature_GameStateChange>(m_GameStateChangeId, [] (GameStateChange* change) {
+            m_manager->template forEntityMatching<SystemSignature_GameStateChange>(m_GameStateChangeId, [] (GameStateChange* change) {
                 change->m_Team2Scored = true;
             });
             m_WaitingToResetPositions = true;

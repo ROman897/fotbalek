@@ -20,6 +20,10 @@
 #include "../Components/Physic/ColliderTrigger.h"
 #include "../Constants/ServerGameConstants.h"
 
+inline float max(float val1, float val2){
+    return val1 > val2 ? val1 : val2;
+}
+
 inline void resolveCollision(const Collision &collision) {
     Vector_Float vDiff = collision.second.m_velocity - collision.first.m_velocity;
 
@@ -44,11 +48,22 @@ inline void resolveCollision(const Collision &collision) {
     collision.second.m_velocity += impulse * collision.second.m_inverseMass;
     collision.first.m_velocity.limitLength(collision.first.m_maxSpeed);
     collision.second.m_velocity.limitLength(collision.second.m_maxSpeed);
+
+    /*const float percent = 0.2;
+    const float k_slop = 0.01;
+    Vector_Float correction = (max( collision.penetration - k_slop, 0.0f ) / (collision.first.m_inverseMass + collision.second.m_inverseMass))); //* percent * n
+    A.position -= A.inv_mass * correction
+    B.position += B.inv_mass * correction*/
 }
 
 inline float Clamp(float min, float max, float middle, float val) {
     float v = std::abs(min - val) < std::abs(max - val) ? min : max;
     return std::abs(v - val) < std::abs(middle - val) ? v : middle;
+
+}
+
+inline float Clamp(float min, float max, float val) {
+    return val < min ? min : val > max ? max : val;
 
 }
 
@@ -126,7 +141,68 @@ inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
     return true;
 }
 
+
 inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, const CircleCollider* shape2,
+                                              const Transform* transform2, Collision* collision, bool trigger){
+
+    Vector_Float n = transform2->m_position - transform1->m_position;
+    Vector_Float closest = n;
+    float x_extent = (shape1->m_bottomRight.m_x - shape1->m_topLeft.m_x) / 2;
+    float y_extent = (shape1->m_bottomRight.m_y - shape1->m_topLeft.m_y) / 2;
+
+    closest.m_x = Clamp( -x_extent, x_extent, closest.m_x );
+    closest.m_y = Clamp( -y_extent, y_extent, closest.m_y );
+
+    bool inside = false;
+
+    if(n == closest) {
+        inside = true;
+
+        if(std::abs( n.m_x ) > std::abs( n.m_y )) {
+            if(closest.m_x > 0)
+                closest.m_x = x_extent;
+            else
+                closest.m_x = -x_extent;
+        } else {
+            if(closest.m_y > 0)
+                closest.m_y = y_extent;
+            else
+                closest.m_y = -y_extent;
+        }
+    }
+
+    Vector_Float normal = n - closest;
+    float d = normal.lengthSquared();
+    float r = shape2->m_radius;
+
+    if(d > r * r && !inside)
+        return false;
+
+    //std::cout << "Collistion!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+
+    if (trigger) {
+        std::cout << "trigger triggered!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+        return true;
+    }
+    d = std::sqrt( d );
+    if(inside) {
+        collision->normal = n * -1;
+        collision->normal.normalize();
+        collision->penetration = r - d;
+    } else {
+        collision->normal = n;
+        //collision->normal.normalize();
+        collision->penetration = r - d;
+    }
+    return true;
+}
+
+
+
+
+
+
+/*inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, const CircleCollider* shape2,
                                        const Transform* transform2, Collision* collision, bool trigger){
 
     Vector_Float n = transform2->m_position - transform1->m_position;
@@ -175,13 +251,13 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
         collision->penetration = r - d;
     }
     return true;
-}
+}*/
 
 inline void processTriggerCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, ColliderTrigger* trigger,
                                                     const CircleCollider* shape2, const Transform* transform2){
     if (! ServerGameConstants::kCollisionMatrix[shape1->m_CollisionLayer][shape2->m_CollisionLayer])
         return;
-    std::cout << "checking trigger collision rectangle circle" << std::endl;
+    //std::cout << "checking trigger collision rectangle circle" << std::endl;
     if (! checkForCollisionRectangle_Circle(shape1, transform1, shape2, transform2, nullptr, true))
         return;
     trigger->m_Triggered = true;
@@ -275,14 +351,6 @@ public:
             } else {
                 rigidBody->m_velocity = {0.0f, 0.0f};
             }
-            if (transform->m_position.m_x > m_right)
-                transform->m_position.m_x = m_right;
-            if (transform->m_position.m_x < m_left)
-                transform->m_position.m_x = m_left;
-            if (transform->m_position.m_y > m_up)
-                transform->m_position.m_y = m_up;
-            if (transform->m_position.m_y < m_down)
-                transform->m_position.m_y = m_down;
 
         });
 
