@@ -2,62 +2,41 @@
 // Created by roman on 31.1.2017.
 //
 
-#include <SDL_timer.h>
 #include "Timer.h"
+#include <SDL_timer.h>
 
 Timer::Timer()
-        : m_StartTime(0U)
-        , m_PausedTime(0U)
-        , m_Paused(false)
-        , m_Started(false)
-{
+    : m_StartTime(0U), m_PausedTime(0U), m_Paused(false), m_Started(false) {}
+
+Uint32 Timer::getTime() {
+  if (!isStarted())
+    return 0U;
+  if (!isPaused())
+    return SDL_GetTicks() - m_StartTime;
+
+  return m_PausedTime - m_StartTime;
 }
 
-Uint32 Timer::getTime()
-{
-    if (!isStarted())
-        return 0U;
-    if (!isPaused())
-        return SDL_GetTicks() - m_StartTime;
+void Timer::resetTime() { m_StartTime = SDL_GetTicks(); }
 
-    return m_PausedTime - m_StartTime;
+bool Timer::isPaused() { return m_Paused; }
+
+bool Timer::isStarted() { return m_Started; }
+
+void Timer::pause() {
+  m_Paused = true;
+  m_PausedTime = SDL_GetTicks();
 }
 
-void Timer::resetTime()
-{
-    m_StartTime = SDL_GetTicks();
+void Timer::start() {
+  m_Started = true;
+  m_Paused = false;
+  m_StartTime = SDL_GetTicks();
 }
 
-bool Timer::isPaused()
-{
-    return m_Paused;
-}
+void Timer::stop() { m_Started = false; }
 
-bool Timer::isStarted()
-{
-    return m_Started;
-}
-
-void Timer::pause()
-{
-    m_Paused = true;
-    m_PausedTime = SDL_GetTicks();
-}
-
-void Timer::start()
-{
-    m_Started = true;
-    m_Paused = false;
-    m_StartTime = SDL_GetTicks();
-}
-
-void Timer::stop()
-{
-    m_Started = false;
-}
-
-void Timer::unpause()
-{
-    m_Paused = false;
-    m_StartTime = SDL_GetTicks();
+void Timer::unpause() {
+  m_Paused = false;
+  m_StartTime = SDL_GetTicks();
 }

@@ -5,23 +5,23 @@
 #ifndef PV264_PROJECT_RECTANGLE_H
 #define PV264_PROJECT_RECTANGLE_H
 
-
 #include "../../../Utils/Declarations.h"
 
 struct RectangleCollider {
-    RectangleCollider(const Vector_Float &topLeft, const Vector_Float &bottomRight, CollisionLayers layer) :
-			m_topLeft(topLeft), m_bottomRight(bottomRight), m_CollisionLayer(layer){}
+  RectangleCollider(const Vector_Float &topLeft,
+                    const Vector_Float &bottomRight, CollisionLayers layer)
+      : m_topLeft(topLeft), m_bottomRight(bottomRight),
+        m_CollisionLayer(layer) {}
 
-    RectangleCollider() = default;
+  RectangleCollider() = default;
 
-    RectangleCollider(const Vector_Float &bottomRight, CollisionLayers layer) : m_topLeft({0,0}), m_bottomRight(bottomRight),
-    m_CollisionLayer(layer){}
+  RectangleCollider(const Vector_Float &bottomRight, CollisionLayers layer)
+      : m_topLeft({0, 0}), m_bottomRight(bottomRight), m_CollisionLayer(layer) {
+  }
 
-    Vector_Float m_topLeft;
-    Vector_Float m_bottomRight;
-    CollisionLayers m_CollisionLayer;
-
+  Vector_Float m_topLeft;
+  Vector_Float m_bottomRight;
+  CollisionLayers m_CollisionLayer;
 };
 
-
-#endif //PV264_PROJECT_RECTANGLE_H
+#endif // PV264_PROJECT_RECTANGLE_H

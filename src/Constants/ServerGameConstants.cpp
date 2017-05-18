@@ -1,7 +1,13 @@
 #include "ServerGameConstants.h"
 
 //----------------------------Starting Positions
-const Vector_Float ServerGameConstants::kStartingPositions[kMaxNumberOfPlayers] = {{300,400}, {300,700}, {700,300}, {700, 700}};//, {600,300}, {600,500}};//, {200,200}/*, {400,400}, {600,600}*/};
+const Vector_Float
+    ServerGameConstants::kStartingPositions[kMaxNumberOfPlayers] = {
+        {300, 400}, {300, 700}, {700, 300}, {700, 700}}; //, {600,300},
+                                                         //{600,500}};//,
+                                                         //{200,200}/*,
+                                                         //{400,400},
+                                                         //{600,600}*/};
 const Vector_Float ServerGameConstants::kBallStartingPosition = {500, 500};
 //---------------------------//Starting Positions
 
@@ -9,14 +15,19 @@ const Vector_Float ServerGameConstants::kBallStartingPosition = {500, 500};
 const Vector_Float ServerGameConstants::kPlayerColliderTopLeft = {-28, -28};
 const Vector_Float ServerGameConstants::kPlayerColliderBottomRight = {28, 28};
 const CollisionLayers ServerGameConstants::kPlayerCollisionLayer = PLAYERS;
-const Vector_Float ServerGameConstants::kBallColliderCenter = {0,0};
+const Vector_Float ServerGameConstants::kBallColliderCenter = {0, 0};
 const float ServerGameConstants::kBallColliderRadius = 20;
 const CollisionLayers ServerGameConstants::kBallCollisionLayer = BALL;
 //---------------------//Colliders
 
 //-----------------------Collision Layers
-const bool ServerGameConstants::kCollisionMatrix[kNumberOfCollisionLayers][kNumberOfCollisionLayers] = {{false, true, true, false}, {true, false, true, true},
-                                                               {true, true, true, false}, {false, true, false, false}};
+const bool ServerGameConstants::kCollisionMatrix[kNumberOfCollisionLayers]
+                                                [kNumberOfCollisionLayers] = {
+                                                    {false, true, true, false},
+                                                    {true, false, true, true},
+                                                    {true, true, true, false},
+                                                    {false, true, false,
+                                                     false}};
 //----------------------//Collision Layers
 
 //----------------------Rigid bodies
@@ -42,8 +53,8 @@ const float ServerGameConstants::kDownBoundary = 50.0f;
 //------------------------//Barriers
 
 //------------------------Goals
-const Vector_Float ServerGameConstants::kLeftGoalPos = {50,450};
-const Vector_Float ServerGameConstants::kRightGoalPos = {1045,450};
+const Vector_Float ServerGameConstants::kLeftGoalPos = {50, 450};
+const Vector_Float ServerGameConstants::kRightGoalPos = {1045, 450};
 const Vector_Float ServerGameConstants::kGoalBotRight = {50, 200};
 const std::string ServerGameConstants::kLeftGoalTag = "leftGoal";
 const std::string ServerGameConstants::kRightGoalTag = "rightGoal";
@@ -60,9 +71,9 @@ const Vector_Float ServerGameConstants::kLeftBotBarrier_Pos = {65, 850};
 const Vector_Float ServerGameConstants::kSideBarrier_BotRight = {50, 600};
 const Vector_Float ServerGameConstants::kSideBarrier_TopLeft = {0, 0};
 const Vector_Float ServerGameConstants::kTopBarrier_Pos = {400, 45};
-const Vector_Float ServerGameConstants::kUpDownBarrier_BotRight = {800,50};
-const Vector_Float ServerGameConstants::kUpDownBarrier_TopLeft = {-800,-50};
-const Vector_Float ServerGameConstants::kBotBarrier_Pos = {400,855};
+const Vector_Float ServerGameConstants::kUpDownBarrier_BotRight = {800, 50};
+const Vector_Float ServerGameConstants::kUpDownBarrier_TopLeft = {-800, -50};
+const Vector_Float ServerGameConstants::kBotBarrier_Pos = {400, 855};
 const Vector_Float ServerGameConstants::kRightTopBarrier_Pos = {1030, 50};
 const Vector_Float ServerGameConstants::kRightBotBarrier_Pos = {1030, 850};
 

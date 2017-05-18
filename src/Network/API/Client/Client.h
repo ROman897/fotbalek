@@ -2,87 +2,86 @@
 #define PV264_PROJECT_PLAYER_CLIENT_H
 
 #include <boost/bind.hpp>
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 #include <mutex>
 
-#include "UdpBase.h"
-#include "Player.h"
-#include "Message.h"
 #include "../../../Components/Logic/MovementInputHolder.h"
-#include "../../../Components/Network/NetworkId.h"
 #include "../../../Components/Network/GameStateChange.h"
+#include "../../../Components/Network/NetworkId.h"
 #include "../../../Components/Transform.h"
+#include "Message.h"
+#include "Player.h"
 #include "Score.h"
+#include "UdpBase.h"
 
 class Client : UdpBase {
 
-	std::atomic_bool m_gameStarted;
-	std::atomic_bool m_gameEnded;
-	std::atomic_bool m_stateChanged;
-	udp::endpoint m_serverEnd;
-	Player m_me;
-	Message<Transform> m_lastMessage;
+  std::atomic_bool m_gameStarted;
+  std::atomic_bool m_gameEnded;
+  std::atomic_bool m_stateChanged;
+  udp::endpoint m_serverEnd;
+  Player m_me;
+  Message<Transform> m_lastMessage;
+
 public:
-	mutable std::mutex m_messageMutex;
-	mutable std::mutex m_playersMutex;
-	mutable std::mutex m_scoreMutex;
-	mutable std::mutex m_stateChangeMutex;
+  mutable std::mutex m_messageMutex;
+  mutable std::mutex m_playersMutex;
+  mutable std::mutex m_scoreMutex;
+  mutable std::mutex m_stateChangeMutex;
+
 private:
-	std::vector<Player> m_players;
-	Score m_score;
-	GameStateChange m_state;
-	bool hasId = false;
-	/*uint64_t m_myCounter;
-	uint64_t m_serverCounter;*/
+  std::vector<Player> m_players;
+  Score m_score;
+  GameStateChange m_state;
+  bool hasId = false;
+  /*uint64_t m_myCounter;
+  uint64_t m_serverCounter;*/
 
-	void startReceiving();
+  void startReceiving();
 
-	void handleData(ErrorCode &err, size_t trans);
+  void handleData(ErrorCode &err, size_t trans);
 
-	void parseId(ErrorCode &err, size_t trans);
+  void parseId(ErrorCode &err, size_t trans);
 
-	void parseMessage(std::string &message);
+  void parseMessage(std::string &message);
 
-	void send(const std::string &input);
+  void send(const std::string &input);
 
-	void handleErrors(ErrorCode &error, std::size_t bytes_transferred );
+  void handleErrors(ErrorCode &error, std::size_t bytes_transferred);
 
-	void askForId();
+  void askForId();
 
-	void disconnect();
-
+  void disconnect();
 
 public:
+  Client();
 
-	Client();
+  ~Client();
 
-	~Client();
+  void connect(const std::string &host, const std::string &port);
 
-	void connect( const std::string &host, const std::string &port);
+  void sendData(const MovementInputHolder &inputHolder);
 
-	void sendData(const MovementInputHolder& inputHolder);
+  const std::vector<Player> &getPlayers();
 
-	const std::vector<Player> &getPlayers();
+  const Player &getMe() const;
 
-	const Player &getMe() const;
+  Message<Transform> &getMessage();
 
-	Message<Transform> &getMessage();
+  bool hasStarted() const;
 
-	bool hasStarted() const;
+  const Score &getScore() const;
 
-	const Score &getScore() const;
+  const GameStateChange &getState() const;
 
-	const GameStateChange &getState() const;
+  bool hasEnded() const;
 
-	bool hasEnded() const;
+  bool hasStateChanged() const;
 
-	bool hasStateChanged() const;
+  void resetStateChanged();
 
-	void resetStateChanged();
-
-	void resetState();
-
+  void resetState();
 };
 
-#endif //PV264_PROJECT_PLAYER_CLIENT_H
+#endif // PV264_PROJECT_PLAYER_CLIENT_H

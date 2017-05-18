@@ -5,13 +5,13 @@
 #ifndef PV264_PROJECT_COLLIDERTRIGGER_H
 #define PV264_PROJECT_COLLIDERTRIGGER_H
 
-#include <vector>
 #include <functional>
+#include <vector>
 
-struct ColliderTrigger{
-    bool m_Triggered;
+struct ColliderTrigger {
+  bool m_Triggered;
 
-    ColliderTrigger() : m_Triggered(false) {}
+  ColliderTrigger() : m_Triggered(false) {}
 };
 
-#endif //PV264_PROJECT_COLLIDERTRIGGER_H
+#endif // PV264_PROJECT_COLLIDERTRIGGER_H

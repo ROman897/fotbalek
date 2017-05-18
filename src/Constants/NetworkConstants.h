@@ -7,8 +7,8 @@
 #include <string>
 
 struct NetworkConstants {
-    static const std::string kServerPort;
-    static const std::string kServerAddress;
+  static const std::string kServerPort;
+  static const std::string kServerAddress;
 };
 
-#endif //PV264_PROJECT_NETWORKCONSTANTS_H
+#endif // PV264_PROJECT_NETWORKCONSTANTS_H

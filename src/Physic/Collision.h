@@ -9,19 +9,18 @@
 
 struct Collision {
 
-    RigidBody& first;
-    RigidBody& second;
-    float penetration;
-	Vector_Float normal;
+  RigidBody &first;
+  RigidBody &second;
+  float penetration;
+  Vector_Float normal;
 
-    Collision(RigidBody &first, RigidBody &second) : first(first), second(second) {};
+  Collision(RigidBody &first, RigidBody &second)
+      : first(first), second(second){};
 
-    Collision(RigidBody &first, RigidBody &second, float penetration, const Vector_Float &normal) : first(first),
-    second(second),
-    penetration(penetration),
-    normal(normal) {};
-
+  Collision(RigidBody &first, RigidBody &second, float penetration,
+            const Vector_Float &normal)
+      : first(first), second(second), penetration(penetration),
+        normal(normal){};
 };
 
-
-#endif //PV264_PROJECT_COLLISION_H
+#endif // PV264_PROJECT_COLLISION_H

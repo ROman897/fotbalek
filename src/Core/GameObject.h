@@ -5,28 +5,24 @@
 #ifndef PV264_PROJECT_GAMEOBJECT_H
 #define PV264_PROJECT_GAMEOBJECT_H
 
-
-#include <vector>
+#include "../Utils/Declarations.h"
 #include <memory>
 #include <string>
-#include "../Utils/Declarations.h"
+#include <vector>
 
-template <typename TSettings>
-struct GameObject {
+template <typename TSettings> struct GameObject {
 
 public:
-    bool m_alive;
-    using Bitset = typename TSettings::Bitset;
+  bool m_alive;
+  using Bitset = typename TSettings::Bitset;
 
-    // identifies gameobject by something easily grasped by user
-    // good idea to make tag unique, so it identifies certain entity
-    std::string m_tag;
-    Id m_id;
-    Bitset m_bitset;
+  // identifies gameobject by something easily grasped by user
+  // good idea to make tag unique, so it identifies certain entity
+  std::string m_tag;
+  Id m_id;
+  Bitset m_bitset;
 
-    GameObject() : m_bitset(){
-    }
+  GameObject() : m_bitset() {}
 };
 
-
-#endif //PV264_PROJECT_GAMEOBJECT_H
+#endif // PV264_PROJECT_GAMEOBJECT_H

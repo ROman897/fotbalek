@@ -4,7 +4,5 @@
 
 #ifndef PV264_PROJECT_BALLCOMP_H
 #define PV264_PROJECT_BALLCOMP_H
-struct BallComp{
-
-};
-#endif //PV264_PROJECT_BALLCOMP_H
+struct BallComp {};
+#endif // PV264_PROJECT_BALLCOMP_H

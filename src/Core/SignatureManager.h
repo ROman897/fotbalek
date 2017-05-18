@@ -5,20 +5,19 @@
 #ifndef PV264_PROJECT_SIGNATUREMANAGER_H
 #define PV264_PROJECT_SIGNATUREMANAGER_H
 
-
+#include "../Utils/Declarations.h"
 #include <boost/hana.hpp>
+#include <boost/hana/equal.hpp>
 #include <boost/hana/ext/boost/mpl/list.hpp>
-#include <vector>
+#include <boost/hana/integral_constant.hpp>
+#include <boost/hana/length.hpp>
+#include <boost/hana/optional.hpp>
+#include <boost/hana/replicate.hpp>
+#include <boost/hana/size.hpp>
 #include <boost/hana/tuple.hpp>
 #include <boost/hana/type.hpp>
 #include <iostream>
-#include "../Utils/Declarations.h"
-#include <boost/hana/size.hpp>
-#include <boost/hana/equal.hpp>
-#include <boost/hana/integral_constant.hpp>
-#include <boost/hana/optional.hpp>
-#include <boost/hana/replicate.hpp>
-#include <boost/hana/length.hpp>
+#include <vector>
 
 namespace hana = boost::hana;
 using namespace hana::literals;
@@ -35,15 +34,16 @@ using namespace hana::literals;
  *
  * @tparam TSettings
  */
-template < typename TSettings>
-class SignatureManager{
+template <typename TSettings> class SignatureManager {
 public:
-    using signatureSettings = typename TSettings::signatureSettings;
-    using Bitset = typename TSettings::Bitset;
+  using signatureSettings = typename TSettings::signatureSettings;
+  using Bitset = typename TSettings::Bitset;
 
-    static constexpr Bitset b = Bitset();
-    static constexpr decltype(hana::replicate<hana::tuple_tag>(b, hana::length(signatureSettings::signatureList))) m_signatures = hana::replicate<hana::tuple_tag>(b, hana::length(signatureSettings::signatureList));
-
+  static constexpr Bitset b = Bitset();
+  static constexpr decltype(hana::replicate<hana::tuple_tag>(
+      b, hana::length(signatureSettings::signatureList))) m_signatures =
+      hana::replicate<hana::tuple_tag>(
+          b, hana::length(signatureSettings::signatureList));
 };
 
-#endif //PV264_PROJECT_SIGNATUREMANAGER_H
+#endif // PV264_PROJECT_SIGNATUREMANAGER_H

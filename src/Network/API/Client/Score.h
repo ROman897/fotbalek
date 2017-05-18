@@ -6,12 +6,12 @@
 #define PV264_PROJECT_SCORE_H
 
 struct Score {
-    Score() = default;
+  Score() = default;
 
-	Score(int trueTeam, int falseTeam) : team1(trueTeam), team2(falseTeam) {}
+  Score(int trueTeam, int falseTeam) : team1(trueTeam), team2(falseTeam) {}
 
-	int team1;
-	int team2;
+  int team1;
+  int team2;
 };
 
-#endif //PV264_PROJECT_SCORE_H
+#endif // PV264_PROJECT_SCORE_H

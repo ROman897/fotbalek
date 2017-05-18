@@ -5,51 +5,36 @@
 #ifndef PV264_PROJECT_MESSAGE_H
 #define PV264_PROJECT_MESSAGE_H
 
-#include <vector>
-#include "../../../Utils/Declarations.h"
 #include "../../../Components/Network/NetworkId.h"
+#include "../../../Utils/Declarations.h"
+#include <vector>
 
-template<typename T>
-class Message {
-	Id m_messageId;
-	std::vector<NetworkId> m_playerIds;
-	std::vector<T> m_playerMovement;
-	bool m_valid;
+template <typename T> class Message {
+  Id m_messageId;
+  std::vector<NetworkId> m_playerIds;
+  std::vector<T> m_playerMovement;
+  bool m_valid;
 
 public:
-	Message() : m_valid(false) {}
+  Message() : m_valid(false) {}
 
-	Id getMessageId() const {
-		return m_messageId;
-	}
+  Id getMessageId() const { return m_messageId; }
 
-	void setMessageId(Id messageId) {
-		m_messageId = messageId;
-	}
+  void setMessageId(Id messageId) { m_messageId = messageId; }
 
-	void addNetworkId(const NetworkId &newId) {
-		m_playerIds.push_back(newId);
-	}
+  void addNetworkId(const NetworkId &newId) { m_playerIds.push_back(newId); }
 
-	void addTransform(const T &newMovement) {
-		m_playerMovement.push_back(newMovement);
-	}
+  void addTransform(const T &newMovement) {
+    m_playerMovement.push_back(newMovement);
+  }
 
-	std::vector<NetworkId> &getIds() {
-		return m_playerIds;
-	}
+  std::vector<NetworkId> &getIds() { return m_playerIds; }
 
-	std::vector<T> &getMovements() {
-		return m_playerMovement;
-	}
+  std::vector<T> &getMovements() { return m_playerMovement; }
 
-	bool isValid() const {
-		return m_valid;
-	}
+  bool isValid() const { return m_valid; }
 
-	void setValid(bool value) {
-		m_valid = value;
-	}
+  void setValid(bool value) { m_valid = value; }
 };
 
-#endif //PV264_PROJECT_MESSAGE_H
+#endif // PV264_PROJECT_MESSAGE_H

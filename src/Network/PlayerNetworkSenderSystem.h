@@ -5,72 +5,63 @@
 #ifndef PV264_PROJECT_PLAYERNETWORKSENDERSYSTEM_H
 #define PV264_PROJECT_PLAYERNETWORKSENDERSYSTEM_H
 
-#include "../Components/Network/NetworkId.h"
 #include "../Components/Logic/MovementInputHolder.h"
+#include "../Components/Network/NetworkId.h"
 #include "../Core/ComponentManager.h"
-#include "API/Client/Client.h"
 #include "../SettingsDefines.h"
+#include "API/Client/Client.h"
 
-template <typename TSettings>
-class PlayerNetworkSenderSystem{
-
+template <typename TSettings> class PlayerNetworkSenderSystem {
 
 private:
-    ComponentManager<TSettings>* m_componentManager;
-    // id of a gameobject that has NetworkId and MovementInputHolder components
-    Id id;
-    bool m_started;
+  ComponentManager<TSettings> *m_componentManager;
+  // id of a gameobject that has NetworkId and MovementInputHolder components
+  Id id;
+  bool m_started;
 
-    MovementInputHolder m_inputHolder;
+  MovementInputHolder m_inputHolder;
 
-    Client* m_playerClient;
+  Client *m_playerClient;
 
-    bool prepareData(MovementInputHolder& inputHolder){
-        bool result = false;
-        m_componentManager->template forEntityMatching_S<SystemSignature_Network_Input>(id, [this, &result](MovementInputHolder* _inputHolder){
-            if (! _inputHolder->valid)
+  bool prepareData(MovementInputHolder &inputHolder) {
+    bool result = false;
+    m_componentManager
+        ->template forEntityMatching_S<SystemSignature_Network_Input>(
+            id, [this, &result](MovementInputHolder *_inputHolder) {
+              if (!_inputHolder->valid)
                 return;
-            m_inputHolder = *_inputHolder;
-            _inputHolder->moveHorizontal = false;
-            _inputHolder->moveVertical = false;
-            _inputHolder->valid = false;
-            result = true;
-        });
-        return result;
+              m_inputHolder = *_inputHolder;
+              _inputHolder->moveHorizontal = false;
+              _inputHolder->moveVertical = false;
+              _inputHolder->valid = false;
+              result = true;
+            });
+    return result;
+  }
+
+  void sendData() {
+    if (!m_started && !m_playerClient->hasStarted())
+      return;
+    m_started = true;
+    if (prepareData(m_inputHolder)) {
+      m_playerClient->sendData(m_inputHolder);
     }
-
-    void sendData(){
-        if (!m_started && ! m_playerClient->hasStarted())
-            return;
-        m_started = true;
-        if (prepareData(m_inputHolder)) {
-            m_playerClient->sendData(m_inputHolder);
-
-        }
-
-    }
+  }
 
 public:
+  PlayerNetworkSenderSystem() : m_started(false) {}
+  void setPlayerClient(Client *playerClient) { m_playerClient = playerClient; }
 
-    PlayerNetworkSenderSystem() : m_started(false){
+  void setManager(ComponentManager<TSettings> *manager) {
+    m_componentManager = manager;
+  }
 
-    }
-    void setPlayerClient(Client* playerClient){
-        m_playerClient = playerClient;
-    }
+  void start() {
+    id = m_componentManager
+             ->template findEntityMatching<SystemSignature_Network_Input>();
+  }
 
-    void setManager(ComponentManager<TSettings>* manager){
-        m_componentManager = manager;
-    }
-
-    void start(){
-        id = m_componentManager->template findEntityMatching<SystemSignature_Network_Input>();
-    }
-
-    void run(float dt){
-        sendData();
-    }
-
+  void run(float dt) { sendData(); }
 };
 
-#endif //PV264_PROJECT_PLAYERNETWORKSENDERSYSTEM_H
+#endif // PV264_PROJECT_PLAYERNETWORKSENDERSYSTEM_H
