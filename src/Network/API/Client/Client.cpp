@@ -1,6 +1,6 @@
 #include "Client.h"
 
-Client::Client() /*: m_myCounter(0), m_serverCounter(0)*/ {
+Client::Client() {
 	m_gameStarted.store(false);
 	m_gameEnded.store(false);
 	m_stateChanged.store(false);

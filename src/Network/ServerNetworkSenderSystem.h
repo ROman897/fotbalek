@@ -58,14 +58,14 @@ public:
 
         if (m_StateChange.m_GameOver || m_StateChange.m_Team1Scored || m_StateChange.m_Team2Scored){
             m_playerServer->sendStateChange(m_StateChange);
-            std::cout << "state changed return!!!" << std::endl;
+            //std::cout << "state changed return!!!" << std::endl;
             return;
         }
 
         std::vector<NetworkId> ids;
         std::vector<Transform> transforms;
         prepareData(ids, transforms);
-        std::cout << "sending data server!!!!!!!!!!!!!!!!!!! " << std::endl;
+        //std::cout << "sending data server!!!!!!!!!!!!!!!!!!! " << std::endl;
         m_playerServer->sendData(ids, transforms);
     }
 
