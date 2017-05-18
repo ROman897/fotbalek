@@ -142,7 +142,7 @@ inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
 }
 
 
-inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, const CircleCollider* shape2,
+/*inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, const CircleCollider* shape2,
                                               const Transform* transform2, Collision* collision, bool trigger){
 
     Vector_Float n = transform2->m_position - transform1->m_position;
@@ -169,7 +169,7 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
                 closest.m_y = y_extent;
             else
                 closest.m_y = -y_extent;
-        }*/
+        }
         //closest = {};
     }
 
@@ -207,14 +207,14 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
         collision->penetration = r - d;
     }
     return true;
-}
+}*/
 
 
 
 
 
 
-/*inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, const CircleCollider* shape2,
+inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, const CircleCollider* shape2,
                                        const Transform* transform2, Collision* collision, bool trigger){
 
     Vector_Float n = transform2->m_position - transform1->m_position;
@@ -222,8 +222,8 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
     float x_extent = (shape1->m_bottomRight.m_x - shape1->m_topLeft.m_x) / 2;
     float y_extent = (shape1->m_bottomRight.m_y - shape1->m_topLeft.m_y) / 2;
 
-    closest.m_x = Clamp( -x_extent, x_extent, 0.0f, closest.m_x );
-    closest.m_y = Clamp( -y_extent, y_extent, 0.0f, closest.m_y );
+    closest.m_x = Clamp( -x_extent, x_extent, closest.m_x );
+    closest.m_y = Clamp( -y_extent, y_extent, closest.m_y );
 
     bool inside = false;
 
@@ -263,7 +263,7 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
         collision->penetration = r - d;
     }
     return true;
-}*/
+}
 
 inline void processTriggerCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, ColliderTrigger* trigger,
                                                     const CircleCollider* shape2, const Transform* transform2){
