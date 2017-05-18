@@ -89,7 +89,7 @@ static const CollisionLayers kBallCollisionLayer;
 //-----------------------//max velocities
 
 //--------------------Player constants
-static constexpr int kMaxNumberOfPlayers = 1;
+static constexpr int kMaxNumberOfPlayers = 3;
 static constexpr int portNumber = 13000; //modify also ClientGameConstants.cpp
 
 //--------------------//Player Constants

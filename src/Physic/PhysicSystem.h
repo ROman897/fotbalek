@@ -170,7 +170,7 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
                 closest.m_y = -y_extent;
         }
     }
-    
+
     Vector_Float normal = n - closest;
     float d = normal.lengthSquared();
     float r = shape2->m_radius;
