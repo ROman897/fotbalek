@@ -33,6 +33,7 @@ class ServerLogicSystem{
             transform->m_position = ServerGameConstants::kStartingPositions[i];
             body->m_velocity = {0,0};
             body->m_activeForce = {0,0};
+            ++i;
             std::cout << "reset player!!!" << std::endl;
         });
 

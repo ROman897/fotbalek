@@ -51,7 +51,7 @@ inline void resolveCollision(const Collision &collision) {
 
     /*const float percent = 0.2;
     const float k_slop = 0.01;
-    Vector_Float correction = (max( collision.penetration - k_slop, 0.0f ) / (collision.first.m_inverseMass + collision.second.m_inverseMass))); //* percent * n
+    Vector_Float correction = (max( collision.penetration - k_slop, 0.0f ) / (collision.first.m_inverseMass + collision.second.m_inverseMass))* percent * n
     A.position -= A.inv_mass * correction
     B.position += B.inv_mass * correction*/
 }
