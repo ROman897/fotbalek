@@ -27,7 +27,7 @@ public:
 	mutable std::mutex m_messageMutex;
 	mutable std::mutex m_playersMutex;
 	mutable std::mutex m_scoreMutex;
-	mutable std::mutex m_stateChange;
+	mutable std::mutex m_stateChangeMutex;
 private:
 	std::vector<Player> m_players;
 	Score m_score;
@@ -78,6 +78,10 @@ public:
 	bool hasEnded() const;
 
 	bool hasStateChanged() const;
+
+	void resetStateChanged();
+
+	void resetState();
 
 };
 

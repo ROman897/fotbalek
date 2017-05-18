@@ -105,10 +105,13 @@ private:
                 continue;
             }
 
+
             std::lock_guard<std::mutex> messageMutex(m_UdpServer->m_messageMutex);
             auto& data = m_UdpServer->getMessage();
             if (! data.isValid())
                 continue;
+
+            std::cout << "server network receiver!!" << std::endl;
 
             auto& ids = data.getIds();
             auto& inputs = data.getMovements();

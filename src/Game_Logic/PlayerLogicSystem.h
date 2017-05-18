@@ -67,6 +67,9 @@ public:
         m_time += dt;
         if (m_time < ClientGameConstants::kKeyCooldown)
             return;
+
+        std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
+        updateState();
         m_time -= ClientGameConstants::kKeyCooldown;
         SDL_Event event;
 
@@ -88,7 +91,7 @@ public:
                     case SDLK_d:
                     case SDLK_RIGHT:
                         moveRight = true;
-                    std::cout << "input right key pressed" << std::endl;
+                    //std::cout << "input right key pressed" << std::endl;
                         break;
                     case SDLK_w:
                     case SDLK_UP:
@@ -96,7 +99,7 @@ public:
                         break;
                     case SDLK_s:
                     case SDLK_DOWN:
-                        std::cout << "input down key pressed" << std::endl;
+                        //std::cout << "input down key pressed" << std::endl;
                         moveDown = true;
                         break;
                     default:
@@ -116,7 +119,7 @@ public:
                     switch (event.key.keysym.sym) {
                         case SDLK_w:
                         case SDLK_UP:
-                            m_manager->template forEntityMatching_S<SystemSignature_Button>(activeButtonId,
+                            m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
                                                                                [this](Button *button, Sprite *sprite,
                                                                                       Label *label,
                                                                                       const Transform *transform) {
@@ -128,7 +131,7 @@ public:
                             break;
                         case SDLK_s:
                         case SDLK_DOWN:
-                            m_manager->template forEntityMatching_S<SystemSignature_Button>(activeButtonId,
+                            m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
                                                                                [this](Button *button, Sprite *sprite,
                                                                                       Label *label,
                                                                                       const Transform *transform) {
@@ -184,7 +187,7 @@ public:
 
 
             if (moveHorizontal || moveVertical || shoot) {
-                m_manager->template forEntityMatching_S<SystemSignature_Input >(movementInputId,
+                m_manager->template forEntityMatching<SystemSignature_Input >(movementInputId,
                                            [moveHorizontal, moveVertical, this](MovementInputHolder *inputHolder) {
                                                inputHolder->moveUp = moveUp;
                                                inputHolder->moveRight = moveRight;
@@ -231,14 +234,15 @@ public:
 
 private:
     void updateState(){
-        std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
-        m_manager->template forEntityMatching_S<SystemSignature_GameStateChange>(m_StateChangeId, [this](GameStateChange* stateChange){
+        m_manager->template forEntityMatching<SystemSignature_GameStateChange>(m_StateChangeId, [this](GameStateChange* stateChange){
             if (stateChange->m_Team1Scored) {
+                std::cout << "team 1 scored" << std::endl;
                 team1Scored();
                 stateChange->m_Team1Scored = false;
                 return;
             }
             if (stateChange->m_Team2Scored){
+                std::cout << "team 2 scored" << std::endl;
                 team2Scored();
                 stateChange->m_Team2Scored = false;
                 return;
@@ -304,7 +308,7 @@ private:
 
     void setArrowPosition(){
 
-        std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
+        //std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
         Transform t;
         m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
                                                                       [&t](Button *button, Sprite *sprite,
@@ -324,7 +328,7 @@ private:
     }
 
     void escPressed(){
-        std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
+        //std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
         m_escape = !m_escape;
         m_manager->template forEntitiesMatching<SystemSignature_Button>(
                 [this](const Button *button, Sprite *sprite, Label *label, Transform* transform) {

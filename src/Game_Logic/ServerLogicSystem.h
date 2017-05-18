@@ -26,18 +26,21 @@ class ServerLogicSystem{
 
 
     void resetPositions(){
-        std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
+        std::cout << "physical restore of positions" << std::endl;
+        //std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
         int i;
         m_manager->template forEntitiesMatching<SystemSignature_Player_Rigid>([&i](RigidBody* body, Transform* transform, PlayerComp* playerComp){
             transform->m_position = ServerGameConstants::kStartingPositions[i];
             body->m_velocity = {0,0};
             body->m_activeForce = {0,0};
+            std::cout << "reset player!!!" << std::endl;
         });
 
         m_manager->template forEntitiesMatching<SystemSignature_Ball_Rigid>([] (RigidBody* body, Transform* transform, BallComp* ballComp){
             transform->m_position = ServerGameConstants::kBallStartingPosition;
             body->m_velocity = {0,0};
             body->m_activeForce = {0,0};
+            std::cout << "reset ball!!!" << std::endl;
         });
     }
 
@@ -54,6 +57,7 @@ public:
     }
 
     void run(float dt){
+        //std::cout << "run" << std::endl;
         // this ensures that this method has components locked for the whole scope
         std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
         m_time += dt;
@@ -74,6 +78,7 @@ public:
         if (m_WaitingToResetPositions){
             m_WaitingTime += dt;
             if (m_WaitingTime > ServerGameConstants::kWaitingToResetPositionsTime){
+                std::cout << "reset positions" << std::endl;
                 // here we reset positions and set receive input to false
                 resetPositions();
                 m_manager->template forEntityMatching<SystemSignature_GameState>(m_stateHolderId, [](GameState* state){
@@ -87,8 +92,10 @@ public:
             return;
         }
         if (m_WaitingToResumeGame){
+
             m_WaitingTime += dt;
             if (m_WaitingTime > ServerGameConstants::kWaitingToResumeGameTime){
+                std::cout << "resume game" << std::endl;
 
                 m_manager->template forEntityMatching<SystemSignature_GameState>(m_stateHolderId, [](GameState* state){
                     state->m_ReceiveInput = true;
@@ -96,6 +103,14 @@ public:
                 // here we set receive input to true
                 m_WaitingTime = 0;
                 m_WaitingToResumeGame = false;
+
+                m_manager->template forEntityMatching<SystemSignature_ColliderTrigger>(m_LeftGoalId, [this](ColliderTrigger* trigger) {
+                    trigger->m_Triggered = false;
+                });
+
+                m_manager->template forEntityMatching<SystemSignature_ColliderTrigger>(m_RightGoalId, [this](ColliderTrigger* trigger) {
+                    trigger->m_Triggered = false;
+                });
             }
             return;
         }
@@ -105,7 +120,7 @@ public:
         m_manager->template forEntityMatching<SystemSignature_ColliderTrigger>(m_LeftGoalId, [this](ColliderTrigger* trigger){
             if (! trigger->m_Triggered)
                 return;
-            std::cout << "check triggered" << std::endl;
+            std::cout << "left goal scored" << std::endl;
             trigger->m_Triggered = false;
             m_manager->template forEntityMatching<SystemSignature_GameStateChange>(m_GameStateChangeId, [] (GameStateChange* change) {
                 change->m_Team1Scored = true;

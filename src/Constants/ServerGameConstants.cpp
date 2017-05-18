@@ -24,14 +24,14 @@ const float ServerGameConstants::kPlayerInverseMass = 1.0f;
 const float ServerGameConstants::kPlayerRestitution = 0.8f;
 const float ServerGameConstants::kPlayerSpeedDecrement = 0.98f;
 
-const float ServerGameConstants::kBallInverseMass = 3.0f;
-const float ServerGameConstants::kBallRestitution = 0.6f;
+const float ServerGameConstants::kBallInverseMass = 4.0f;
+const float ServerGameConstants::kBallRestitution = 0.4f;
 const float ServerGameConstants::kBallSpeedDecrement = 0.998f;
 //----------------------//Rigid Bodies
 
 //-----------------------max Velocities
-const float ServerGameConstants::kPlayerMaxVelocity = 30.0f;
-const float ServerGameConstants::kBallMaxVelocity = 40.0f;
+const float ServerGameConstants::kPlayerMaxVelocity = 40.0f;
+const float ServerGameConstants::kBallMaxVelocity = 50.0f;
 //-----------------------//max velocities
 
 //------------------------Barriers
@@ -42,8 +42,8 @@ const float ServerGameConstants::kDownBoundary = 50.0f;
 //------------------------//Barriers
 
 //------------------------Goals
-const Vector_Float ServerGameConstants::kLeftGoalPos = {50,500};
-const Vector_Float ServerGameConstants::kRightGoalPos = {1045,500};
+const Vector_Float ServerGameConstants::kLeftGoalPos = {50,450};
+const Vector_Float ServerGameConstants::kRightGoalPos = {1045,450};
 const Vector_Float ServerGameConstants::kGoalBotRight = {50, 200};
 const std::string ServerGameConstants::kLeftGoalTag = "leftGoal";
 const std::string ServerGameConstants::kRightGoalTag = "rightGoal";
@@ -51,7 +51,7 @@ const CollisionLayers ServerGameConstants::kGoalCollisionLayer = GOALS;
 //--------------------------//Goals
 
 //---------------------Game Time
-const float ServerGameConstants::kGameTime = 30000;
+const float ServerGameConstants::kGameTime = 1200;
 //---------------------//Game Time
 
 //----------------------Barriers

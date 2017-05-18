@@ -206,7 +206,7 @@ void Client::parseMessage(std::string &input) {
 				if (input[i] == '2') {
 					newState.m_Team2Scored = true;
 				}
-				std::lock_guard<std::mutex> stateLock (m_stateChange);
+				std::lock_guard<std::mutex> stateLock (m_stateChangeMutex);
 				m_stateChanged.store(true);
 				m_state = std::move(newState);
 			}
@@ -314,4 +314,14 @@ bool Client::hasStateChanged() const {
 
 const GameStateChange &Client::getState() const {
 	return m_state;
+}
+
+void Client::resetStateChanged() {
+	m_stateChanged.store(false);
+}
+
+void Client::resetState() {
+	m_state.m_GameOver = false;
+	m_state.m_Team1Scored = false;
+	m_state.m_Team2Scored = false;
 }

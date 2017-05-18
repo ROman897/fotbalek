@@ -155,10 +155,11 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
 
     bool inside = false;
 
-    if(n == closest) {
+    if( closest.m_x > -x_extent && closest.m_x < x_extent && closest.m_y > -y_extent && closest.m_y < y_extent) {
         inside = true;
+        //std::cout << "is Inside !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
 
-        if(std::abs( n.m_x ) > std::abs( n.m_y )) {
+        /*if(std::abs( n.m_x ) > std::abs( n.m_y )) {
             if(closest.m_x > 0)
                 closest.m_x = x_extent;
             else
@@ -168,10 +169,21 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
                 closest.m_y = y_extent;
             else
                 closest.m_y = -y_extent;
-        }
+        }*/
+        //closest = {};
     }
 
-    Vector_Float normal = n - closest;
+    Vector_Float normal;
+    if (inside){
+     if (std::abs(closest.m_x) < std::abs(closest.m_y)){
+         normal = {0, closest.m_x};
+     } else{
+         normal = {closest.m_y, 0};
+     }
+
+    } else {
+        normal = n - closest;
+    }
     float d = normal.lengthSquared();
     float r = shape2->m_radius;
 
@@ -186,8 +198,8 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
     }
     d = std::sqrt( d );
     if(inside) {
-        collision->normal = n * -1;
-        collision->normal.normalize();
+        collision->normal = n;
+        //collision->normal.normalize();
         collision->penetration = r - d;
     } else {
         collision->normal = n;

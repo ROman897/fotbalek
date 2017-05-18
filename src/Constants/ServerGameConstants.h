@@ -20,7 +20,7 @@ struct ServerGameConstants{
 
 //----------------------Physics
 static constexpr Uint32 kPhysicAccumulatorLimit = 20U;
-static constexpr float kPhysicFps = 60;
+static constexpr float kPhysicFps = 90;
 static constexpr float kPhysicDeltaTime = 1 / kPhysicFps;
 static constexpr float kInputMovementCoefficient = 10;
 //-------------------//Physics
@@ -100,8 +100,8 @@ static const Vector_Float kStartingPositions[kMaxNumberOfPlayers];
 //---------------------//Starting Positions
 
 //----------------------Waiting Times
-static constexpr float kWaitingToResetPositionsTime = 1;
-static constexpr float kWaitingToResumeGameTime = 2;
+static constexpr float kWaitingToResetPositionsTime = 25;
+static constexpr float kWaitingToResumeGameTime = 20;
 
 //---------------------Game Time
 static const float kGameTime;

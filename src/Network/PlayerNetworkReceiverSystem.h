@@ -64,10 +64,17 @@ private:
 
     void runUpdate(){
         if (m_playerClient->hasStateChanged()){
+            std::cout << "client has state changed !!!!!!!!!!!!!!!!!!1" << std::endl;
+            std::lock_guard<std::mutex> stateGuard(m_playerClient->m_stateChangeMutex);
             GameStateChange change = m_playerClient->getState();
+            std::cout << "team 1 scored: " << change.m_Team1Scored << std::endl;
+            std::cout << "team 2 scored: " << change.m_Team2Scored << std::endl;
             m_componentManager->template forEntityMatching_S<SystemSignature_GameStateChange>(m_StateChangeId, [change](GameStateChange* _change){
+                std::cout << "state changed" << std::endl;
                 *_change = change;
             });
+            m_playerClient->resetState();
+            m_playerClient->resetStateChanged();
         }
 
         std::lock_guard<std::mutex> messageGuard(m_playerClient->m_messageMutex);
