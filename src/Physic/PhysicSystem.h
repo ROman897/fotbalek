@@ -336,10 +336,9 @@ public:
     m_ComponentManager->template forEntitiesMatchingPairs<
         SystemSignature_TCollider_Circle, SystemSignature_Circle_Collider>(
         processTriggerCollisionCircle_Circle);
-    m_ComponentManager
-        ->template forEntitiesMatchingPairs<SystemSignature_TCollider_Rectangle,
-                                            SystemSignature_Rectangle_Collider>(
-            processTriggerCollisionRectangle_Rectangle);
+    m_ComponentManager->template forEntitiesMatchingPairs<SystemSignature_TCollider_Rectangle,
+        SystemSignature_Rectangle_Collider>(
+        processTriggerCollisionRectangle_Rectangle);
     m_ComponentManager->template forEntitiesMatchingPairs<
         SystemSignature_TCollider_Rectangle, SystemSignature_Circle_Collider>(
         processTriggerCollisionRectangle_Circle);
