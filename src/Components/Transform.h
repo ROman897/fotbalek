@@ -6,6 +6,7 @@
 #define PV264_PROJECT_TRANSFORM_H
 
 #include "../Utils/Vector2.h"
+#include "../Utils/Declarations.h"
 
 struct Transform {
   Vector_Float m_position;

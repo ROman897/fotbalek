@@ -6,6 +6,7 @@
 #define PV264_PROJECT_RECTANGLESHAPE_H
 
 #include <SDL_pixels.h>
+#include "../../../Constants/ClientGameConstants.h"
 
 struct RectangleShape {
   int x, y, mWidth, mHeight;
