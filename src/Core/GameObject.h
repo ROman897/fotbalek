@@ -8,7 +8,7 @@
 
 #include <vector>
 #include <memory>
-
+#include <string>
 #include "../Utils/declarations.h"
 
 template <typename TSettings>

@@ -5,6 +5,7 @@
 #ifndef PV264_PROJECT_SERVERGAMECONSTANTS_H
 #define PV264_PROJECT_SERVERGAMECONSTANTS_H
 
+#include <string>
 #include <SDL_quit.h>
 #include "../Utils/declarations.h"
 

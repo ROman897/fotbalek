@@ -6,6 +6,7 @@
 #define PV264_PROJECT_CLIENTGAMECONSTANTS_H
 
 #include <SDL_pixels.h>
+#include <string>
 #include "../Utils/declarations.h"
 
 enum GraphicLayers{

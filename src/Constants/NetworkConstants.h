@@ -4,6 +4,7 @@
 #define PV264_PROJECT_NETWORKCONSTANTS_H
 
 #include "../Utils/declarations.h"
+#include <string>
 
 struct NetworkConstants {
     static const std::string kServerPort;
