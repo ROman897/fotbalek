@@ -7,7 +7,7 @@
 
 
 #include "../Core/ComponentManager.h"
-#include "../Utils/declarations.h"
+#include "../Utils/Declarations.h"
 #include "../Components/Transform.h"
 #include "../Components/Graphic/Shapes/RectangleShape.h"
 #include "../Components/Graphic/Sprite.h"

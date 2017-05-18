@@ -9,13 +9,12 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include "../Utils/declarations.h"
+#include "../Utils/Declarations.h"
 
 template <typename TSettings>
 struct GameObject {
 
 public:
-
     bool m_alive;
     using Bitset = typename TSettings::Bitset;
 
@@ -24,7 +23,6 @@ public:
     std::string m_tag;
     Id m_id;
     Bitset m_bitset;
-
 
     GameObject() : m_bitset(){
     }

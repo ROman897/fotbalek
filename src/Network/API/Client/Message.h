@@ -6,7 +6,7 @@
 #define PV264_PROJECT_MESSAGE_H
 
 #include <vector>
-#include "../../../Utils/declarations.h"
+#include "../../../Utils/Declarations.h"
 #include "../../../Components/Network/NetworkId.h"
 
 template<typename T>

@@ -26,7 +26,6 @@
 using compSettings = ComponentSettings <Transform, RectangleShape, RigidBody, CircleCollider, RectangleCollider, Sprite,
         MovementInputHolder, Button, Label, NetworkId, PlayerComp, ColliderTrigger, GameState, GameStateChange, BallComp>;
 
-
 using SystemSignature_RectangleGraphic = Signature <RectangleShape, Transform>;
 using SystemSignature_SpriteGraphic = Signature <Sprite, Transform>;
 using SystemSignature_LabelGraphic = Signature <Label, Transform>;

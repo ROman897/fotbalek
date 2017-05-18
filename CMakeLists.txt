@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g")
 set(SOURCE_FILES src/Physic/PhysicSystem.h src/Utils/Timer.cpp src/Utils/Timer.h src/Physic/Collision.h
         src/Core/GameObject.h src/Core/GameEngine.h src/Core/ComponentManager.h src/Core/SignatureManager.h
-        src/Core/EngineSettings.h src/Core/ComponentStorage.h src/Utils/declarations.h src/Utils/Vector2.h
+        src/Core/EngineSettings.h src/Core/ComponentStorage.h src/Utils/Declarations.h src/Utils/Vector2.h
         src/Core/EngineStructures.h src/Game_Logic/PlayerLogicSystem.h src/Graphic/GraphicSystem.h
         src/SettingsDefines.h src/Network/API/Client/Message.h src/Network/API/Client/Player.h src/Network/API/Client/UdpBase.h)
 

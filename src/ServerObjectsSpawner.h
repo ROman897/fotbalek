@@ -8,7 +8,7 @@
 #include "Core/GameEngine.h"
 #include "Core/EngineSettings.h"
 #include "Components/Transform.h"
-#include "Utils/declarations.h"
+#include "Utils/Declarations.h"
 #include "Components/Graphic/Shapes/RectangleShape.h"
 #include "Graphic/GraphicSystem.h"
 #include "Components/Physic/RigidBody.h"
@@ -25,7 +25,6 @@ using externalSysSettings_Server = SystemSettings<PhysicSystem<settings >, Serve
 using EngineType_Server = GameEngine<settings, sysSettings_Server, externalSysSettings_Server >;
 
 Id spawnPlayer_Server(EngineType_Server& gameEngine);
-
 
 Id spawnBall_Server(EngineType_Server& gameEngine);
 

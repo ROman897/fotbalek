@@ -64,7 +64,6 @@ private:
 
     void runUpdate(){
         if (m_playerClient->hasStateChanged()){
-            //std::cout << "client has state changed !!!!!!!!!!!!!!!!!!1" << std::endl;
             std::lock_guard<std::mutex> stateGuard(m_playerClient->m_stateChangeMutex);
             GameStateChange change = m_playerClient->getState();
             std::cout << "team 1 scored: " << change.m_Team1Scored << std::endl;
@@ -132,12 +131,7 @@ void start(){
                 gameStarted();
                 continue;
             }
-
             runUpdate();
-
-
-
-
         }
     }
 

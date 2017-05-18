@@ -5,7 +5,7 @@
 #ifndef PV264_PROJECT_CIRCLE_H
 #define PV264_PROJECT_CIRCLE_H
 
-#include "../../../Utils/declarations.h"
+#include "../../../Utils/Declarations.h"
 #include "../../../Constants/ServerGameConstants.h"
 
 struct CircleCollider{

@@ -16,7 +16,7 @@
 #include <boost/hana/optional.hpp>
 #include <boost/hana/type.hpp>
 #include <bitset>
-#include "../Utils/declarations.h"
+#include "../Utils/Declarations.h"
 
 
 /*

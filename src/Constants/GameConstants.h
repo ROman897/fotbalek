@@ -8,7 +8,7 @@
 
 #include <SDL_quit.h>
 #include <SDL_pixels.h>
-#include "../Utils/declarations.h"
+#include "../Utils/Declarations.h"
 
 struct GameConstants {
 

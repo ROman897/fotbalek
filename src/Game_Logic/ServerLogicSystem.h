@@ -27,21 +27,18 @@ class ServerLogicSystem{
 
     void resetPositions(){
         std::cout << "physical restore of positions" << std::endl;
-        //std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
         int i = 0;
         m_manager->template forEntitiesMatching<SystemSignature_Player_Rigid>([&i](RigidBody* body, Transform* transform, PlayerComp* playerComp){
             transform->m_position = ServerGameConstants::kStartingPositions[i];
             body->m_velocity = {0,0};
             body->m_activeForce = {0,0};
             ++i;
-            std::cout << "reset player!!!" << std::endl;
         });
 
         m_manager->template forEntitiesMatching<SystemSignature_Ball_Rigid>([] (RigidBody* body, Transform* transform, BallComp* ballComp){
             transform->m_position = ServerGameConstants::kBallStartingPosition;
             body->m_velocity = {0,0};
             body->m_activeForce = {0,0};
-            std::cout << "reset ball!!!" << std::endl;
         });
     }
 
@@ -58,7 +55,6 @@ public:
     }
 
     void run(float dt){
-        //std::cout << "run" << std::endl;
         // this ensures that this method has components locked for the whole scope
         std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
         m_time += dt;
@@ -119,7 +115,7 @@ public:
 
 
         m_manager->template forEntityMatching<SystemSignature_ColliderTrigger>(m_LeftGoalId, [this](ColliderTrigger* trigger){
-            if (! trigger->m_Triggered)
+            if (!trigger->m_Triggered)
                 return;
             std::cout << "left goal scored" << std::endl;
             trigger->m_Triggered = false;
@@ -138,9 +134,7 @@ public:
             });
             m_WaitingToResetPositions = true;
         } );
-
     }
-
     ServerLogicSystem() : m_teamLeftScore(0), m_teamRightScore(0), m_time(0) {}
 };
 #endif //PV264_PROJECT_SERVERLOGICSYSTEM_H

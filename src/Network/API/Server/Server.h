@@ -6,7 +6,7 @@
 #include <mutex>
 #include "../Client/UdpBase.h"
 #include "../Client/Player.h"
-#include "../../../Utils/declarations.h"
+#include "../../../Utils/Declarations.h"
 #include "../../../Components/Logic/MovementInputHolder.h"
 #include "../Client/Message.h"
 #include "../../../Constants/ServerGameConstants.h"

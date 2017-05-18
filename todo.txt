@@ -4,9 +4,9 @@ Finish implementation of server methods used by ServerNetwork Receiver and Sende
 2. Implement message Id on both sides so that older messages are ignored --OPTIONAL
 3. Add to ServerObjectsSpawner methods to add players ball and barriers on server side --DONE
 4. Implement Server game logic such as counting score, checking when ball is in the goal --DONE
-   and reseting positions when a goal is scored + game timer --DONE
+   and resetting positions when a goal is scored + game timer --DONE
 5. find player and ball sprites to use --DONE
 6. Get Menu to work --DONE
 7. Send message that game has ended and who won --DONE
-    a) add this to client --TODO
-8. Add recognition of error responses to the Client
+    a) add this to client --DONE
+8. Add recognition of error responses to the Client --DEPRECATED

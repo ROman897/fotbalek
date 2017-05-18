@@ -6,7 +6,7 @@
 #define PV264_PROJECT_RECTANGLE_H
 
 
-#include "../../../Utils/declarations.h"
+#include "../../../Utils/Declarations.h"
 
 struct RectangleCollider {
     RectangleCollider(const Vector_Float &topLeft, const Vector_Float &bottomRight, CollisionLayers layer) :

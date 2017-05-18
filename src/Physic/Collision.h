@@ -7,8 +7,6 @@
 
 #include "../Components/Physic/RigidBody.h"
 
-//class RigidBody;
-
 struct Collision {
 
     RigidBody& first;

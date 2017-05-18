@@ -23,9 +23,6 @@ Id spawnBall_Server(EngineType_Server &gameEngine) {
     gameEngine.addComponent<NetworkId>(id, 0);
     gameEngine.addComponent<CircleCollider>(id, ServerGameConstants::kBallColliderCenter, ServerGameConstants::kBallColliderRadius,
     ServerGameConstants::kBallCollisionLayer);
-    //Vector_Float topleft = {-9,-9};
-    //Vector_Float botRIght = {9, 9};
-    //gameEngine.addComponent<RectangleCollider>(id, topleft, botRIght, ServerGameConstants::kBallCollisionLayer);
     gameEngine.addComponent<RigidBody>(id, ServerGameConstants::kBallInverseMass, ServerGameConstants::kBallRestitution,
                                        ServerGameConstants::kBallSpeedDecrement, ServerGameConstants::kBallMaxVelocity);
     gameEngine.addComponent<BallComp>(id);

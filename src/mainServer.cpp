@@ -10,7 +10,6 @@ int main() {
 	namespace hana = boost::hana;
 	using namespace hana::literals;
 
-
 	Server server;
 	server.init();
 	EngineType_Server gameEngine;
@@ -40,6 +39,5 @@ int main() {
 	ServerGameConstants::kUpBoundary, ServerGameConstants::kDownBoundary);
 
 	gameEngine.start();
-
 
 }

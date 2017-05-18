@@ -7,7 +7,6 @@ int main() {
     namespace hana = boost::hana;
     using namespace hana::literals;
 
-
     Client client;
     client.connect(NetworkConstants::kServerAddress, NetworkConstants::kServerPort);
 
@@ -18,7 +17,6 @@ int main() {
     clientSender.setPlayerClient(&client);
     auto& clientReceiver = gameEngine.getExternalSystem<PlayerNetworkReceiverSystem<settings>>();
     clientReceiver.setPlayerClient(&client);
-
 
     spawnPitch(gameEngine);
 
@@ -46,8 +44,6 @@ int main() {
     spawnLabel(gameEngine, ClientGameConstants::kScored1LabelTag, ClientGameConstants::kScored1LabelText);
     spawnLabel(gameEngine, ClientGameConstants::kScored2LabelTag, ClientGameConstants::kScored2LabelText);
 
-
     gameEngine.start();
-
 
 }

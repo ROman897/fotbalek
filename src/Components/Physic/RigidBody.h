@@ -6,7 +6,7 @@
 #define PV264_PROJECT_RIGIDBODY_H
 
 #include "../../Utils/Vector2.h"
-#include "../../Utils/declarations.h"
+#include "../../Utils/Declarations.h"
 
 struct RigidBody {
 

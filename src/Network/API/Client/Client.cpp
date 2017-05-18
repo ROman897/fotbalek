@@ -215,10 +215,6 @@ void Client::parseMessage(std::string &input) {
 	if (!m_gameStarted.load()) {
 		m_gameStarted.store(started);
 	}
-/*	} catch (std::exception &ex) {
-		std::cerr << ex.what() << std::endl;
-		std::cout << "zparsoval som msg" << std::endl;
-	}*/
 	newMessage.setValid(true);//vyriesit messageID
 	m_lastMessage = std::move(newMessage);
 }

@@ -12,7 +12,7 @@
 #include "../Components/Physic/Shapes/RectangleCollider.h"
 #include "Collision.h"
 #include <cmath>
-#include "../Utils/declarations.h"
+#include "../Utils/Declarations.h"
 #include "../Components/Transform.h"
 #include "../Core/ComponentManager.h"
 #include "../Utils/Timer.h"
@@ -49,11 +49,6 @@ inline void resolveCollision(const Collision &collision) {
     collision.first.m_velocity.limitLength(collision.first.m_maxSpeed);
     collision.second.m_velocity.limitLength(collision.second.m_maxSpeed);
 
-    /*const float percent = 0.2;
-    const float k_slop = 0.01;
-    Vector_Float correction = (max( collision.penetration - k_slop, 0.0f ) / (collision.first.m_inverseMass + collision.second.m_inverseMass))* percent * n
-    A.position -= A.inv_mass * correction
-    B.position += B.inv_mass * correction*/
 }
 
 inline float Clamp(float min, float max, float middle, float val) {

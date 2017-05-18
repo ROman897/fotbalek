@@ -7,7 +7,6 @@
 
 #endif //PV264_PROJECT_COMPONENTSTORAGE_H
 
-//#include <boost/hana>
 #include <boost/hana.hpp>
 #include <vector>
 #include <boost/hana/tuple.hpp>
@@ -15,7 +14,7 @@
 #include <boost/hana/equal.hpp>
 #include <boost/hana/optional.hpp>
 #include <iostream>
-#include "../Utils/declarations.h"
+#include "../Utils/Declarations.h"
 #include <type_traits>
 #include <boost/hana/transform.hpp>
 #include <mutex>

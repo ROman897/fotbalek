@@ -7,7 +7,7 @@
 
 #include <SDL_events.h>
 #include "../Components/Logic/MovementInputHolder.h"
-#include "../Utils/declarations.h"
+#include "../Utils/Declarations.h"
 #include "../Core/ComponentManager.h"
 #include "../Constants/GameConstants.h"
 #include "../Utils/Timer.h"
@@ -91,7 +91,6 @@ public:
                     case SDLK_d:
                     case SDLK_RIGHT:
                         moveRight = true;
-                    //std::cout << "input right key pressed" << std::endl;
                         break;
                     case SDLK_w:
                     case SDLK_UP:
@@ -99,7 +98,6 @@ public:
                         break;
                     case SDLK_s:
                     case SDLK_DOWN:
-                        //std::cout << "input down key pressed" << std::endl;
                         moveDown = true;
                         break;
                     default:
@@ -161,7 +159,6 @@ public:
                             case SDLK_d:
                             case SDLK_RIGHT:
                                 moveRight = false;
-                                //std::cout << "input right key pressed" << std::endl;
                                 break;
                             case SDLK_w:
                             case SDLK_UP:
@@ -169,7 +166,6 @@ public:
                                 break;
                             case SDLK_s:
                             case SDLK_DOWN:
-                                //std::cout << "input down key pressed" << std::endl;
                                 moveDown = false;
                                 break;
                             default:
@@ -182,9 +178,6 @@ public:
 
         bool moveVertical = (moveUp  || moveDown);
         bool moveHorizontal = (moveRight || moveLeft);
-        //std::cout << "input move horizontal: " << moveHorizontal << std::endl;
-        //std::cout << "input move vertical: " << moveVertical << std::endl;
-
 
             if (moveHorizontal || moveVertical || shoot) {
                 m_manager->template forEntityMatching<SystemSignature_Input >(movementInputId,
@@ -307,8 +300,6 @@ private:
 
 
     void setArrowPosition(){
-
-        //std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
         Transform t;
         m_manager->template forEntityMatching<SystemSignature_Button>(activeButtonId,
                                                                       [&t](Button *button, Sprite *sprite,
@@ -328,7 +319,6 @@ private:
     }
 
     void escPressed(){
-        //std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
         m_escape = !m_escape;
         m_manager->template forEntitiesMatching<SystemSignature_Button>(
                 [this](const Button *button, Sprite *sprite, Label *label, Transform* transform) {
@@ -343,8 +333,6 @@ private:
             sprite->m_enabled = m_escape;
         });
     }
-
-
 };
 
 #endif //PV264_PROJECT_INPUTMANAGER_H

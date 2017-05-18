@@ -152,8 +152,6 @@ private:
         });
     }
 
-
-
     void quitExternalSystems(){
         for (auto& sysThread: m_externalThreads){
             sysThread.join();

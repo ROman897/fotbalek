@@ -7,7 +7,7 @@
 
 #include <string>
 #include <SDL_quit.h>
-#include "../Utils/declarations.h"
+#include "../Utils/Declarations.h"
 
 enum CollisionLayers{
     BOUNDARIES,

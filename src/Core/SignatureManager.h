@@ -11,11 +11,9 @@
 #include <vector>
 #include <boost/hana/tuple.hpp>
 #include <boost/hana/type.hpp>
-//#include <boost/hana/basic_tuple.hpp>
 #include <iostream>
-#include "../Utils/declarations.h"
+#include "../Utils/Declarations.h"
 #include <boost/hana/size.hpp>
-
 #include <boost/hana/equal.hpp>
 #include <boost/hana/integral_constant.hpp>
 #include <boost/hana/optional.hpp>

@@ -7,7 +7,7 @@
 
 #include <SDL_pixels.h>
 #include <string>
-#include "../Utils/declarations.h"
+#include "../Utils/Declarations.h"
 
 enum GraphicLayers{
     BACKGROUND,

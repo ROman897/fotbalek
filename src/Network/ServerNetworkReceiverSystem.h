@@ -17,13 +17,11 @@
 
 inline void applyInputForce(RigidBody& body, const MovementInputHolder& inputHolder, float coef){
     if (inputHolder.moveVertical){
-        //std::cout << "moving vertical" << std::endl;
         int dir = inputHolder.moveUp ? -1 : 1;
         body.m_velocity.m_y += dir * coef;
     }
 
     if (inputHolder.moveHorizontal){
-       // std::cout << "moving horizontal" << std::endl;
         int dir = inputHolder.moveRight ? 1 : -1;
         body.m_velocity.m_x += dir * coef;
     }
@@ -80,8 +78,6 @@ private:
         timer.start();
 
         while(true){
-
-
             if (timer.getTime() < ClientGameConstants::kClientNetworkReceiverDt)
                 continue;
             timer.resetTime();
@@ -111,19 +107,12 @@ private:
             if (! data.isValid())
                 continue;
 
-            std::cout << "server network receiver!!" << std::endl;
-
             auto& ids = data.getIds();
             auto& inputs = data.getMovements();
             updateInputs(ids, inputs);
             ids.clear();
             inputs.clear();
             data.setValid(false);
-
-
-
-
-
         }
 
     }

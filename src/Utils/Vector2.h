@@ -91,8 +91,6 @@ public:
         return !(rhs == *this);
     }
 
-
-
 private:
     Vector2& add(const Vector2 &vec) {
         m_x += vec.m_x;
