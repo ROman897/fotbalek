@@ -14,11 +14,11 @@ SET(COMPONENTS src/Components/Logic/PlayerComp.h src/Components/Logic/BallComp.h
         src/Components/Physic/ColliderTrigger.h src/Components/Graphic/Label.h src/Components/Network/NetworkId.h
         src/Components/Transform.h src/Components/Graphic/Sprite.h src/Components/Graphic/Shapes/RectangleShape.h
         src/Components/Physic/Shapes/RectangleCollider.h src/Components/Physic/Shapes/CircleCollider.h
-        src/Components/Graphic/Shapes/CircleShape.h src/Components/Physic/RigidBody.h)
+        src/Components/Physic/RigidBody.h)
 
 SET(CONSTANTS src/Constants/ClientGameConstants.h src/Constants/ClientGameConstants.cpp
         src/Constants/ServerGameConstants.h src/Constants/ServerGameConstants.cpp src/Constants/NetworkConstants.cpp
-        src/Constants/GameConstants.cpp src/Constants/GameConstants.h src/Constants/NetworkConstants.h )
+        src/Constants/GameConstants.h src/Constants/NetworkConstants.h )
 
 set(SERVER_FILES src/Network/ServerNetworkSenderSystem.h src/Network/ServerNetworkReceiverSystem.h
         src/Game_Logic/ServerLogicSystem.h src/ServerObjectsSpawner.cpp src/Network/API/Server/Server.cpp

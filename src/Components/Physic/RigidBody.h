@@ -8,14 +8,11 @@
 #include "../../Utils/Vector2.h"
 #include "../../Utils/declarations.h"
 
-//class Shape;
-
 struct RigidBody {
 
     // rigidbodies marked as trigger will not directly react to collision,
     // they will only call OnCollision callback.
     // this behaviour is to be used for collision checking, such as to check whether ball is in the goal
-    //bool m_isTrigger;
 
     RigidBody() = default;
     RigidBody(float m_inverseMass, float m_restitution, const Vector_Float &m_velocity,
@@ -33,11 +30,7 @@ struct RigidBody {
                                                                                   m_speedDecrement(m_speedDecrement),
                                                                                                   m_maxSpeed(maxSpeed){}
 
-    //Material material;
-    //MassData mass_data;
     float m_inverseMass;
-
-
     float m_restitution;
 
     // this vector represents actual direction and speed of rigid body

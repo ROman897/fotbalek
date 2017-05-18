@@ -130,15 +130,9 @@ struct ClientGameConstants {
 
     //------------------------//Labels
 
-
-
-
-
-
     //------------------------ client constants
 
     static constexpr Uint32 kClientNetworkReceiverDt = 8;
-
 
     //--------------------------// client constants
 
