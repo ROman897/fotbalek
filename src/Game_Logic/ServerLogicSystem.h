@@ -28,7 +28,7 @@ class ServerLogicSystem{
     void resetPositions(){
         std::cout << "physical restore of positions" << std::endl;
         //std::lock_guard<std::mutex> lock(m_manager->componentsMutex);
-        int i;
+        int i = 0;
         m_manager->template forEntitiesMatching<SystemSignature_Player_Rigid>([&i](RigidBody* body, Transform* transform, PlayerComp* playerComp){
             transform->m_position = ServerGameConstants::kStartingPositions[i];
             body->m_velocity = {0,0};
