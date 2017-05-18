@@ -3,11 +3,7 @@
 //----------------------------Starting Positions
 const Vector_Float
     ServerGameConstants::kStartingPositions[kMaxNumberOfPlayers] = {
-        {300, 400}, {300, 700}};//, {700, 300}, {700, 700}}; //, {600,300},
-                                                         //{600,500}};//,
-                                                         //{200,200}/*,
-                                                         //{400,400},
-                                                         //{600,600}*/};
+        {300, 400}, {300, 700}, {700, 300}, {700, 700}};
 const Vector_Float ServerGameConstants::kBallStartingPosition = {500, 500};
 //---------------------------//Starting Positions
 
@@ -62,7 +58,7 @@ const CollisionLayers ServerGameConstants::kGoalCollisionLayer = GOALS;
 //--------------------------//Goals
 
 //---------------------Game Time
-const float ServerGameConstants::kGameTime = 1200;
+const float ServerGameConstants::kGameTime = 1500;
 //---------------------//Game Time
 
 //----------------------Barriers
