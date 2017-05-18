@@ -3,7 +3,7 @@
 //----------------------------Starting Positions
 const Vector_Float
     ServerGameConstants::kStartingPositions[kMaxNumberOfPlayers] = {
-        {300, 400}, {300, 700}, {700, 300}, {700, 700}}; //, {600,300},
+        {300, 400}, {300, 700}};//, {700, 300}, {700, 700}}; //, {600,300},
                                                          //{600,500}};//,
                                                          //{200,200}/*,
                                                          //{400,400},
