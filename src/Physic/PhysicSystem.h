@@ -142,78 +142,6 @@ inline bool checkForCollisionRectangle_Rectangle(const RectangleCollider* shape1
 }
 
 
-/*inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, const CircleCollider* shape2,
-                                              const Transform* transform2, Collision* collision, bool trigger){
-
-    Vector_Float n = transform2->m_position - transform1->m_position;
-    Vector_Float closest = n;
-    float x_extent = (shape1->m_bottomRight.m_x - shape1->m_topLeft.m_x) / 2;
-    float y_extent = (shape1->m_bottomRight.m_y - shape1->m_topLeft.m_y) / 2;
-
-    closest.m_x = Clamp( -x_extent, x_extent, closest.m_x );
-    closest.m_y = Clamp( -y_extent, y_extent, closest.m_y );
-
-    bool inside = false;
-
-    if( closest.m_x > -x_extent && closest.m_x < x_extent && closest.m_y > -y_extent && closest.m_y < y_extent) {
-        inside = true;
-        //std::cout << "is Inside !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-
-        /*if(std::abs( n.m_x ) > std::abs( n.m_y )) {
-            if(closest.m_x > 0)
-                closest.m_x = x_extent;
-            else
-                closest.m_x = -x_extent;
-        } else {
-            if(closest.m_y > 0)
-                closest.m_y = y_extent;
-            else
-                closest.m_y = -y_extent;
-        }
-        //closest = {};
-    }
-
-    Vector_Float normal;
-    if (inside){
-     if (std::abs(closest.m_x) < std::abs(closest.m_y)){
-         normal = {0, closest.m_x};
-     } else{
-         normal = {closest.m_y, 0};
-     }
-
-    } else {
-        normal = n - closest;
-    }
-    float d = normal.lengthSquared();
-    float r = shape2->m_radius;
-
-    if(d > r * r && !inside)
-        return false;
-
-    //std::cout << "Collistion!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-
-    if (trigger) {
-        std::cout << "trigger triggered!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-        return true;
-    }
-    d = std::sqrt( d );
-    if(inside) {
-        collision->normal = n;
-        //collision->normal.normalize();
-        collision->penetration = r - d;
-    } else {
-        collision->normal = n;
-        //collision->normal.normalize();
-        collision->penetration = r - d;
-    }
-    return true;
-}*/
-
-
-
-
-
-
 inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, const Transform* transform1, const CircleCollider* shape2,
                                        const Transform* transform2, Collision* collision, bool trigger){
 
@@ -242,7 +170,7 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
                 closest.m_y = -y_extent;
         }
     }
-
+    
     Vector_Float normal = n - closest;
     float d = normal.lengthSquared();
     float r = shape2->m_radius;
@@ -253,14 +181,21 @@ inline bool checkForCollisionRectangle_Circle(const RectangleCollider* shape1, c
     if (trigger)
         return true;
     d = std::sqrt( d );
+    collision->normal = n - closest;
+    collision->penetration = r - d;
+
     if(inside) {
         collision->normal = n * -1;
-        collision->normal.normalize();
+        //collision->normal.normalize();
         collision->penetration = r - d;
     } else {
-        collision->normal = n;
-        collision->normal.normalize();
-        collision->penetration = r - d;
+        if (normal.m_x == closest.m_x)
+        collision->normal = {0, closest.m_x};
+        else
+        if (normal.m_y == closest.m_y)
+            collision->normal = {closest.m_y, 0};
+        //collision->normal.normalize();
+
     }
     return true;
 }

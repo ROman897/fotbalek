@@ -1,7 +1,7 @@
 #include "ServerGameConstants.h"
 
 //----------------------------Starting Positions
-const Vector_Float ServerGameConstants::kStartingPositions[kMaxNumberOfPlayers] = {{300,400}, {300,700}, {700,300}};//, {600,300}, {600,500}};//, {200,200}/*, {400,400}, {600,600}*/};
+const Vector_Float ServerGameConstants::kStartingPositions[kMaxNumberOfPlayers] = {{300,400}};//, {300,700}, {700,300}};//, {600,300}, {600,500}};//, {200,200}/*, {400,400}, {600,600}*/};
 const Vector_Float ServerGameConstants::kBallStartingPosition = {500, 500};
 //---------------------------//Starting Positions
 
